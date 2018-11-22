@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Rui" />
+
+
+
+<meta name="description" content="内存计算与内存数据库第零章OLTP：行存储（记录：元组），联机事务处理 OLAP：列存储（key-value），联机分析处理 Timesten操作小记">
+<meta name="keywords" content="TimesTen,内存数据库,大三上笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TimesTen内存数据库课程笔记（更新中）">
+<meta property="og:url" content="http://blog.guitoubing.top/2018/09/02/TimesTen内存数据库课程笔记/index.html">
+<meta property="og:site_name" content="Archer">
+<meta property="og:description" content="内存计算与内存数据库第零章OLTP：行存储（记录：元组），联机事务处理 OLAP：列存储（key-value），联机分析处理 Timesten操作小记">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://blog.guitoubing.top/img/image-20181018140355729.png">
+<meta property="og:image" content="http://blog.guitoubing.top/img/image-20181018140412582.png">
+<meta property="og:image" content="http://blog.guitoubing.top/img/image-20181018143452887.png">
+<meta property="og:updated_time" content="2018-11-06T13:19:33.866Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TimesTen内存数据库课程笔记（更新中）">
+<meta name="twitter:description" content="内存计算与内存数据库第零章OLTP：行存储（记录：元组），联机事务处理 OLAP：列存储（key-value），联机分析处理 Timesten操作小记">
+<meta name="twitter:image" content="http://blog.guitoubing.top/img/image-20181018140355729.png">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Archer" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/bitbug_favicon.icon">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>TimesTen内存数据库课程笔记（更新中） | Archer</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5be07d0c47d59d32"></script>
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Rui</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:1063932362@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/guitoubing" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/RuiTan" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa Coding" href="https://coding.net/u/RuiTan" title="Coding"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dotnet/">Dotnet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaFX/">JavaFX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java源码学习之旅/">Java源码学习之旅</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Oracle/">Oracle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TimesTen/">TimesTen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Win10/">Win10</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存数据库/">内存数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/双系统/">双系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大三上笔记/">大三上笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/引导修复/">引导修复</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机网络/">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/软件工程/">软件工程</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://dinghow.site">Dinghow</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://donggu.me">Donggu</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://github.com/RuiTan">GitHub</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">兵痞</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Rui</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Rui</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:1063932362@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/guitoubing" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/RuiTan" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa Coding" target="_blank" href="https://coding.net/u/RuiTan" title="Coding"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-TimesTen内存数据库课程笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/09/02/TimesTen内存数据库课程笔记/" class="article-date">
+      <time datetime="2018-09-02T12:59:50.000Z" itemprop="datePublished">2018-09-02</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      TimesTen内存数据库课程笔记（更新中）
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/archives/">archives</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TimesTen/">TimesTen</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存数据库/">内存数据库</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大三上笔记/">大三上笔记</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="内存计算与内存数据库"><a href="#内存计算与内存数据库" class="headerlink" title="内存计算与内存数据库"></a>内存计算与内存数据库</h1><h2 id="第零章"><a href="#第零章" class="headerlink" title="第零章"></a>第零章</h2><p>OLTP：行存储（记录：元组），联机事务处理</p>
+<p>OLAP：列存储（key-value），联机分析处理</p>
+<h2 id="Timesten操作小记"><a href="#Timesten操作小记" class="headerlink" title="Timesten操作小记"></a>Timesten操作小记</h2><a id="more"></a>
+<h3 id="平台"><a href="#平台" class="headerlink" title="平台"></a>平台</h3><blockquote>
+<p>系统：Red Hat Enterprise Linux Server release 5.7 (Tikanga)</p>
+</blockquote>
+<h3 id="创建DSN（Data-Source-Name）"><a href="#创建DSN（Data-Source-Name）" class="headerlink" title="创建DSN（Data Source Name）"></a>创建DSN（Data Source Name）</h3><blockquote>
+<p>逻辑名，用于标识某一数据库连接</p>
+</blockquote>
+<h4 id="打开数据库配置文件-通常称为系统ODBC-INI配置文件"><a href="#打开数据库配置文件-通常称为系统ODBC-INI配置文件" class="headerlink" title="打开数据库配置文件(通常称为系统ODBC.INI配置文件)"></a>打开数据库配置文件(通常称为<code>系统ODBC.INI配置文件</code>)</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> <span class="variable">$TT_HOME</span>/info</span><br><span class="line">$ gedit sys.odbc.ini</span><br></pre></td></tr></table></figure>
+<h4 id="在数据库DSN列表中添加需要新建的数据库名称"><a href="#在数据库DSN列表中添加需要新建的数据库名称" class="headerlink" title="在数据库DSN列表中添加需要新建的数据库名称"></a>在数据库DSN列表中添加需要新建的数据库名称</h4><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加my_ttdb数据库，“=”后面是指该数据库使用某种驱动，如第3行所示</span></span><br><span class="line"><span class="section">[ODBC Data Sources]</span></span><br><span class="line"><span class="attr">my_ttdb</span>=TimesTen <span class="number">11.2</span>.<span class="number">2</span> Driver</span><br><span class="line"><span class="attr">TT_1122</span>=TimesTen <span class="number">11.2</span>.<span class="number">2</span> Driver</span><br><span class="line"><span class="attr">sampledb_1122</span>=TimesTen <span class="number">11.2</span>.<span class="number">2</span> Driver</span><br><span class="line"><span class="attr">cachedb1_1122</span>=TimesTen <span class="number">11.2</span>.<span class="number">2</span> Driver</span><br><span class="line"><span class="attr">repdb1_1122</span>=TimesTen <span class="number">11.2</span>.<span class="number">2</span> Driver</span><br><span class="line"><span class="attr">repdb2_1122</span>=TimesTen <span class="number">11.2</span>.<span class="number">2</span> Driver</span><br><span class="line"><span class="attr">sampledbCS_1122</span>=TimesTen <span class="number">11.2</span>.<span class="number">2</span> Client Driver</span><br><span class="line"><span class="attr">cachedb1CS_1122</span>=TimesTen <span class="number">11.2</span>.<span class="number">2</span> Client Driver</span><br><span class="line"><span class="attr">repdb1CS_1122</span>=TimesTen <span class="number">11.2</span>.<span class="number">2</span> Client Driver</span><br><span class="line"><span class="attr">repdb2CS_1122</span>=TimesTen <span class="number">11.2</span>.<span class="number">2</span> Client Driver</span><br></pre></td></tr></table></figure>
+<h4 id="为2中创建的数据库添加配置，日志文件与检查点文件应存储在不同磁盘中"><a href="#为2中创建的数据库添加配置，日志文件与检查点文件应存储在不同磁盘中" class="headerlink" title="为2中创建的数据库添加配置，日志文件与检查点文件应存储在不同磁盘中"></a>为2中创建的数据库添加配置，<u><strong>日志文件与检查点文件应存储在不同磁盘中</strong></u></h4><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置my_ttdb</span></span><br><span class="line"><span class="section">[my_ttdb]</span></span><br><span class="line"><span class="comment"># 数据库监听器驱动位置</span></span><br><span class="line"><span class="attr">Driver</span>=/home/oracle/TimesTen/tt1122/lib/libtten.so </span><br><span class="line"><span class="comment"># DataStore为检查点文件存储位置</span></span><br><span class="line"><span class="attr">DataStore</span>=/u02/ttdata/datastores/my_ttdb </span><br><span class="line"><span class="comment"># LogDir为日志文件存储位置</span></span><br><span class="line"><span class="attr">LogDir</span>=/u03/ttdata/logs</span><br><span class="line"><span class="comment"># 以下两个Size是TimesTen内存数据库的内存分配</span></span><br><span class="line"><span class="attr">PermSize</span>=<span class="number">40</span></span><br><span class="line"><span class="attr">TempSize</span>=<span class="number">32</span></span><br><span class="line"><span class="comment"># 数据库的字符集</span></span><br><span class="line"><span class="attr">DatabaseCharacterSet</span>=AL32UTF8</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>TimesTen的内存分配主要是PermSize和TempSize两块，可先参考博客<a href="https://blog.csdn.net/stevensxiao/article/details/51050831" target="_blank" rel="noopener"><strong><u>如何更改TimesTen数据库的大小</u></strong></a>。</p>
+</blockquote>
+<h4 id="保存配置文件并关闭"><a href="#保存配置文件并关闭" class="headerlink" title="保存配置文件并关闭"></a>保存配置文件并关闭</h4><h3 id="数据库服务器基本命令"><a href="#数据库服务器基本命令" class="headerlink" title="数据库服务器基本命令"></a>数据库服务器基本命令</h3><h4 id="查看服务器状态"><a href="#查看服务器状态" class="headerlink" title="查看服务器状态"></a>查看服务器状态</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[oracle@timesten-hol info]$ ttstatus</span><br><span class="line">TimesTen status report as of Thu Sep 27 04:08:30 2018</span><br><span class="line"></span><br><span class="line">Daemon pid 2637 port 53392 instance tt1122</span><br><span class="line">TimesTen server pid 2646 started on port 53393</span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">Accessible by group oracle</span><br><span class="line">End of report</span><br></pre></td></tr></table></figure>
+<h4 id="启动-停止数据库"><a href="#启动-停止数据库" class="headerlink" title="启动/停止数据库"></a>启动/停止数据库</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[oracle@timesten-hol info]$ ttdaemonadmin -stop</span><br><span class="line">TimesTen Daemon stopped.</span><br><span class="line">[oracle@timesten-hol info]$ ttstatus</span><br><span class="line">ttStatus: Could not connect to the TimesTen daemon.</span><br><span class="line">If the TimesTen daemon is not running, please start it</span><br><span class="line">by running <span class="string">"ttDaemonAdmin -start"</span>.</span><br><span class="line">[oracle@timesten-hol info]$ ttdaemonadmin -start</span><br><span class="line">TimesTen Daemon startup OK.</span><br><span class="line">[oracle@timesten-hol info]$ ttstatus</span><br><span class="line">TimesTen status report as of Thu Sep 27 04:10:00 2018</span><br><span class="line"></span><br><span class="line">Daemon pid 6522 port 53392 instance tt1122</span><br><span class="line">TimesTen server pid 6531 started on port 53393</span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">Accessible by group oracle</span><br><span class="line">End of report</span><br></pre></td></tr></table></figure>
+<h3 id="创建TimesTen内存数据库"><a href="#创建TimesTen内存数据库" class="headerlink" title="创建TimesTen内存数据库"></a>创建TimesTen内存数据库</h3><blockquote>
+<p>默认情况下，TimesTen内存数据库在第一次连接到数据库时创建并加载到内存中，并在关闭数据库的最后一个连接时从内存卸载。当然此行为可通过<code>ttadmin -RAMPolicy</code>修改，后面会说到。</p>
+<p>也就是说，默认情况下（前提是RAM策略为<code>inUse</code>，下一节会讲到RAM策略的修改），每次在执行<code>connect “dsn=ttdb_name”</code>连接到一个特定的DSN时，都是一个创建TimesTen内存数据库、加载数据到内存中等过程，因此本节的标题是<code>创建</code>而不是<code>连接到</code>。</p>
+</blockquote>
+<h4 id="连接到特定DSN，创建内存数据库"><a href="#连接到特定DSN，创建内存数据库" class="headerlink" title="连接到特定DSN，创建内存数据库"></a>连接到特定DSN，创建内存数据库</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[oracle@timesten-hol info]$ ttisql</span><br><span class="line"></span><br><span class="line">Copyright (c) 1996, 2014, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line">Type ? or <span class="string">"help"</span> <span class="keyword">for</span> <span class="built_in">help</span>, <span class="built_in">type</span> <span class="string">"exit"</span> to quit ttIsql.</span><br><span class="line"></span><br><span class="line">Command&gt; connect <span class="string">"dsn=my_ttdb"</span>;</span><br><span class="line">Connection successful: DSN=my_ttdb;UID=oracle;DataStore=/u02/ttdata/datastores/my_ttdb;DatabaseCharacterSet=AL32UTF8;ConnectionCharacterSet=US7ASCII;DRIVER=/home/oracle/TimesTen/tt1122/lib/libtten.so;LogDir=/u03/ttdata/logs;PermSize=40;TempSize=32;TypeMode=0;</span><br><span class="line">(Default setting AutoCommit=1)</span><br></pre></td></tr></table></figure>
+<p>或者直接在ttisql中指定DSN名称：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[oracle@timesten-hol info]$ ttisql <span class="string">"dsn=my_ttdb"</span></span><br><span class="line"></span><br><span class="line">Copyright (c) 1996, 2014, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line">Type ? or <span class="string">"help"</span> <span class="keyword">for</span> <span class="built_in">help</span>, <span class="built_in">type</span> <span class="string">"exit"</span> to quit ttIsql.</span><br><span class="line"></span><br><span class="line">connect <span class="string">"dsn=my_ttdb"</span>;</span><br><span class="line">Connection successful: DSN=my_ttdb;UID=oracle;DataStore=/u02/ttdata/datastores/my_ttdb;DatabaseCharacterSet=AL32UTF8;ConnectionCharacterSet=US7ASCII;DRIVER=/home/oracle/TimesTen/tt1122/lib/libtten.so;LogDir=/u03/ttdata/logs;PermSize=40;TempSize=32;TypeMode=0;</span><br><span class="line">(Default setting AutoCommit=1)</span><br><span class="line">[oracle@timesten-hol ~]$ ttisql my_ttdb</span><br><span class="line"></span><br><span class="line">Copyright (c) 1996, 2014, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line">Type ? or <span class="string">"help"</span> <span class="keyword">for</span> <span class="built_in">help</span>, <span class="built_in">type</span> <span class="string">"exit"</span> to quit ttIsql.</span><br><span class="line"></span><br><span class="line">connect <span class="string">"DSN=my_ttdb"</span>;</span><br><span class="line">Connection successful: DSN=my_ttdb;UID=oracle;DataStore=/u02/ttdata/datastores/my_ttdb;DatabaseCharacterSet=AL32UTF8;ConnectionCharacterSet=US7ASCII;DRIVER=/home/oracle/TimesTen/tt1122/lib/libtten.so;LogDir=/u03/ttdata/logs;PermSize=40;TempSize=32;TypeMode=0;</span><br><span class="line">(Default setting AutoCommit=1)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>问题：重复运行<code>connect “dsn=ttdb_name”</code>命令可以看到命令行中显示了多了连接，这是什么作用呢？</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt; Command&gt; connect <span class="string">"dsn=my_ttdb"</span>;</span><br><span class="line">&gt; Connection successful: DSN=my_ttdb;UID=oracle;DataStore=/u02/ttdata/datastores/my_ttdb;DatabaseCharacterSet=AL32UTF8;ConnectionCharacterSet=US7ASCII;DRIVER=/home/oracle/TimesTen/tt1122/lib/libtten.so;LogDir=/u03/ttdata/logs;PermSize=40;TempSize=32;TypeMode=0;</span><br><span class="line">&gt; (Default setting AutoCommit=1)</span><br><span class="line">&gt; Command&gt; connect <span class="string">"dsn=my_ttdb"</span>;</span><br><span class="line">&gt; Connection successful: DSN=my_ttdb;UID=oracle;DataStore=/u02/ttdata/datastores/my_ttdb;DatabaseCharacterSet=AL32UTF8;ConnectionCharacterSet=US7ASCII;DRIVER=/home/oracle/TimesTen/tt1122/lib/libtten.so;LogDir=/u03/ttdata/logs;PermSize=40;TempSize=32;TypeMode=0;</span><br><span class="line">&gt; (Default setting AutoCommit=1)</span><br><span class="line">&gt; con1: Command&gt; connect <span class="string">"dsn=my_ttdb"</span>;</span><br><span class="line">&gt; Connection successful: DSN=my_ttdb;UID=oracle;DataStore=/u02/ttdata/datastores/my_ttdb;DatabaseCharacterSet=AL32UTF8;ConnectionCharacterSet=US7ASCII;DRIVER=/home/oracle/TimesTen/tt1122/lib/libtten.so;LogDir=/u03/ttdata/logs;PermSize=40;TempSize=32;TypeMode=0;</span><br><span class="line">&gt; (Default setting AutoCommit=1)</span><br><span class="line">&gt; con2: Command&gt; connect <span class="string">"dsn=my_ttdb"</span>;</span><br><span class="line">&gt; Connection successful: DSN=my_ttdb;UID=oracle;DataStore=/u02/ttdata/datastores/my_ttdb;DatabaseCharacterSet=AL32UTF8;ConnectionCharacterSet=US7ASCII;DRIVER=/home/oracle/TimesTen/tt1122/lib/libtten.so;LogDir=/u03/ttdata/logs;PermSize=40;TempSize=32;TypeMode=0;</span><br><span class="line">&gt; (Default setting AutoCommit=1)</span><br><span class="line">&gt; con3: Command&gt; </span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h4 id="查看内存数据库的内存分配及容量"><a href="#查看内存数据库的内存分配及容量" class="headerlink" title="查看内存数据库的内存分配及容量"></a>查看内存数据库的内存分配及容量</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Command&gt; dssize</span><br><span class="line"></span><br><span class="line">  PERM_ALLOCATED_SIZE:      40960</span><br><span class="line">  PERM_IN_USE_SIZE:         9453</span><br><span class="line">  PERM_IN_USE_HIGH_WATER:   9453</span><br><span class="line">  TEMP_ALLOCATED_SIZE:      32768</span><br><span class="line">  TEMP_IN_USE_SIZE:         9442</span><br><span class="line">  TEMP_IN_USE_HIGH_WATER:   9505</span><br></pre></td></tr></table></figure>
+<h4 id="使用Host命令可以调用操作系统级别的指令"><a href="#使用Host命令可以调用操作系统级别的指令" class="headerlink" title="使用Host命令可以调用操作系统级别的指令"></a>使用Host命令可以调用操作系统级别的指令</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">Command&gt; host ttstatus;</span><br><span class="line">TimesTen status report as of Thu Sep 27 04:37:28 2018</span><br><span class="line"></span><br><span class="line">Daemon pid 6522 port 53392 instance tt1122</span><br><span class="line">TimesTen server pid 6531 started on port 53393</span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">Data store /u01/ttdata/datastores/my_ttdb</span><br><span class="line">There are 12 connections to the data store</span><br><span class="line">Shared Memory KEY 0x1200c904 ID 2785297</span><br><span class="line">PL/SQL Memory KEY 0x1300c904 ID 2818066 Address 0x7fa0000000</span><br><span class="line">Type            PID     Context             Connection Name              ConnID</span><br><span class="line">Process         6973    0x0000000000c72c00  my_ttdb                           1</span><br><span class="line">Subdaemon       6529    0x00000000012d3360  Manager                         142</span><br><span class="line">Subdaemon       6529    0x000000000132a1e0  Rollback                        141</span><br><span class="line">Subdaemon       6529    0x000000000140b360  HistGC                          139</span><br><span class="line">Subdaemon       6529    0x0000000001420070  AsyncMV                         140</span><br><span class="line">Subdaemon       6529    0x00000000014b4e00  Log Marker                      136</span><br><span class="line">Subdaemon       6529    0x0000000001509a30  Deadlock Detector               135</span><br><span class="line">Subdaemon       6529    0x000000000151e620  Flusher                         134</span><br><span class="line">Subdaemon       6529    0x0000000001533210  Checkpoint                      133</span><br><span class="line">Subdaemon       6529    0x00000000016286b0  Monitor                         132</span><br><span class="line">Subdaemon       6529    0x00007f95880208e0  Aging                           138</span><br><span class="line">Subdaemon       6529    0x00007f958808f900  IndexGC                         137</span><br><span class="line">Replication policy  : Manual</span><br><span class="line">Cache Agent policy  : Manual</span><br><span class="line">PL/SQL enabled.</span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">Accessible by group oracle</span><br><span class="line">End of report</span><br></pre></td></tr></table></figure>
+<h3 id="修改RAM策略"><a href="#修改RAM策略" class="headerlink" title="修改RAM策略"></a>修改RAM策略</h3><blockquote>
+<p>上一节讲到每一次的连接到特定的DSN都是新建一个内存数据库的过程，当然这是基于默认RAM策略为<code>inUse</code>的情况，下面会讲到当RAM策略设置为<code>Manual</code>时创建内存数据库的过程。</p>
+<p><code>Manual</code>策略适用于当数据库中数据规模巨大，装载到内存中的时间可能很长，从而导致内存数据库效率低下；而<code>inUse</code>策略适用于大多数情况，数据规模不是很大，装载到内存中的时间很短或者说在业务需求中可以忽略不计。</p>
+</blockquote>
+<h4 id="查看当前RAM策略"><a href="#查看当前RAM策略" class="headerlink" title="查看当前RAM策略"></a>查看当前RAM策略</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[oracle@timesten-hol info]$ ttadmin my_ttdb</span><br><span class="line">RAM Residence Policy            : inUse</span><br><span class="line">Replication Agent Policy        : manual</span><br><span class="line">Replication Manually Started    : False</span><br><span class="line">Cache Agent Policy              : manual</span><br><span class="line">Cache Agent Manually Started    : False</span><br></pre></td></tr></table></figure>
+<h4 id="修改RAM策略为手动模式（Manual）"><a href="#修改RAM策略为手动模式（Manual）" class="headerlink" title="修改RAM策略为手动模式（Manual）"></a>修改RAM策略为手动模式（Manual）</h4><blockquote>
+<p>手动模式下，创建DSN连接时并不会将数据加载到内存中，需要手动进行数据装载和卸载</p>
+</blockquote>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[oracle@timesten-hol info]$ ttadmin -rampolicy manual my_ttdb</span><br><span class="line">RAM Residence Policy            : manual</span><br><span class="line">Manually Loaded In RAM          : False</span><br><span class="line">Replication Agent Policy        : manual</span><br><span class="line">Replication Manually Started    : False</span><br><span class="line">Cache Agent Policy              : manual</span><br><span class="line">Cache Agent Manually Started    : False</span><br><span class="line">[oracle@timesten-hol info]$ ttisql <span class="string">"dsn=my_ttdb"</span>;</span><br><span class="line"></span><br><span class="line">Copyright (c) 1996, 2014, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line">Type ? or <span class="string">"help"</span> <span class="keyword">for</span> <span class="built_in">help</span>, <span class="built_in">type</span> <span class="string">"exit"</span> to quit ttIsql.</span><br><span class="line"></span><br><span class="line">connect <span class="string">"dsn=my_ttdb"</span>;</span><br><span class="line">  707: Attempt to connect to a data store that has been manually unloaded from RAM</span><br><span class="line">The <span class="built_in">command</span> failed.</span><br><span class="line">Done.</span><br><span class="line">[oracle@timesten-hol info]$</span><br></pre></td></tr></table></figure>
+<h4 id="向内存中装载数据"><a href="#向内存中装载数据" class="headerlink" title="向内存中装载数据"></a>向内存中装载数据</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[oracle@timesten-hol info]$ ttadmin -ramload my_ttdb</span><br><span class="line">RAM Residence Policy            : manual</span><br><span class="line">Manually Loaded In RAM          : True</span><br><span class="line">Replication Agent Policy        : manual</span><br><span class="line">Replication Manually Started    : False</span><br><span class="line">Cache Agent Policy              : manual</span><br><span class="line">Cache Agent Manually Started    : False</span><br><span class="line">[oracle@timesten-hol info]$ ttisql <span class="string">"dsn=my_ttdb"</span>;</span><br><span class="line"></span><br><span class="line">Copyright (c) 1996, 2014, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line">Type ? or <span class="string">"help"</span> <span class="keyword">for</span> <span class="built_in">help</span>, <span class="built_in">type</span> <span class="string">"exit"</span> to quit ttIsql.</span><br><span class="line"></span><br><span class="line">connect <span class="string">"dsn=my_ttdb"</span>;</span><br><span class="line">Connection successful: DSN=my_ttdb;UID=oracle;DataStore=/u02/ttdata/datastores/my_ttdb;DatabaseCharacterSet=AL32UTF8;ConnectionCharacterSet=US7ASCII;DRIVER=/home/oracle/TimesTen/tt1122/lib/libtten.so;LogDir=/u03/ttdata/logs;PermSize=40;TempSize=32;TypeMode=0;</span><br><span class="line">(Default setting AutoCommit=1)</span><br><span class="line">Command&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="从内存中卸载数据"><a href="#从内存中卸载数据" class="headerlink" title="从内存中卸载数据"></a>从内存中卸载数据</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[oracle@timesten-hol info]$ ttadmin -ramunload my_ttdb</span><br><span class="line">RAM Residence Policy            : manual</span><br><span class="line">Manually Loaded In RAM          : False</span><br><span class="line">Replication Agent Policy        : manual</span><br><span class="line">Replication Manually Started    : False</span><br><span class="line">Cache Agent Policy              : manual</span><br><span class="line">Cache Agent Manually Started    : False</span><br><span class="line">[oracle@timesten-hol info]$ ttisql <span class="string">"dsn=my_ttdb"</span>;</span><br><span class="line"></span><br><span class="line">Copyright (c) 1996, 2014, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line">Type ? or <span class="string">"help"</span> <span class="keyword">for</span> <span class="built_in">help</span>, <span class="built_in">type</span> <span class="string">"exit"</span> to quit ttIsql.</span><br><span class="line"></span><br><span class="line">connect <span class="string">"dsn=my_ttdb"</span>;</span><br><span class="line">  707: Attempt to connect to a data store that has been manually unloaded from RAM</span><br><span class="line">The <span class="built_in">command</span> failed.</span><br><span class="line">Done.</span><br><span class="line">[oracle@timesten-hol info]$</span><br></pre></td></tr></table></figure>
+<h3 id="日志和检查点"><a href="#日志和检查点" class="headerlink" title="日志和检查点"></a>日志和检查点</h3><h4 id="查看日志文件，提交之前会预写日志"><a href="#查看日志文件，提交之前会预写日志" class="headerlink" title="查看日志文件，提交之前会预写日志"></a>查看日志文件，<strong><u>提交之前会预写日志</u></strong></h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Command&gt; host ls -al /u03/ttdata/logs/my*</span><br><span class="line">-rw-rw---- 1 oracle oracle 18270208 Sep 28 23:00 /u03/ttdata/logs/my_ttdb.log4</span><br><span class="line">-rw-rw---- 1 oracle oracle 67108864 Sep 27 04:18 /u03/ttdata/logs/my_ttdb.res0</span><br><span class="line">-rw-rw---- 1 oracle oracle 67108864 Sep 27 04:18 /u03/ttdata/logs/my_ttdb.res1</span><br><span class="line">-rw-rw---- 1 oracle oracle 67108864 Sep 27 04:18 /u03/ttdata/logs/my_ttdb.res2</span><br></pre></td></tr></table></figure>
+<h4 id="查看检查点"><a href="#查看检查点" class="headerlink" title="查看检查点"></a>查看检查点</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Command&gt; host ls -al /u02/ttdata/datastores/my*</span><br><span class="line">-rw-rw---- 1 oracle oracle 31906840 Sep 28 23:00 /u02/ttdata/datastores/my_ttdb.ds0</span><br><span class="line">-rw-rw---- 1 oracle oracle 31906840 Sep 28 22:57 /u02/ttdata/datastores/my_ttdb.ds1</span><br></pre></td></tr></table></figure>
+<h4 id="手动更新检查点文件"><a href="#手动更新检查点文件" class="headerlink" title="手动更新检查点文件"></a>手动更新检查点文件</h4><blockquote>
+<p>非手动状态下检查点会每间隔一段时间执行一次，会将自上次检查点后提交的事务更新到检查点中；检查点文件是非阻塞的，即更新检查点文件时也可执行事务。</p>
+<p>如下调用检查点文件：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Command&gt; call ttckpt;</span><br><span class="line">Command&gt; call ttckpt;</span><br></pre></td></tr></table></figure>
+<h3 id="ttisql基本命令——用户操作"><a href="#ttisql基本命令——用户操作" class="headerlink" title="ttisql基本命令——用户操作"></a>ttisql基本命令——用户操作</h3><h4 id="创建用户，可在表sys-all-users中查找所有的用户信息"><a href="#创建用户，可在表sys-all-users中查找所有的用户信息" class="headerlink" title="创建用户，可在表sys.all_users中查找所有的用户信息"></a>创建用户，可在表<code>sys.all_users</code>中查找所有的用户信息</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Command&gt; select * from sys.all_users;</span><br><span class="line">&lt; SYS, 0, 2018-09-27 04:18:18.063030 &gt;</span><br><span class="line">&lt; TTREP, 2, 2018-09-27 04:18:18.063030 &gt;</span><br><span class="line">&lt; SYSTEM, 3, 2018-09-27 04:18:18.063030 &gt;</span><br><span class="line">&lt; GRID, 4, 2018-09-27 04:18:18.063030 &gt;</span><br><span class="line">&lt; ORACLE, 10, 2018-09-27 04:18:18.063030 &gt;</span><br><span class="line">&lt; SCOTT, 11, 2018-09-27 05:06:39.267433 &gt;</span><br><span class="line">6 rows found.</span><br><span class="line">Command&gt; create user tthr identified by tthr;</span><br><span class="line"></span><br><span class="line">User created.</span><br><span class="line"></span><br><span class="line">Command&gt; select * from sys.all_users;</span><br><span class="line">&lt; SYS, 0, 2018-09-27 04:18:18.063030 &gt;</span><br><span class="line">&lt; TTREP, 2, 2018-09-27 04:18:18.063030 &gt;</span><br><span class="line">&lt; SYSTEM, 3, 2018-09-27 04:18:18.063030 &gt;</span><br><span class="line">&lt; GRID, 4, 2018-09-27 04:18:18.063030 &gt;</span><br><span class="line">&lt; ORACLE, 10, 2018-09-27 04:18:18.063030 &gt;</span><br><span class="line">&lt; SCOTT, 11, 2018-09-27 05:06:39.267433 &gt;</span><br><span class="line">&lt; TTHR, 12, 2018-09-28 23:11:57.126074 &gt;</span><br><span class="line">7 rows found.</span><br></pre></td></tr></table></figure>
+<h4 id="给用户分配权限"><a href="#给用户分配权限" class="headerlink" title="给用户分配权限"></a>给用户分配权限</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Command&gt; grant create session to tthr;</span><br><span class="line">Command&gt; grant create table to tthr;</span><br><span class="line">Command&gt; grant create view to tthr;</span><br><span class="line">Command&gt; grant create sequence to tthr;</span><br></pre></td></tr></table></figure>
+<h4 id="查看当前数据库系统内用户权限"><a href="#查看当前数据库系统内用户权限" class="headerlink" title="查看当前数据库系统内用户权限"></a>查看当前数据库系统内用户权限</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Command&gt; select * from sys.dba_sys_privs;</span><br><span class="line">&lt; SYS, ADMIN, YES &gt;</span><br><span class="line">&lt; SYSTEM, ADMIN, YES &gt;</span><br><span class="line">&lt; ORACLE, ADMIN, YES &gt;</span><br><span class="line">&lt; SCOTT, CREATE SESSION, NO &gt;</span><br><span class="line">&lt; SCOTT, CREATE TABLE, NO &gt;</span><br><span class="line">&lt; TTHR, CREATE SESSION, NO &gt;</span><br><span class="line">&lt; TTHR, CREATE TABLE, NO &gt;</span><br><span class="line">&lt; TTHR, CREATE VIEW, NO &gt;</span><br><span class="line">&lt; TTHR, CREATE SEQUENCE, NO &gt;</span><br><span class="line">9 rows found.</span><br></pre></td></tr></table></figure>
+<h4 id="撤回用户权限"><a href="#撤回用户权限" class="headerlink" title="撤回用户权限"></a>撤回用户权限</h4><blockquote>
+<p>以下示例展示了如何从用户撤回权限（赋予<code>delete any table</code>权限后再撤回该权限）</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">Command&gt; grant delete any table to tthr;</span><br><span class="line">Command&gt; select * from sys.dba_sys_privs;</span><br><span class="line">&lt; SYS, ADMIN, YES &gt;</span><br><span class="line">&lt; SYSTEM, ADMIN, YES &gt;</span><br><span class="line">&lt; ORACLE, ADMIN, YES &gt;</span><br><span class="line">&lt; SCOTT, CREATE SESSION, NO &gt;</span><br><span class="line">&lt; SCOTT, CREATE TABLE, NO &gt;</span><br><span class="line">&lt; TTHR, CREATE SESSION, NO &gt;</span><br><span class="line">&lt; TTHR, DELETE ANY TABLE, NO &gt;</span><br><span class="line">&lt; TTHR, CREATE TABLE, NO &gt;</span><br><span class="line">&lt; TTHR, CREATE VIEW, NO &gt;</span><br><span class="line">&lt; TTHR, CREATE SEQUENCE, NO &gt;</span><br><span class="line">10 rows found.</span><br><span class="line">Command&gt; revoke delete any table from tthr;</span><br><span class="line">Command&gt; select * from sys.dba_sys_privs;</span><br><span class="line">&lt; SYS, ADMIN, YES &gt;</span><br><span class="line">&lt; SYSTEM, ADMIN, YES &gt;</span><br><span class="line">&lt; ORACLE, ADMIN, YES &gt;</span><br><span class="line">&lt; SCOTT, CREATE SESSION, NO &gt;</span><br><span class="line">&lt; SCOTT, CREATE TABLE, NO &gt;</span><br><span class="line">&lt; TTHR, CREATE SESSION, NO &gt;</span><br><span class="line">&lt; TTHR, CREATE TABLE, NO &gt;</span><br><span class="line">&lt; TTHR, CREATE VIEW, NO &gt;</span><br><span class="line">&lt; TTHR, CREATE SEQUENCE, NO &gt;</span><br><span class="line">9 rows found.</span><br></pre></td></tr></table></figure>
+<h3 id="ttisql基本命令——数据库对象操作"><a href="#ttisql基本命令——数据库对象操作" class="headerlink" title="ttisql基本命令——数据库对象操作"></a>ttisql基本命令——数据库对象操作</h3><h4 id="关闭自动提交"><a href="#关闭自动提交" class="headerlink" title="关闭自动提交"></a>关闭自动提交</h4><blockquote>
+<p>意即每次执行事务后，均需要执行<code>commit</code>以提交事务。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Command&gt; autocommit off;</span><br></pre></td></tr></table></figure>
+<h4 id="建表、插入数据"><a href="#建表、插入数据" class="headerlink" title="建表、插入数据"></a>建表、插入数据</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Command&gt; create table ttemployees</span><br><span class="line">       &gt; (employee_id NUMBER(6) NOT NULL,</span><br><span class="line">       &gt; last_name VARCHAR2(10) NOT NULL, hire_date DATE, performance_report CLOB,</span><br><span class="line">       &gt; PRIMARY KEY (employee_id) )</span><br><span class="line">       &gt; UNIQUE HASH ON (employee_id) PAGES = 1;</span><br><span class="line">Command&gt; insert into ttemployees values (1, &apos;Smith&apos;, &apos;2009-02-23&apos;, &apos;excellent&apos;); </span><br><span class="line">1 row inserted.</span><br><span class="line">Command&gt; insert into ttemployees values (2, &apos;King&apos;, &apos;2005-08-05&apos;, &apos;great&apos;);</span><br><span class="line">1 row inserted.</span><br><span class="line">Command&gt; insert into ttemployees values (3, &apos;Taylor&apos;, &apos;2012-01-28&apos;, EMPTY_CLOB());</span><br><span class="line">1 row inserted.</span><br><span class="line">Command&gt; commit;</span><br></pre></td></tr></table></figure>
+<h4 id="一些命令总结"><a href="#一些命令总结" class="headerlink" title="一些命令总结"></a>一些命令总结</h4><blockquote>
+<ul>
+<li>tables and alltables - Lists tables</li>
+<li>indexes and allindexes - Lists indexes</li>
+<li>views and allviews - Lists views</li>
+<li>sequences and allsequences - Lists sequences</li>
+<li>synonyms and allsynonyms - Lists synonyms</li>
+<li>functions and allfunctions - Lists PL/SQL functions</li>
+<li>procedures and allprocedures - Lists PL/SQL procedures</li>
+<li>packages and allpackages - Lists PL/SQL packages</li>
+</ul>
+</blockquote>
+<h3 id="PLSQL编程"><a href="#PLSQL编程" class="headerlink" title="PLSQL编程"></a>PLSQL编程</h3><h4 id="创建plsqldb、pls用户、运行sql脚本"><a href="#创建plsqldb、pls用户、运行sql脚本" class="headerlink" title="创建plsqldb、pls用户、运行sql脚本"></a>创建plsqldb、pls用户、运行sql脚本</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">call</span> ttOptUpdateStats;</span><br><span class="line">// 更新统计数据，用于分析生成最优执行计划</span><br></pre></td></tr></table></figure>
+<h4 id="使用sql-developer连接TimesTen和Oracle"><a href="#使用sql-developer连接TimesTen和Oracle" class="headerlink" title="使用sql developer连接TimesTen和Oracle"></a>使用sql developer连接TimesTen和Oracle</h4><p>配置如下：</p>
+<p><img src="/img/image-20181018140355729.png" alt="TimesTen数据库连接配置"></p>
+<p><img src="/img/image-20181018140412582.png" alt="Oracle数据库连接配置"></p>
+<h4 id="plsql语法"><a href="#plsql语法" class="headerlink" title="plsql语法"></a>plsql语法</h4><blockquote>
+<h2 id="What-Is-a-PL-SQL-Package"><a href="#What-Is-a-PL-SQL-Package" class="headerlink" title="What Is a PL/SQL Package?"></a>What Is a PL/SQL Package?</h2><p>A <strong>package</strong> is a schema object that groups logically related PL/SQL types, items, and subprograms. Packages usually have two parts, a specification and a body, although sometimes the body is unnecessary. The <strong>specification</strong> (<strong>spec</strong> for short) is the interface to your applications; it declares the types, variables, constants, exceptions, cursors, and subprograms available for use. The <strong>body</strong> fully defines cursors and subprograms, and so implements the spec.</p>
+<p><code>包</code>是一个模式对象，它对逻辑上相关的PL/SQL类型、项和子程序进行分组。包通常有两个部分，<code>规范</code>和<code>主体</code>，主体不是必要的。<code>规范</code>是应用程序的接口：它声明可用的类型、变量、常量、异常、游标和子程序。<code>主体</code>将完全定义游标和子程序，以此实现<code>规范</code>。</p>
+<p>As <a href="https://docs.oracle.com/cd/B10501_01/appdev.920/a96624/09_packs.htm#5871" target="_blank" rel="noopener">Figure 9-1</a> shows, you can think of the spec as an operational interface and of the body as a “black box.” You can debug, enhance, or replace a package body without changing the interface (package spec) to the package.</p>
+<p><img src="/img/image-20181018143452887.png" alt="包"></p>
+<p>——<a href="https://docs.oracle.com/cd/B10501_01/appdev.920/a96624/09_packs.htm#362" target="_blank" rel="noopener">Oracle PL/SQL Package文档</a></p>
+</blockquote>
+<p><code>1_package.sql:</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br></pre></td><td class="code"><pre><span class="line">CREATE OR REPLACE PACKAGE test AS</span><br><span class="line"></span><br><span class="line">  -- Declare a record for the desired EMP fields</span><br><span class="line">  TYPE empRecType IS RECORD (</span><br><span class="line">    r_empno  EMP.EMPNO%TYPE,</span><br><span class="line">      -- 使用EMP表中EMPNO的类型</span><br><span class="line">    r_ename  EMP.ENAME%TYPE,</span><br><span class="line">    r_salary EMP.SAL%TYPE</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  -- Declare a Ref Cursor type</span><br><span class="line">  TYPE EmpCurType IS REF CURSOR RETURN empRecType; -- 游标类型需要有返回值</span><br><span class="line"></span><br><span class="line">  -- A parameterized cursor，定义</span><br><span class="line">  	-- 游标</span><br><span class="line">  CURSOR low_paid (num PLS_INTEGER) IS</span><br><span class="line">    SELECT empno </span><br><span class="line">      FROM emp</span><br><span class="line">      WHERE rownum &lt;= num</span><br><span class="line">      ORDER BY sal ASC;</span><br><span class="line">	-- 过程(IN表示输入，OUT表示输出)</span><br><span class="line">  PROCEDURE ddl_dml</span><br><span class="line">    (myComment IN  VARCHAR2,</span><br><span class="line">     errCode   OUT PLS_INTEGER, -- 整型</span><br><span class="line">     errText   OUT VARCHAR2); </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  PROCEDURE givePayRise</span><br><span class="line">    (num       IN  PLS_INTEGER,</span><br><span class="line">     name      OUT EMP.ENAME%TYPE, </span><br><span class="line">     	-- name是plsql中的保留字，应该尽量避免使用保留字</span><br><span class="line">     errCode   OUT PLS_INTEGER,</span><br><span class="line">     errText   OUT VARCHAR2); </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  PROCEDURE getCommEmps</span><br><span class="line">    (empRefCur IN OUT EmpCurType,</span><br><span class="line">     errCode   OUT PLS_INTEGER,</span><br><span class="line">     errText   OUT VARCHAR2); </span><br><span class="line"></span><br><span class="line">  -- Associative array</span><br><span class="line">  TYPE sum_multiples IS TABLE OF PLS_INTEGER -- Associative array type</span><br><span class="line">  INDEX BY PLS_INTEGER; -- indexed by pls_integer</span><br><span class="line">  </span><br><span class="line">  FUNCTION get_sum_multiples</span><br><span class="line">   ( multiple IN PLS_INTEGER,</span><br><span class="line">     num      IN PLS_INTEGER</span><br><span class="line">   ) RETURN sum_multiples;</span><br><span class="line"></span><br><span class="line">END test;</span><br><span class="line">/</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">CREATE OR REPLACE PACKAGE BODY test AS</span><br><span class="line"></span><br><span class="line">  PROCEDURE ddl_dml</span><br><span class="line">    (myComment IN  VARCHAR2,</span><br><span class="line">     errCode   OUT PLS_INTEGER,</span><br><span class="line">     errText   OUT VARCHAR2) IS</span><br><span class="line"></span><br><span class="line">    sql_str                    VARCHAR2(256);</span><br><span class="line">    name_already_exists        EXCEPTION;</span><br><span class="line">    insufficient_privileges    EXCEPTION;</span><br><span class="line">    PRAGMA EXCEPTION_INIT(name_already_exists,     -0955);</span><br><span class="line">    PRAGMA EXCEPTION_INIT(insufficient_privileges, -1031);</span><br><span class="line">    seq_value                  number;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  BEGIN</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    BEGIN</span><br><span class="line">      sql_str := &apos;create table foo (COL1 VARCHAR2 (20),COL2 NVARCHAR2 (60))&apos;;</span><br><span class="line">      DBMS_OUTPUT.PUT_LINE(sql_str);</span><br><span class="line">      execute immediate sql_str;</span><br><span class="line">    EXCEPTION</span><br><span class="line">      WHEN name_already_exists THEN</span><br><span class="line">        DBMS_OUTPUT.PUT_LINE(&apos;  Ignore existing table errors&apos;);</span><br><span class="line">      WHEN insufficient_privileges THEN</span><br><span class="line">        DBMS_OUTPUT.PUT_LINE(&apos;  Ignore insufficient privileges errors&apos;);</span><br><span class="line">    END;</span><br><span class="line"></span><br><span class="line">    -- Cast num_col1 and char_col values</span><br><span class="line">    insert into temp values (1, 1, myComment);</span><br><span class="line"></span><br><span class="line">    commit;</span><br><span class="line"></span><br><span class="line">    errCode := 0;</span><br><span class="line">    errtext := &apos;OK&apos;;</span><br><span class="line"></span><br><span class="line">  EXCEPTION</span><br><span class="line">  </span><br><span class="line">    WHEN name_already_exists THEN</span><br><span class="line"></span><br><span class="line">      errCode := 0;</span><br><span class="line">      errtext := &apos;OK&apos;;</span><br><span class="line"></span><br><span class="line">    WHEN OTHERS THEN</span><br><span class="line"></span><br><span class="line">      errCode  := SQLCODE;</span><br><span class="line">      errText  := SUBSTR(SQLERRM, 1, 200);</span><br><span class="line"></span><br><span class="line">  END ddl_dml;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  PROCEDURE givePayRise</span><br><span class="line">    (num       IN  PLS_INTEGER,</span><br><span class="line">     name      OUT EMP.ENAME%TYPE,</span><br><span class="line">     errCode   OUT PLS_INTEGER,</span><br><span class="line">     errText   OUT VARCHAR2) IS</span><br><span class="line"></span><br><span class="line">   -- Can use PLSQL collections within TimesTen PLSQL</span><br><span class="line">   TYPE lowest_paid_type IS TABLE OF emp.empno%TYPE;</span><br><span class="line">   lowest_paid lowest_paid_type;</span><br><span class="line"></span><br><span class="line">   i           PLS_INTEGER; </span><br><span class="line">   numRows     PLS_INTEGER;</span><br><span class="line">   lucky_index PLS_INTEGER; </span><br><span class="line">   lucky_emp   EMP.EMPNO%TYPE; </span><br><span class="line"></span><br><span class="line">  BEGIN</span><br><span class="line"></span><br><span class="line">    -- Initialize the output variable</span><br><span class="line">    name := &apos;Nobody&apos;;</span><br><span class="line"></span><br><span class="line">    -- Initialize the collection</span><br><span class="line">    lowest_paid := lowest_paid_type(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);</span><br><span class="line">    i := 1;</span><br><span class="line">    </span><br><span class="line">    -- Constrain the resultset size</span><br><span class="line">    IF num &lt; 1 OR num &gt; 10 THEN</span><br><span class="line"></span><br><span class="line">      -- If bad inputs, default to 5 rows</span><br><span class="line">      numRows := 5;</span><br><span class="line">    ELSE</span><br><span class="line">      numRows := num;</span><br><span class="line">    END IF;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    -- Create the cursor resultset with up to &apos;numRows&apos; rows</span><br><span class="line">    OPEN low_paid( numRows );</span><br><span class="line"></span><br><span class="line">    LOOP</span><br><span class="line"></span><br><span class="line">      -- Get the current empid</span><br><span class="line">      FETCH low_paid INTO lowest_paid(i);</span><br><span class="line"></span><br><span class="line">      EXIT WHEN low_paid%NOTFOUND;</span><br><span class="line"></span><br><span class="line">      -- Increment the PLSQL table index</span><br><span class="line">      i := i + 1;</span><br><span class="line"></span><br><span class="line">    END LOOP;</span><br><span class="line"></span><br><span class="line">    -- Close the cursor</span><br><span class="line">    CLOSE low_paid;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    -- List the subset of lowest paid employees</span><br><span class="line">    FOR j in lowest_paid.FIRST .. numRows LOOP</span><br><span class="line">      DBMS_OUTPUT.PUT_LINE(&apos;  Lowest paid empno &apos; || j || &apos; is &apos; || lowest_paid(j) );</span><br><span class="line">    END LOOP;</span><br><span class="line"></span><br><span class="line">    -- Randomly choose one of the lowest paid employees for a 10% pay raise.</span><br><span class="line">    lucky_index := trunc(dbms_random.value(lowest_paid.FIRST, numRows)); </span><br><span class="line">    lucky_emp := lowest_paid(lucky_index);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    -- Give lucky_emp a 10% pay raise and return their name</span><br><span class="line">    UPDATE emp</span><br><span class="line">      SET sal = sal * 1.1</span><br><span class="line">      WHERE empno = lucky_emp</span><br><span class="line">      RETURNING ename INTO name;</span><br><span class="line"></span><br><span class="line">    COMMIT;</span><br><span class="line"></span><br><span class="line">    errCode := 0;</span><br><span class="line">    errtext := &apos;OK&apos;;</span><br><span class="line"></span><br><span class="line">  EXCEPTION</span><br><span class="line">  </span><br><span class="line">    WHEN OTHERS THEN</span><br><span class="line"></span><br><span class="line">      errCode  := SQLCODE;</span><br><span class="line">      errText  := SUBSTR(SQLERRM, 1, 200);</span><br><span class="line"></span><br><span class="line">  END givePayRise;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  PROCEDURE getCommEmps</span><br><span class="line">    (empRefCur IN OUT EmpCurType,</span><br><span class="line">     errCode   OUT PLS_INTEGER,</span><br><span class="line">     errText   OUT VARCHAR2) IS</span><br><span class="line"></span><br><span class="line">    salesGuy empRecType;</span><br><span class="line"></span><br><span class="line">  BEGIN </span><br><span class="line"></span><br><span class="line">    DBMS_OUTPUT.PUT_LINE(&apos; &apos;);</span><br><span class="line">    DBMS_OUTPUT.PUT_LINE(&apos;Displaying the refcursor for the sales people&apos;);</span><br><span class="line"></span><br><span class="line">    -- The refcursor (empRefCur) result was opened before calling this procedure</span><br><span class="line">    LOOP</span><br><span class="line">      FETCH empRefCur INTO salesGuy;</span><br><span class="line">      EXIT WHEN empRefCur%NOTFOUND;</span><br><span class="line"></span><br><span class="line">      DBMS_OUTPUT.PUT_LINE(salesGuy.r_ename);</span><br><span class="line">    END LOOP;</span><br><span class="line"></span><br><span class="line">    CLOSE empRefCur;</span><br><span class="line"></span><br><span class="line">    errCode := 0;</span><br><span class="line">    errtext := &apos;OK&apos;;</span><br><span class="line"></span><br><span class="line">  EXCEPTION</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">    WHEN OTHERS THEN</span><br><span class="line"></span><br><span class="line">      errCode  := SQLCODE;</span><br><span class="line">      errText  := SUBSTR(SQLERRM, 1, 200);</span><br><span class="line"></span><br><span class="line">  END getCommEmps;</span><br><span class="line"></span><br><span class="line">  FUNCTION get_sum_multiples</span><br><span class="line">   ( multiple IN PLS_INTEGER,</span><br><span class="line">     num      IN PLS_INTEGER</span><br><span class="line">   ) RETURN sum_multiples</span><br><span class="line">   IS</span><br><span class="line">     s sum_multiples;</span><br><span class="line">  BEGIN</span><br><span class="line">    FOR i in 1..num LOOP</span><br><span class="line">      s(i) := multiple * ((i * (i + 1)) / 2); -- sum of the multiples</span><br><span class="line">    END LOOP;</span><br><span class="line">    RETURN s;</span><br><span class="line">  END get_sum_multiples;</span><br><span class="line"></span><br><span class="line">BEGIN  -- package initialization goes here</span><br><span class="line">  DBMS_OUTPUT.PUT_LINE(&apos;Initialized package test&apos;);</span><br><span class="line">END test;</span><br><span class="line">/</span><br></pre></td></tr></table></figure>
+<p><code>2_call_package.sql:</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">set serveroutput on;</span><br><span class="line"></span><br><span class="line">declare</span><br><span class="line">  errCode      PLS_INTEGER;</span><br><span class="line">  errtext      VARCHAR2(256);</span><br><span class="line">  myRefCur     test.EmpCurType; -- 使用test包中定义的类型</span><br><span class="line">  salesPerson  test.empRecType;</span><br><span class="line">  name         EMP.ENAME%TYPE;</span><br><span class="line">  n           PLS_INTEGER := 5; -- number of multiples to sum for display</span><br><span class="line">  sn          PLS_INTEGER := 10; -- number of multiples to sum</span><br><span class="line">  m           PLS_INTEGER := 3; -- multiple</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">begin</span><br><span class="line"></span><br><span class="line">    dbms_output.put_line(&apos; &apos;);</span><br><span class="line">    dbms_output.put_line(&apos; &apos;);</span><br><span class="line">    dbms_output.put_line(&apos; &apos;);</span><br><span class="line">    dbms_output.put_line(&apos;Find some of the lowest paid employees and give a random employee a 10% pay raise&apos;);</span><br><span class="line">    -- Give a lowely paid random employee a 10% pay raise</span><br><span class="line">    test.givePayRise(5, name, errCode, errText);</span><br><span class="line">    if errCode != 0 then</span><br><span class="line">      dbms_output.put_line(&apos;Error code = &apos; || errCode || &apos; Error Text = &apos; || errtext);</span><br><span class="line">    else</span><br><span class="line">      dbms_output.put_line(name || &apos; got the 10% payraise&apos;);</span><br><span class="line">    end if;</span><br><span class="line"></span><br><span class="line">    -- Open a refcursor</span><br><span class="line">    OPEN myRefCur FOR</span><br><span class="line">      SELECT empno, ename, sal</span><br><span class="line">      FROM emp</span><br><span class="line">      WHERE comm IS NOT NULL;</span><br><span class="line"></span><br><span class="line">    -- display the resultset of the refcursor</span><br><span class="line">    test.getCommEmps(myRefCur, errCode, errText);</span><br><span class="line">    if errCode != 0 then</span><br><span class="line">      dbms_output.put_line(&apos;Error code = &apos; || errCode || &apos; Error Text = &apos; || errtext);</span><br><span class="line">    end if;</span><br><span class="line"></span><br><span class="line">    dbms_output.put_line(&apos; &apos;);</span><br><span class="line">    dbms_output.put_line(&apos;Do some DDL and DML in a stored procedure&apos;);</span><br><span class="line">    test.ddl_dml(&apos;hi&apos;, errCode, errText);</span><br><span class="line">    if errCode != 0 then</span><br><span class="line">      dbms_output.put_line(&apos;Error code = &apos; || errCode || &apos; Error Text = &apos; || errtext);</span><br><span class="line">    end if;</span><br><span class="line">    </span><br><span class="line">    -- associative arrays</span><br><span class="line">    dbms_output.put_line(&apos; &apos;);</span><br><span class="line">    dbms_output.put_line(&apos;Use an associative array to compute the sum of multiples&apos;);</span><br><span class="line">    dbms_output.put_line(</span><br><span class="line">      &apos;Sum of the first &apos; || TO_CHAR(n) || &apos; multiples of &apos; || TO_CHAR(m) </span><br><span class="line">       || &apos; is &apos; ||  TO_CHAR(test.get_sum_multiples (m, sn)(n)));</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">end;</span><br><span class="line">/</span><br></pre></td></tr></table></figure>
+<p><code>3_create_package_workload.sql:</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br></pre></td><td class="code"><pre><span class="line">CREATE OR REPLACE PACKAGE workload AS</span><br><span class="line"></span><br><span class="line">  PROCEDURE oltp_read_only (</span><br><span class="line">    v_id      IN  PLS_INTEGER,</span><br><span class="line">    v_n       IN  PLS_INTEGER,</span><br><span class="line">    v_m       IN  PLS_INTEGER,</span><br><span class="line">    errCode   OUT PLS_INTEGER,</span><br><span class="line">    errText   OUT VARCHAR2);</span><br><span class="line"></span><br><span class="line">  PROCEDURE oltp_read_write (</span><br><span class="line">    v_id      IN  PLS_INTEGER,</span><br><span class="line">    v_n       IN  PLS_INTEGER,</span><br><span class="line">    v_m       IN  PLS_INTEGER,</span><br><span class="line">    v_c       IN  CHAR,</span><br><span class="line">    v_p       IN  VARCHAR2,</span><br><span class="line">    errCode   OUT PLS_INTEGER,</span><br><span class="line">    errText   OUT VARCHAR2);</span><br><span class="line"></span><br><span class="line">END workload;</span><br><span class="line">/</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">CREATE OR REPLACE PACKAGE BODY workload AS</span><br><span class="line"></span><br><span class="line">  -- Private package variables used for package initialization</span><br><span class="line">  theErrCode PLS_INTEGER   := 0;</span><br><span class="line">  theErrText VARCHAR2(256) := &apos;OK&apos;;</span><br><span class="line"></span><br><span class="line">  -- Using shared package cursors for efficiency</span><br><span class="line">  CURSOR range_query (n PLS_INTEGER, m PLS_INTEGER) IS</span><br><span class="line">     SELECT c </span><br><span class="line">       FROM sbtest </span><br><span class="line">       WHERE id BETWEEN n AND m;</span><br><span class="line"></span><br><span class="line">  CURSOR range_order_query (n PLS_INTEGER, m PLS_INTEGER) IS</span><br><span class="line">     SELECT c </span><br><span class="line">       FROM sbtest </span><br><span class="line">       WHERE id BETWEEN n AND m</span><br><span class="line">       ORDER BY c;</span><br><span class="line"></span><br><span class="line">  CURSOR range_distinct_query (n PLS_INTEGER, m PLS_INTEGER) IS</span><br><span class="line">     SELECT DISTINCT c </span><br><span class="line">       FROM sbtest </span><br><span class="line">       WHERE id BETWEEN n AND m</span><br><span class="line">       ORDER BY c;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  -- The workload read only workload</span><br><span class="line">  PROCEDURE oltp_read_only (</span><br><span class="line">    v_id      IN  PLS_INTEGER,</span><br><span class="line">    v_n       IN  PLS_INTEGER,</span><br><span class="line">    v_m       IN  PLS_INTEGER,</span><br><span class="line">    errCode   OUT PLS_INTEGER,</span><br><span class="line">    errText   OUT VARCHAR2) IS</span><br><span class="line"></span><br><span class="line">    -- Store the result of the column &apos;c&apos;</span><br><span class="line">    cValue  char(120);</span><br><span class="line"></span><br><span class="line">    -- Store the sum of the rows in (n..m)</span><br><span class="line">    sumK    number(38,0);</span><br><span class="line"></span><br><span class="line">  BEGIN</span><br><span class="line"></span><br><span class="line">    errCode := 0;</span><br><span class="line">    errtext := &apos;OK&apos;;</span><br><span class="line"></span><br><span class="line">    -- oltp point query</span><br><span class="line">    FOR i in 1 .. 10 LOOP</span><br><span class="line"></span><br><span class="line">      -- DBMS_OUTPUT.PUT_LINE(&apos;oltp point query&apos;);</span><br><span class="line">      SELECT c INTO cValue FROM sbtest WHERE id = v_id;</span><br><span class="line">      -- DBMS_OUTPUT.PUT_LINE(&apos;c = &apos; || cValue);</span><br><span class="line"></span><br><span class="line">    END LOOP;</span><br><span class="line"></span><br><span class="line">    -- oltp range query (using a cursor for loop)</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;oltp range query&apos;);</span><br><span class="line">    FOR range_rows IN range_query(v_n, v_m)</span><br><span class="line">    LOOP</span><br><span class="line">--      DBMS_OUTPUT.PUT_LINE(range_query%ROWCOUNT || &apos; c = &apos; || range_rows.c);</span><br><span class="line">      null;</span><br><span class="line">    END LOOP;</span><br><span class="line"></span><br><span class="line">    -- olpt range SUM() query</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;oltp range SUM() query&apos;);</span><br><span class="line">    SELECT sum(k) INTO sumK FROM sbtest WHERE id BETWEEN v_n AND v_m;</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;sumK = &apos; || sumK);</span><br><span class="line"></span><br><span class="line">    -- oltp range ORDER BY query (using explicit fetches)</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;oltp range ORDER BY query&apos;);</span><br><span class="line">    OPEN range_order_query(v_n, v_m);</span><br><span class="line">    LOOP</span><br><span class="line">      FETCH range_order_query INTO cValue;</span><br><span class="line">      EXIT WHEN range_order_query%NOTFOUND;</span><br><span class="line">--      DBMS_OUTPUT.PUT_LINE(&apos;c = &apos; || cValue);</span><br><span class="line">    END LOOP;</span><br><span class="line">    CLOSE range_order_query;</span><br><span class="line"></span><br><span class="line">    -- oltp range DISTINCT query</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;oltp range DISTINCT query&apos;);</span><br><span class="line">    OPEN range_distinct_query(v_n, v_m);</span><br><span class="line">    LOOP</span><br><span class="line">      FETCH range_distinct_query INTO cValue;</span><br><span class="line">      EXIT WHEN range_distinct_query%NOTFOUND;</span><br><span class="line">--      DBMS_OUTPUT.PUT_LINE(&apos;c = &apos; || cValue);</span><br><span class="line">    END LOOP;</span><br><span class="line">    CLOSE range_distinct_query;</span><br><span class="line"></span><br><span class="line">  EXCEPTION</span><br><span class="line"></span><br><span class="line">    WHEN NO_DATA_FOUND THEN</span><br><span class="line"></span><br><span class="line">      errCode  := 0;</span><br><span class="line">      errText  := &apos;OK&apos;;</span><br><span class="line"></span><br><span class="line">    WHEN OTHERS THEN</span><br><span class="line"></span><br><span class="line">      errCode  := SQLCODE;</span><br><span class="line">      errText  := SUBSTR(SQLERRM, 1, 200);</span><br><span class="line"></span><br><span class="line">  END oltp_read_only;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  -- The workload read + write workload</span><br><span class="line">  PROCEDURE oltp_read_write (</span><br><span class="line">    v_id      IN  PLS_INTEGER,</span><br><span class="line">    v_n       IN  PLS_INTEGER,</span><br><span class="line">    v_m       IN  PLS_INTEGER,</span><br><span class="line">    v_c       IN  CHAR,</span><br><span class="line">    v_p       IN  VARCHAR2,</span><br><span class="line">    errCode   OUT PLS_INTEGER,</span><br><span class="line">    errText   OUT VARCHAR2) IS</span><br><span class="line"></span><br><span class="line">    -- Store the result of the column &apos;c&apos;</span><br><span class="line">    cValue  char(120);</span><br><span class="line"></span><br><span class="line">    -- Store the sum of the rows in (n..m)</span><br><span class="line">    sumK    number(38,0);</span><br><span class="line"></span><br><span class="line">  BEGIN</span><br><span class="line"></span><br><span class="line">    errCode := 0;</span><br><span class="line">    errtext := &apos;OK&apos;;</span><br><span class="line"></span><br><span class="line">    -- oltp point query</span><br><span class="line">    FOR i in 1 .. 10 LOOP</span><br><span class="line"></span><br><span class="line">      -- DBMS_OUTPUT.PUT_LINE(&apos;oltp point query&apos;);</span><br><span class="line">      SELECT c INTO cValue FROM sbtest WHERE id = v_id;</span><br><span class="line">      -- DBMS_OUTPUT.PUT_LINE(&apos;c = &apos; || cValue);</span><br><span class="line"></span><br><span class="line">    END LOOP;</span><br><span class="line"></span><br><span class="line">    -- oltp range query (using a cursor for loop)</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;oltp range query&apos;);</span><br><span class="line">    FOR range_rows IN range_query(v_n, v_m)</span><br><span class="line">    LOOP</span><br><span class="line">--      DBMS_OUTPUT.PUT_LINE(range_query%ROWCOUNT || &apos; c = &apos; || range_rows.c);</span><br><span class="line">      null;</span><br><span class="line">    END LOOP;</span><br><span class="line"></span><br><span class="line">    -- olpt range SUM() query</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;oltp range SUM() query&apos;);</span><br><span class="line">    SELECT sum(k) INTO sumK FROM sbtest WHERE id BETWEEN v_n AND v_m;</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;sumK = &apos; || sumK);</span><br><span class="line"></span><br><span class="line">    -- oltp range ORDER BY query (using explict fetches)</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;oltp range ORDER BY query&apos;);</span><br><span class="line">    OPEN range_order_query(v_n, v_m);</span><br><span class="line">    LOOP</span><br><span class="line">      FETCH range_order_query INTO cValue;</span><br><span class="line">      EXIT WHEN range_order_query%NOTFOUND;</span><br><span class="line">--      DBMS_OUTPUT.PUT_LINE(&apos;c = &apos; || cValue);</span><br><span class="line">    END LOOP;</span><br><span class="line">    CLOSE range_order_query;</span><br><span class="line"></span><br><span class="line">    -- oltp range DISTINCT query</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;oltp range DISTINCT query&apos;);</span><br><span class="line">    OPEN range_distinct_query(v_n, v_m);</span><br><span class="line">    LOOP</span><br><span class="line">      FETCH range_distinct_query INTO cValue;</span><br><span class="line">      EXIT WHEN range_distinct_query%NOTFOUND;</span><br><span class="line">--      DBMS_OUTPUT.PUT_LINE(&apos;c = &apos; || cValue);</span><br><span class="line">    END LOOP;</span><br><span class="line">    CLOSE range_distinct_query;</span><br><span class="line"></span><br><span class="line">    -- oltp UPDATES on index column</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;oltp UPDATES on index column&apos;);</span><br><span class="line">    UPDATE sbtest </span><br><span class="line">      SET k = k + 1 </span><br><span class="line">      WHERE id = v_n;</span><br><span class="line"></span><br><span class="line">    -- oltp UPDATES on non-index column</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;oltp UPDATES on non-index column&apos;);</span><br><span class="line">    UPDATE sbtest </span><br><span class="line">      SET c =  v_n</span><br><span class="line">      WHERE id = v_m; </span><br><span class="line"></span><br><span class="line">    -- oltp DELETE query</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;oltp DELETE query&apos;);</span><br><span class="line">    DELETE FROM sbtest </span><br><span class="line">      WHERE id = v_n;</span><br><span class="line"></span><br><span class="line">    -- oltp INSERT query</span><br><span class="line">--    DBMS_OUTPUT.PUT_LINE(&apos;oltp INSERT query&apos;);</span><br><span class="line">    INSERT INTO sbtest (id, k, c, pad)</span><br><span class="line">      VALUES (v_n, v_m, v_c, v_p);  </span><br><span class="line"></span><br><span class="line">    -- Commit the changes</span><br><span class="line">    COMMIT;</span><br><span class="line"></span><br><span class="line">  EXCEPTION</span><br><span class="line"></span><br><span class="line">    WHEN NO_DATA_FOUND THEN</span><br><span class="line"></span><br><span class="line">      errCode  := 0;</span><br><span class="line">      errText  := &apos;OK&apos;;</span><br><span class="line"></span><br><span class="line">    WHEN OTHERS THEN</span><br><span class="line"></span><br><span class="line">      errCode  := SQLCODE;</span><br><span class="line">      errText  := SUBSTR(SQLERRM, 1, 200);</span><br><span class="line"></span><br><span class="line">  END oltp_read_write;</span><br><span class="line"></span><br><span class="line">BEGIN  -- package initialization goes here</span><br><span class="line"></span><br><span class="line">  -- Run the procedures once to initialize everything</span><br><span class="line">  oltp_read_only(1, 1, 10, theErrCode, theErrText );</span><br><span class="line">  oltp_read_write(1, 1, 10, &apos;abc&apos;, &apos;def&apos;, theErrCode, theErrText );</span><br><span class="line"></span><br><span class="line">  DBMS_OUTPUT.PUT_LINE(&apos;Initialized the workload package&apos;);</span><br><span class="line">END workload;</span><br><span class="line">/</span><br></pre></td></tr></table></figure>
+<p><code>4_call_workload.sql:</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line">set serveroutput on;</span><br><span class="line"></span><br><span class="line">declare</span><br><span class="line">  counter    PLS_INTEGER;</span><br><span class="line">  errCode    PLS_INTEGER;</span><br><span class="line">  errtext    VARCHAR2(256);</span><br><span class="line">  line1      VARCHAR2(256);</span><br><span class="line">  line2      VARCHAR2(256);</span><br><span class="line">  someText   sbtest.c%TYPE;</span><br><span class="line">  moreText   VARCHAR2(256);</span><br><span class="line">  i          PLS_INTEGER;</span><br><span class="line">  iterations PLS_INTEGER;</span><br><span class="line">  startTime  NUMBER;</span><br><span class="line">  endTime    NUMBER;</span><br><span class="line">  duration   NUMBER;</span><br><span class="line">begin</span><br><span class="line"></span><br><span class="line">  -- Initialize the someText string</span><br><span class="line">  line1 := &apos;The quick brown foxy did da jumping thing over that lazy doggy. &apos;;</span><br><span class="line">  line2 := &apos;Question three, who was scott and who or what was tiger?&apos;;</span><br><span class="line">  someText := line1 || line2;</span><br><span class="line">  moreText := &apos;&apos;;</span><br><span class="line"> </span><br><span class="line">  -- Initialize the moreText string</span><br><span class="line">  FOR i in 1 .. 60 LOOP</span><br><span class="line">    moreText := moreText || &apos;a&apos;;</span><br><span class="line">  END LOOP;</span><br><span class="line">  </span><br><span class="line">  -- Get the start time in centi-seconds</span><br><span class="line">  startTime := DBMS_UTILITY.GET_TIME();</span><br><span class="line"></span><br><span class="line">  iterations := 10000;</span><br><span class="line">  for counter in 1 .. iterations LOOP</span><br><span class="line">    workload.oltp_read_only(1, 1, 1100, errCode, errtext);</span><br><span class="line">    if errCode != 0 then</span><br><span class="line">      exit;</span><br><span class="line">    end if;</span><br><span class="line">  end loop;</span><br><span class="line"></span><br><span class="line">  -- Get the end time in centi-seconds</span><br><span class="line">  endTime := DBMS_UTILITY.GET_TIME();</span><br><span class="line">  if errCode !=0 then </span><br><span class="line">    dbms_output.put_line(&apos;  &apos;);</span><br><span class="line">    dbms_output.put_line(&apos;Error code = &apos; || errCode || &apos; Error Text = &apos; || errtext);</span><br><span class="line">  end if;</span><br><span class="line">  duration := endTime - startTime;</span><br><span class="line">  IF duration &gt; 0 THEN</span><br><span class="line">    dbms_output.put_line(&apos;  &apos;);</span><br><span class="line">    dbms_output.put_line(&apos;Called workload.oltp_read_only  &apos; || iterations || &apos; times. TPS = &apos; || trunc(iterations / duration * 100, 1) );</span><br><span class="line">  ELSE</span><br><span class="line">    dbms_output.put_line(&apos;Could not get valid timing info&apos;);</span><br><span class="line">  END IF;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  iterations := 10000;</span><br><span class="line">  for counter in 1 .. iterations LOOP</span><br><span class="line">    workload.oltp_read_write(1, 1, 1100, someText, moreText, errCode, errtext);</span><br><span class="line">    if errCode != 0 then</span><br><span class="line">      exit;</span><br><span class="line">    end if;</span><br><span class="line">  end loop;</span><br><span class="line"></span><br><span class="line">  -- Get the end time in centi-seconds</span><br><span class="line">  endTime := DBMS_UTILITY.GET_TIME();</span><br><span class="line"></span><br><span class="line">  if errCode !=0 then </span><br><span class="line">    dbms_output.put_line(&apos;  &apos;);</span><br><span class="line">    dbms_output.put_line(&apos;Error code = &apos; || errCode || &apos; Error Text = &apos; || errtext);</span><br><span class="line">  end if;</span><br><span class="line"></span><br><span class="line">  duration := endTime - startTime;</span><br><span class="line">  IF duration &gt; 0 THEN</span><br><span class="line">    dbms_output.put_line(&apos;Called workload.oltp_read_write &apos; || iterations || &apos; times. TPS = &apos; || trunc(iterations / duration * 100, 1) );</span><br><span class="line">  ELSE</span><br><span class="line">    dbms_output.put_line(&apos;Could not get valid timing info&apos;);</span><br><span class="line">  END IF;</span><br><span class="line">end;</span><br><span class="line">/</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/09/02/TimesTen内存数据库课程笔记/">TimesTen内存数据库课程笔记（更新中）</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Rui</a></p>
+        <p><span>发布时间:</span>2018-09-02, 20:59:50</p>
+        <p><span>最后更新:</span>2018-11-06, 21:19:33</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/09/02/TimesTen内存数据库课程笔记/" title="TimesTen内存数据库课程笔记（更新中）">http://blog.guitoubing.top/2018/09/02/TimesTen内存数据库课程笔记/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.guitoubing.top/2018/09/02/TimesTen内存数据库课程笔记/　　作者: Rui" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/10/28/JavaFX-学习小记/">
+                    JavaFX 学习小记
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/09/01/软件工程课程笔记/">
+                    软件工程课程笔记（更新中）
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#内存计算与内存数据库"><span class="toc-number">1.</span> <span class="toc-text">内存计算与内存数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#第零章"><span class="toc-number">1.1.</span> <span class="toc-text">第零章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Timesten操作小记"><span class="toc-number">1.2.</span> <span class="toc-text">Timesten操作小记</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#平台"><span class="toc-number">1.2.1.</span> <span class="toc-text">平台</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建DSN（Data-Source-Name）"><span class="toc-number">1.2.2.</span> <span class="toc-text">创建DSN（Data Source Name）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#打开数据库配置文件-通常称为系统ODBC-INI配置文件"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">打开数据库配置文件(通常称为系统ODBC.INI配置文件)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#在数据库DSN列表中添加需要新建的数据库名称"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">在数据库DSN列表中添加需要新建的数据库名称</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#为2中创建的数据库添加配置，日志文件与检查点文件应存储在不同磁盘中"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">为2中创建的数据库添加配置，日志文件与检查点文件应存储在不同磁盘中</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#保存配置文件并关闭"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">保存配置文件并关闭</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库服务器基本命令"><span class="toc-number">1.2.3.</span> <span class="toc-text">数据库服务器基本命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#查看服务器状态"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">查看服务器状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#启动-停止数据库"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">启动/停止数据库</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建TimesTen内存数据库"><span class="toc-number">1.2.4.</span> <span class="toc-text">创建TimesTen内存数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#连接到特定DSN，创建内存数据库"><span class="toc-number">1.2.4.1.</span> <span class="toc-text">连接到特定DSN，创建内存数据库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查看内存数据库的内存分配及容量"><span class="toc-number">1.2.4.2.</span> <span class="toc-text">查看内存数据库的内存分配及容量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用Host命令可以调用操作系统级别的指令"><span class="toc-number">1.2.4.3.</span> <span class="toc-text">使用Host命令可以调用操作系统级别的指令</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改RAM策略"><span class="toc-number">1.2.5.</span> <span class="toc-text">修改RAM策略</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#查看当前RAM策略"><span class="toc-number">1.2.5.1.</span> <span class="toc-text">查看当前RAM策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#修改RAM策略为手动模式（Manual）"><span class="toc-number">1.2.5.2.</span> <span class="toc-text">修改RAM策略为手动模式（Manual）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#向内存中装载数据"><span class="toc-number">1.2.5.3.</span> <span class="toc-text">向内存中装载数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#从内存中卸载数据"><span class="toc-number">1.2.5.4.</span> <span class="toc-text">从内存中卸载数据</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#日志和检查点"><span class="toc-number">1.2.6.</span> <span class="toc-text">日志和检查点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#查看日志文件，提交之前会预写日志"><span class="toc-number">1.2.6.1.</span> <span class="toc-text">查看日志文件，提交之前会预写日志</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查看检查点"><span class="toc-number">1.2.6.2.</span> <span class="toc-text">查看检查点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#手动更新检查点文件"><span class="toc-number">1.2.6.3.</span> <span class="toc-text">手动更新检查点文件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ttisql基本命令——用户操作"><span class="toc-number">1.2.7.</span> <span class="toc-text">ttisql基本命令——用户操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#创建用户，可在表sys-all-users中查找所有的用户信息"><span class="toc-number">1.2.7.1.</span> <span class="toc-text">创建用户，可在表sys.all_users中查找所有的用户信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#给用户分配权限"><span class="toc-number">1.2.7.2.</span> <span class="toc-text">给用户分配权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查看当前数据库系统内用户权限"><span class="toc-number">1.2.7.3.</span> <span class="toc-text">查看当前数据库系统内用户权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#撤回用户权限"><span class="toc-number">1.2.7.4.</span> <span class="toc-text">撤回用户权限</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ttisql基本命令——数据库对象操作"><span class="toc-number">1.2.8.</span> <span class="toc-text">ttisql基本命令——数据库对象操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#关闭自动提交"><span class="toc-number">1.2.8.1.</span> <span class="toc-text">关闭自动提交</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#建表、插入数据"><span class="toc-number">1.2.8.2.</span> <span class="toc-text">建表、插入数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#一些命令总结"><span class="toc-number">1.2.8.3.</span> <span class="toc-text">一些命令总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PLSQL编程"><span class="toc-number">1.2.9.</span> <span class="toc-text">PLSQL编程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#创建plsqldb、pls用户、运行sql脚本"><span class="toc-number">1.2.9.1.</span> <span class="toc-text">创建plsqldb、pls用户、运行sql脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用sql-developer连接TimesTen和Oracle"><span class="toc-number">1.2.9.2.</span> <span class="toc-text">使用sql developer连接TimesTen和Oracle</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#plsql语法"><span class="toc-number">1.2.9.3.</span> <span class="toc-text">plsql语法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#What-Is-a-PL-SQL-Package"><span class="toc-number">1.3.</span> <span class="toc-text">What Is a PL/SQL Package?</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"TimesTen内存数据库课程笔记（更新中）　| Archer　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+        <div class="addthis_sharing_toolbox"></div>
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'http://blog.guitoubing.top/2018/09/02/TimesTen内存数据库课程笔记/';
+            this.page.identifier = '2018/09/02/TimesTen内存数据库课程笔记/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//guitoubing-top.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/10/28/JavaFX-学习小记/" title="上一篇: JavaFX 学习小记">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/09/01/软件工程课程笔记/" title="下一篇: 软件工程课程笔记（更新中）">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/11/12/使用Docker安装Oracle-12c/">感谢Docker,让我远离环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/06/记一次Win10-Fedora双系统的小折腾/">记一次Win10+Fedora双系统的小折腾</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/JavaFX-学习小记/">JavaFX 学习小记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/TimesTen内存数据库课程笔记/">TimesTen内存数据库课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/软件工程课程笔记/">软件工程课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/计算机网络课程笔记/">计算机网络课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/26/Dotnet/">dotnet基本配置及EFCore连接Mysql</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/26/2017-10-14/">我们梦中见</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2017-2018 Rui
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+    <script src="/js/GithubRepoWidget.js"></script>
+
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-108090005-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+             github: ".github-widget a", 
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*)" + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

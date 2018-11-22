@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Rui" />
+
+
+
+<meta name="description" content="软件工程第一章第二章 软件工程 定义软件工程的框架(Framework)  软件工程的定义 软件工程是：（1）将系统化的(systematic)、规范的(disciplined)、可量化(quantifiable)的方法应用于软件的开发(development)、运行(operation)和维护(maintenance). （2）对（1）中所述方法(approaches)的研究.">
+<meta name="keywords" content="大三上笔记,软件工程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软件工程课程笔记（更新中）">
+<meta property="og:url" content="http://blog.guitoubing.top/2018/09/01/软件工程课程笔记/index.html">
+<meta property="og:site_name" content="Archer">
+<meta property="og:description" content="软件工程第一章第二章 软件工程 定义软件工程的框架(Framework)  软件工程的定义 软件工程是：（1）将系统化的(systematic)、规范的(disciplined)、可量化(quantifiable)的方法应用于软件的开发(development)、运行(operation)和维护(maintenance). （2）对（1）中所述方法(approaches)的研究.">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://blog.guitoubing.top/img/软件过程框架.png">
+<meta property="og:image" content="http://blog.guitoubing.top/img/006tNbRwly1fwdiojeitsj31eu1444it.jpg">
+<meta property="og:image" content="http://blog.guitoubing.top/img/006tNbRwly1fwdiyk83baj31ig114aw6.jpg">
+<meta property="og:updated_time" content="2018-11-06T13:19:33.866Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="软件工程课程笔记（更新中）">
+<meta name="twitter:description" content="软件工程第一章第二章 软件工程 定义软件工程的框架(Framework)  软件工程的定义 软件工程是：（1）将系统化的(systematic)、规范的(disciplined)、可量化(quantifiable)的方法应用于软件的开发(development)、运行(operation)和维护(maintenance). （2）对（1）中所述方法(approaches)的研究.">
+<meta name="twitter:image" content="http://blog.guitoubing.top/img/软件过程框架.png">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Archer" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/bitbug_favicon.icon">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>软件工程课程笔记（更新中） | Archer</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5be07d0c47d59d32"></script>
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Rui</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:1063932362@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/guitoubing" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/RuiTan" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa Coding" href="https://coding.net/u/RuiTan" title="Coding"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dotnet/">Dotnet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaFX/">JavaFX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java源码学习之旅/">Java源码学习之旅</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Oracle/">Oracle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TimesTen/">TimesTen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Win10/">Win10</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存数据库/">内存数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/双系统/">双系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大三上笔记/">大三上笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/引导修复/">引导修复</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机网络/">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/软件工程/">软件工程</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://dinghow.site">Dinghow</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://donggu.me">Donggu</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://github.com/RuiTan">GitHub</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">兵痞</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Rui</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Rui</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:1063932362@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/guitoubing" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/RuiTan" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa Coding" target="_blank" href="https://coding.net/u/RuiTan" title="Coding"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-软件工程课程笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/09/01/软件工程课程笔记/" class="article-date">
+      <time datetime="2018-09-01T13:22:10.000Z" itemprop="datePublished">2018-09-01</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      软件工程课程笔记（更新中）
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/archives/">archives</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大三上笔记/">大三上笔记</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/软件工程/">软件工程</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="软件工程"><a href="#软件工程" class="headerlink" title="软件工程"></a>软件工程</h1><h2 id="第一章"><a href="#第一章" class="headerlink" title="第一章"></a>第一章</h2><h2 id="第二章-软件工程"><a href="#第二章-软件工程" class="headerlink" title="第二章 软件工程"></a>第二章 软件工程</h2><blockquote>
+<p>定义软件工程的<strong><u>框架(Framework)</u></strong></p>
+</blockquote>
+<h3 id="软件工程的定义"><a href="#软件工程的定义" class="headerlink" title="软件工程的定义"></a>软件工程的定义</h3><blockquote>
+<h5 id="软件工程是："><a href="#软件工程是：" class="headerlink" title="软件工程是："></a>软件工程是：</h5><p>（1）将<strong><u>系统化的(systematic)</u></strong>、<strong><u>规范的(disciplined)</u></strong>、<strong><u>可量化(quantifiable)</u></strong>的方法应用于软件的<u><strong>开发(development)</strong></u>、<u><strong>运行(operation)</strong></u>和<u><strong>维护(maintenance)</strong></u>.</p>
+<p>（2）对（1）中所述<strong><u>方法(approaches)</u></strong>的研究.</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="软件工程层次图"><a href="#软件工程层次图" class="headerlink" title="软件工程层次图"></a>软件工程层次图</h3><blockquote>
+<p>工具-方法-过程-质量关注点</p>
+<p><img src="" alt="软件工程层次图"></p>
+</blockquote>
+<h4 id="软件过程"><a href="#软件过程" class="headerlink" title="软件过程"></a>软件过程</h4><ul>
+<li>软件过程的定义</li>
+</ul>
+<blockquote>
+<p>软件过程是工作产品构建时所执行的一系列活动、动作和任务的集合，一个<strong><u>活动(activity)</u></strong>包含多个<u><strong>动作(action)</strong></u>，一个动作包含多个<u><strong>任务(task)</strong></u>.</p>
+</blockquote>
+<h4 id="过程框架"><a href="#过程框架" class="headerlink" title="过程框架"></a>过程框架</h4><ul>
+<li><span id="GPF">最经典的过程框架：</span></li>
+</ul>
+<p>需求调研(RE)→需求分析建模(Require Analysis Model)→概要设计(Architecture Design)→详细设计(CLD)→编码(Coding)→单元测试(Unit testing)→整合测试(Integrating testing)→系统测试(System testing)→交付或发布(Delivery or Release)</p>
+<ul>
+<li>通用的过程框架：</li>
+</ul>
+<p>沟通(Communication)→策划(Planning)→建模(Modeling)→构建(Construction)→部署(Deployment)</p>
+<blockquote>
+<p><strong><u>沟通</u></strong>包含需求调研；</p>
+<p><u><strong>策划</strong></u>是一个<strong><u>普适性活动</u></strong>或者庇护维活动或质量控制维活动(Umbrella activity)，与开发维(devolope demention)或框架活动(framework)不重合</p>
+<p><strong><u>建模</u></strong>包含需求分析建模、概要设计、详细设计</p>
+<p><strong><u>构建</u></strong>包含编码、单元测试、整合测试、系统测试</p>
+<p><strong><u>部署</u></strong>包含发布</p>
+</blockquote>
+<ul>
+<li>milestone</li>
+</ul>
+<blockquote>
+<p>milestone是项目管理中用于标记项目时间轴上特定点的工具，用于某一过程活动完成的标志，以使工程能够成功过渡到下一阶段。</p>
+</blockquote>
+<h4 id="普适性活动"><a href="#普适性活动" class="headerlink" title="普适性活动"></a>普适性活动</h4><p>包含：</p>
+<ul>
+<li>软件项目跟踪和控制(Software project tracking and control，以Planning为基础)</li>
+<li>风险管理(Risk management)</li>
+</ul>
+<blockquote>
+<ol>
+<li>首先进行<strong><u>风险识别</u></strong>，得到初始识别的风险表(risk list)，利用以下公式将风险按照RE从高到低排序列出。 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; risk exposure(RE，风险曝光度) = impact(影响度) * productivity(影响比例)</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="2">
+<li>制定风险缓解计划(risk mitigation planning)</li>
+<li><p>风险跟踪(risk tranking)：</p>
+<ul>
+<li>可能风险缓解</li>
+<li>可能风险真的发生，要有对应的风险处理对策</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<ul>
+<li>软件质量保证(Software quality assurance)</li>
+</ul>
+<blockquote>
+<p>例子：SQA，GitHub的bug检查合并</p>
+</blockquote>
+<ul>
+<li>技术评审(Technical review)</li>
+</ul>
+<blockquote>
+<p>按照代码逻辑或者代码行进行评审、检查</p>
+</blockquote>
+<ul>
+<li>测量(Measurement)</li>
+</ul>
+<blockquote>
+<p>定量化，</p>
+</blockquote>
+<ul>
+<li>软件配置管理(Software configuration management)</li>
+</ul>
+<blockquote>
+<p>在整个软件过程中管理变更所带来的影响</p>
+</blockquote>
+<ul>
+<li>可复用管理(Reusability management)</li>
+<li>工作产品的准备和生产(Work product preparation and production)</li>
+</ul>
+<blockquote>
+<p>工作分解结构(WBS)：</p>
+<p>​    工作分解结构（简称WBS）跟因数分解是一个原理，就是把一个项目，按一定的原则分解，项目分解成任务，任务再分解成一项项工作，再把一项项工作分配到每个人的日常活动中，直到分解不下去为止。即：项目→任务→工作→日常活动。工作分解结构以<a href="https://baike.baidu.com/item/%E5%8F%AF%E4%BA%A4%E4%BB%98%E6%88%90%E6%9E%9C/6780498" target="_blank" rel="noopener">可交付成果</a>为导向，对项目要素进行的分组，它归纳和定义了项目的整个工作范围，每下降一层代表对项目工作的更详细定义。WBS总是处于计划过程的中心，也是制定<a href="https://baike.baidu.com/item/%E8%BF%9B%E5%BA%A6%E8%AE%A1%E5%88%92/4805982" target="_blank" rel="noopener">进度计划</a>、资源需求、成本预算、风险管理计划和采购计划等的重要基础。——百度百科</p>
+</blockquote>
+<h4 id="过程的适应性调整"><a href="#过程的适应性调整" class="headerlink" title="过程的适应性调整"></a>过程的适应性调整</h4><blockquote>
+<p>软件工程过程并不是教条的规则，也不要求软件团队机械地执行，而应该是灵活可适应的（根据软件所需解决的问题、项目特点、开发团队和组织文化等进行适应性调整）。</p>
+</blockquote>
+<h3 id="软件工程实践"><a href="#软件工程实践" class="headerlink" title="软件工程实践"></a>软件工程实践</h3><blockquote>
+<p>具体实施通用框架活动的过程就是软件实践。</p>
+</blockquote>
+<h4 id="实践的精髓"><a href="#实践的精髓" class="headerlink" title="实践的精髓"></a>实践的精髓</h4><ul>
+<li><p>理解问题（沟通和分析）—— Understand the problem (communication and analysis)</p>
+</li>
+<li><p>策划解决方案（建模和软件设计）—— Plan a solution (modeling and software design)</p>
+<blockquote>
+<p>包含概要设计建模和分析设计建模，最重要的是概要设计建模（体系结构、数据库设计、接口设计）</p>
+</blockquote>
+</li>
+<li><p>实施计划（代码生成）—— Carry out the plan (code generation)</p>
+<blockquote>
+<p>就是写代码</p>
+</blockquote>
+</li>
+<li><p>检查结果的正确性（测试和质量保证）—— Examine the result for accuracy (tesing and quality assurance)</p>
+<blockquote>
+<p>通过设计足够的测试来发现尽可能多的错误</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="通用原则"><a href="#通用原则" class="headerlink" title="通用原则"></a>通用原则</h4><ul>
+<li>存在价值（The reason it all exists）</li>
+<li>保持简洁（KISS, Keep it simple, stupid）</li>
+<li>保持愿景（Maintain the Vision）</li>
+<li>关注使用者（What You Produce， Others Will Consume）</li>
+<li>面向未来（Be Open To The Future）</li>
+<li>提前计划复用（Plan Ahead for Reuse）</li>
+<li>认真思考（Think！）</li>
+</ul>
+<h3 id="软件开发神话"><a href="#软件开发神话" class="headerlink" title="软件开发神话"></a>软件开发神话</h3><h3 id="Exercise-找到Tools"><a href="#Exercise-找到Tools" class="headerlink" title="Exercise: 找到Tools"></a>Exercise: 找到Tools</h3><h2 id="第三章-软件过程结构"><a href="#第三章-软件过程结构" class="headerlink" title="第三章 软件过程结构"></a>第三章 软件过程结构</h2><h3 id="通用过程模型"><a href="#通用过程模型" class="headerlink" title="通用过程模型"></a>通用过程模型</h3><p><img src="/img/软件过程框架.png" alt="软件过程框架"></p>
+<h3 id="过程流"><a href="#过程流" class="headerlink" title="过程流"></a>过程流</h3><ul>
+<li><p>线性过程流</p>
+<blockquote>
+</blockquote>
+</li>
+<li><p>迭代过程流</p>
+</li>
+<li><p>演化过程流</p>
+</li>
+<li><p>并行过程流</p>
+</li>
+</ul>
+<h3 id="定义框架活动"><a href="#定义框架活动" class="headerlink" title="定义框架活动"></a>定义框架活动</h3><h3 id="过程模式"><a href="#过程模式" class="headerlink" title="过程模式"></a>过程模式</h3><h2 id="第四章-过程模型（Process-Models）"><a href="#第四章-过程模型（Process-Models）" class="headerlink" title="第四章 过程模型（Process Models）"></a>第四章 过程模型（Process Models）</h2><h3 id="传统（惯用）过程模型（Prescriptive-Process-Models）"><a href="#传统（惯用）过程模型（Prescriptive-Process-Models）" class="headerlink" title="传统（惯用）过程模型（Prescriptive Process Models）"></a>传统（惯用）过程模型（Prescriptive Process Models）</h3><h4 id="瀑布模型（Waterfall-Model）"><a href="#瀑布模型（Waterfall-Model）" class="headerlink" title="瀑布模型（Waterfall Model）"></a>瀑布模型（Waterfall Model）</h4><blockquote>
+<p>又称经典生命周期（Classic life cycle）</p>
+</blockquote>
+<blockquote>
+<p>瀑布模型可能会有<code>反复</code>的过程，但无<code>迭代</code>的过程，但<code>反复</code>会使得开发过程产生混乱。</p>
+</blockquote>
+<p>瀑布模型的变种：V模型（V-model），V模型拉直后与<a href="#GPF">Generic Process Framework</a>一致。</p>
+<p><img src="/img/006tNbRwly1fwdiojeitsj31eu1444it.jpg" alt="image-20181019142951342"></p>
+<p>箭头表示测试过程与设计过程的关系（相关性）</p>
+<h4 id="增量过程模型（Incremental-Process-Models）"><a href="#增量过程模型（Incremental-Process-Models）" class="headerlink" title="增量过程模型（Incremental Process Models）"></a>增量过程模型（Incremental Process Models）</h4><blockquote>
+<p>增量过程模型没有<code>迭代</code>过程，因为其开发过程没有<code>环</code></p>
+</blockquote>
+<p><img src="/img/006tNbRwly1fwdiyk83baj31ig114aw6.jpg" alt="image-20181019143931279"></p>
+<p>特点：</p>
+<ol>
+<li>每1个增量交叉并行</li>
+<li>每1个增量都是可以供用户直接使用的系统</li>
+<li>第1个增量往往包含主要的、核心的功能</li>
+</ol>
+<p>模型的选择：时间限制、资金限制、技术限制</p>
+<blockquote>
+<p>例如项目的99%的需求已经完善，项目需要6个月完成，若时间充足可使用<code>瀑布模型</code>，但若甲方所给时间比较少，则可先完成一部分主要的内容，先交付，后来的需求可在后面的增量中开发，这就是<code>增量模型</code>的一个例子。</p>
+</blockquote>
+<h4 id="演化过程模型（Evolutionary-Process-Model）"><a href="#演化过程模型（Evolutionary-Process-Model）" class="headerlink" title="演化过程模型（Evolutionary Process Model）"></a>演化过程模型（Evolutionary Process Model）</h4><blockquote>
+<p>演化模型是<code>迭代</code>的过程模型</p>
+</blockquote>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/09/01/软件工程课程笔记/">软件工程课程笔记（更新中）</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Rui</a></p>
+        <p><span>发布时间:</span>2018-09-01, 21:22:10</p>
+        <p><span>最后更新:</span>2018-11-06, 21:19:33</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/09/01/软件工程课程笔记/" title="软件工程课程笔记（更新中）">http://blog.guitoubing.top/2018/09/01/软件工程课程笔记/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.guitoubing.top/2018/09/01/软件工程课程笔记/　　作者: Rui" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/09/02/TimesTen内存数据库课程笔记/">
+                    TimesTen内存数据库课程笔记（更新中）
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/09/01/计算机网络课程笔记/">
+                    计算机网络课程笔记（更新中）
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#软件工程"><span class="toc-number">1.</span> <span class="toc-text">软件工程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#第一章"><span class="toc-number">1.1.</span> <span class="toc-text">第一章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第二章-软件工程"><span class="toc-number">1.2.</span> <span class="toc-text">第二章 软件工程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#软件工程的定义"><span class="toc-number">1.2.1.</span> <span class="toc-text">软件工程的定义</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#软件工程是："><span class="toc-number">1.2.1.0.1.</span> <span class="toc-text">软件工程是：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#软件工程层次图"><span class="toc-number">1.2.2.</span> <span class="toc-text">软件工程层次图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#软件过程"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">软件过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#过程框架"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">过程框架</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#普适性活动"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">普适性活动</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#过程的适应性调整"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">过程的适应性调整</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#软件工程实践"><span class="toc-number">1.2.3.</span> <span class="toc-text">软件工程实践</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#实践的精髓"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">实践的精髓</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#通用原则"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">通用原则</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#软件开发神话"><span class="toc-number">1.2.4.</span> <span class="toc-text">软件开发神话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exercise-找到Tools"><span class="toc-number">1.2.5.</span> <span class="toc-text">Exercise: 找到Tools</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第三章-软件过程结构"><span class="toc-number">1.3.</span> <span class="toc-text">第三章 软件过程结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通用过程模型"><span class="toc-number">1.3.1.</span> <span class="toc-text">通用过程模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#过程流"><span class="toc-number">1.3.2.</span> <span class="toc-text">过程流</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#定义框架活动"><span class="toc-number">1.3.3.</span> <span class="toc-text">定义框架活动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#过程模式"><span class="toc-number">1.3.4.</span> <span class="toc-text">过程模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第四章-过程模型（Process-Models）"><span class="toc-number">1.4.</span> <span class="toc-text">第四章 过程模型（Process Models）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#传统（惯用）过程模型（Prescriptive-Process-Models）"><span class="toc-number">1.4.1.</span> <span class="toc-text">传统（惯用）过程模型（Prescriptive Process Models）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#瀑布模型（Waterfall-Model）"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">瀑布模型（Waterfall Model）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#增量过程模型（Incremental-Process-Models）"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">增量过程模型（Incremental Process Models）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#演化过程模型（Evolutionary-Process-Model）"><span class="toc-number">1.4.1.3.</span> <span class="toc-text">演化过程模型（Evolutionary Process Model）</span></a></li></ol></li></ol></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"软件工程课程笔记（更新中）　| Archer　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+        <div class="addthis_sharing_toolbox"></div>
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'http://blog.guitoubing.top/2018/09/01/软件工程课程笔记/';
+            this.page.identifier = '2018/09/01/软件工程课程笔记/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//guitoubing-top.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/09/02/TimesTen内存数据库课程笔记/" title="上一篇: TimesTen内存数据库课程笔记（更新中）">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/09/01/计算机网络课程笔记/" title="下一篇: 计算机网络课程笔记（更新中）">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/11/12/使用Docker安装Oracle-12c/">感谢Docker,让我远离环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/06/记一次Win10-Fedora双系统的小折腾/">记一次Win10+Fedora双系统的小折腾</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/JavaFX-学习小记/">JavaFX 学习小记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/TimesTen内存数据库课程笔记/">TimesTen内存数据库课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/软件工程课程笔记/">软件工程课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/计算机网络课程笔记/">计算机网络课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/26/Dotnet/">dotnet基本配置及EFCore连接Mysql</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/26/2017-10-14/">我们梦中见</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2017-2018 Rui
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+    <script src="/js/GithubRepoWidget.js"></script>
+
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-108090005-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+             github: ".github-widget a", 
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*)" + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
