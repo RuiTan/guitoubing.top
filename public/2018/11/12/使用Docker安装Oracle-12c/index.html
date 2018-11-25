@@ -23,7 +23,7 @@
 <meta property="og:site_name" content="Archer">
 <meta property="og:description" content="Why Docker自开始用Oracle以来，环境配置一直是让我掉头发的事。而如今也只是在Windows上的安装界面点点点成功安装了Oracle，Linux上就从来没成功过，Mac的话Oracle 11g后好像就没Mac版的了，就很头疼。 这学期上了门内存数据库，老师给了个镜像，RedHat+Oracle+TimesTen究极体镜像，扔到VirtualBox上打开直接登录用户名密码，无需安装组件，">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-11-12T16:16:01.078Z">
+<meta property="og:updated_time" content="2018-11-25T14:17:59.444Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="感谢Docker,让我远离环境配置">
 <meta name="twitter:description" content="Why Docker自开始用Oracle以来，环境配置一直是让我掉头发的事。而如今也只是在Windows上的安装界面点点点成功安装了Oracle，Linux上就从来没成功过，Mac的话Oracle 11g后好像就没Mac版的了，就很头疼。 这学期上了门内存数据库，老师给了个镜像，RedHat+Oracle+TimesTen究极体镜像，扔到VirtualBox上打开直接登录用户名密码，无需安装组件，">
@@ -333,14 +333,15 @@
 <blockquote>
 <p>正常情况下，第一次创建容器应称之为<code>初始化</code>，而以后创建的容器都应基于上次的历史数据，称作<code>容器的数据持久化</code>，在上述命令中<code>-v</code>后的<code>:</code>之前是当前系统想要存储持久性数据的路径，用户想要共享到容器中的文件也可放入其中，<code>:</code>后面是在容器中想要访问<code>当前系统的共享文件</code>的路径。</p>
 <p>因此在初始化完成后，若仍然使用上述命令，会提示数据库未初始化，从而会重新创建持久性数据文件；因此以后的容器创建应该使用以下命令^1^：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> sudo docker run -it -v /Users/tanrui/Oracle/oradata:/u01/app/oracle sath89/oracle-12c</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
 </blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker run -it -p 8080:8080 -p 1521:1521 -v /Users/tanrui/Oracle/oradata:/u01/app/oracle sath89/oracle-12c</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>至于上述的重复初始化是会造成文件覆盖还是文件并存我没有尝试过，猜测应该会是覆盖。</p>
 <p>同时，重复执行命令^1^时，还会产生端口冲突。因此如果想创建两个Oracle容器应该执行初始化命令，执行时将持久化数据路径更改到其他地方且需将端口号修改掉。</p>
 </blockquote>
 <h5 id="进入容器"><a href="#进入容器" class="headerlink" title="进入容器"></a>进入容器</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 进入特定的容器，<span class="variable">$&#123;ContainerID&#125;</span>为上述查看到的容器ID</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> env LANG=C.UTF-8 表示当前容器使用支持中文的UTF-8格式(默认为POSIX，不支持中文)</span></span><br><span class="line">sudo docker exec -it $&#123;ContainerID&#125; env LANG=C.UTF-8 /bin/bash</span><br></pre></td></tr></table></figure>
 <h5 id="连接oracle数据库"><a href="#连接oracle数据库" class="headerlink" title="连接oracle数据库"></a>连接oracle数据库</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@1386ef844664:/<span class="comment"># su oracle</span></span><br><span class="line">oracle@1386ef844664:/$ <span class="built_in">cd</span> <span class="variable">$ORACLE_HOME</span></span><br><span class="line">oracle@1386ef844664:/u01/app/oracle/product/12.1.0/xe$ bin/sqlplus / as sysdba</span><br></pre></td></tr></table></figure>
+<h5 id="Oracle数据库设置字符集"><a href="#Oracle数据库设置字符集" class="headerlink" title="Oracle数据库设置字符集"></a>Oracle数据库设置字符集</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 查看数据库编码，结果最下面一行则是目前编码</span></span></span><br><span class="line"><span class="meta">SQL&gt;</span><span class="bash"> select * from nls_database_parameters <span class="built_in">where</span> parameter =<span class="string">'NLS_CHARACTERSET'</span>;   </span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 关闭数据库</span></span></span><br><span class="line"><span class="meta">SQL&gt;</span><span class="bash"> shutdown immediate;               </span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 启动到 mount状态，oracle分为4个状态，详情请百度</span></span></span><br><span class="line"><span class="meta">SQL&gt;</span><span class="bash"> startup mount;                    </span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 设置session ，下同</span></span></span><br><span class="line"><span class="meta">SQL&gt;</span><span class="bash"> ALTER SYSTEM ENABLE RESTRICTED SESSION;                        </span></span><br><span class="line"><span class="meta">SQL&gt;</span><span class="bash"> ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0;</span></span><br><span class="line"><span class="meta">SQL&gt;</span><span class="bash"> ALTER SYSTEM SET AQ_TM_PROCESSES=0;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 打开oracle到 open状态</span></span></span><br><span class="line"><span class="meta">SQL&gt;</span><span class="bash"> alter database open;                               </span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 修改编码为 ZHS16GBK</span></span></span><br><span class="line"><span class="meta">SQL&gt;</span><span class="bash"> ALTER DATABASE character <span class="built_in">set</span> INTERNAL_USE ZHS16GBK;                </span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 重启oracle ，先关闭，再启动</span></span></span><br><span class="line"><span class="meta">SQL&gt;</span><span class="bash"> shutdown immediate;                      </span></span><br><span class="line"><span class="meta">SQL&gt;</span><span class="bash"> startup;</span></span><br></pre></td></tr></table></figure>
 <h2 id="升华"><a href="#升华" class="headerlink" title="升华"></a>升华</h2><p>Docker真的好用！（俗</p>
 
       
@@ -353,7 +354,7 @@
         <p><span>本文标题:</span><a href="/2018/11/12/使用Docker安装Oracle-12c/">感谢Docker,让我远离环境配置</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">Rui</a></p>
         <p><span>发布时间:</span>2018-11-12, 23:26:45</p>
-        <p><span>最后更新:</span>2018-11-13, 00:16:01</p>
+        <p><span>最后更新:</span>2018-11-25, 22:17:59</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2018/11/12/使用Docker安装Oracle-12c/" title="感谢Docker,让我远离环境配置">http://blog.guitoubing.top/2018/11/12/使用Docker安装Oracle-12c/</a>
             <span class="copy-path" data-clipboard-text="原文: http://blog.guitoubing.top/2018/11/12/使用Docker安装Oracle-12c/　　作者: Rui" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -367,6 +368,12 @@
 
 
     <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/11/24/Practice/">
+                    Best Practice
+                </a>
+            </div>
         
         
             <div id="article-nav-older" class="article-nav-title">
@@ -383,7 +390,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-Docker"><span class="toc-number">1.</span> <span class="toc-text">Why Docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#正题"><span class="toc-number">2.</span> <span class="toc-text">正题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker安装并启动Oracle-12c"><span class="toc-number">2.0.1.</span> <span class="toc-text">Docker安装并启动Oracle 12c</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#安装"><span class="toc-number">2.0.1.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#初始化"><span class="toc-number">2.0.1.2.</span> <span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#进入容器"><span class="toc-number">2.0.1.3.</span> <span class="toc-text">进入容器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#连接oracle数据库"><span class="toc-number">2.0.1.4.</span> <span class="toc-text">连接oracle数据库</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#升华"><span class="toc-number">3.</span> <span class="toc-text">升华</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-Docker"><span class="toc-number">1.</span> <span class="toc-text">Why Docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#正题"><span class="toc-number">2.</span> <span class="toc-text">正题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker安装并启动Oracle-12c"><span class="toc-number">2.0.1.</span> <span class="toc-text">Docker安装并启动Oracle 12c</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#安装"><span class="toc-number">2.0.1.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#初始化"><span class="toc-number">2.0.1.2.</span> <span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#进入容器"><span class="toc-number">2.0.1.3.</span> <span class="toc-text">进入容器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#连接oracle数据库"><span class="toc-number">2.0.1.4.</span> <span class="toc-text">连接oracle数据库</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Oracle数据库设置字符集"><span class="toc-number">2.0.1.5.</span> <span class="toc-text">Oracle数据库设置字符集</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#升华"><span class="toc-number">3.</span> <span class="toc-text">升华</span></a></li></ol>
         
     </div>
     <style>
@@ -463,7 +470,9 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a href="/2018/11/24/Practice/" title="上一篇: Best Practice">
+                <i class="fa fa-angle-left"></i>
+            </a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
@@ -475,7 +484,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/11/12/使用Docker安装Oracle-12c/">感谢Docker,让我远离环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/06/记一次Win10-Fedora双系统的小折腾/">记一次Win10+Fedora双系统的小折腾</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/JavaFX-学习小记/">JavaFX 学习小记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/TimesTen内存数据库课程笔记/">TimesTen内存数据库课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/软件工程课程笔记/">软件工程课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/计算机网络课程笔记/">计算机网络课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/26/Dotnet/">dotnet基本配置及EFCore连接Mysql</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/26/2017-10-14/">我们梦中见</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/11/24/Practice/">Best Practice</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/12/使用Docker安装Oracle-12c/">感谢Docker,让我远离环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/06/记一次Win10-Fedora双系统的小折腾/">记一次Win10+Fedora双系统的小折腾</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/JavaFX-学习小记/">JavaFX 学习小记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/TimesTen内存数据库课程笔记/">TimesTen内存数据库课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/软件工程课程笔记/">软件工程课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/计算机网络课程笔记/">计算机网络课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/26/Dotnet/">dotnet基本配置及EFCore连接Mysql</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/26/2017-10-14/">我们梦中见</a></li></ul>
 
 
 

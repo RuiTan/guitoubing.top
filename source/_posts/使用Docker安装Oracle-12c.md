@@ -49,9 +49,11 @@ sudo docker ps
 >
 > 因此在初始化完成后，若仍然使用上述命令，会提示数据库未初始化，从而会重新创建持久性数据文件；因此以后的容器创建应该使用以下命令^1^：
 >
-> ```shell
-> sudo docker run -it -v /Users/tanrui/Oracle/oradata:/u01/app/oracle sath89/oracle-12c
-> ```
+
+```shell
+sudo docker run -it -p 8080:8080 -p 1521:1521 -v /Users/tanrui/Oracle/oradata:/u01/app/oracle sath89/oracle-12c
+```
+
 >
 > 至于上述的重复初始化是会造成文件覆盖还是文件并存我没有尝试过，猜测应该会是覆盖。
 >
@@ -72,6 +74,30 @@ root@1386ef844664:/# su oracle
 oracle@1386ef844664:/$ cd $ORACLE_HOME
 oracle@1386ef844664:/u01/app/oracle/product/12.1.0/xe$ bin/sqlplus / as sysdba
 ```
+##### Oracle数据库设置字符集
+
+```shell
+## 查看数据库编码，结果最下面一行则是目前编码
+SQL> select * from nls_database_parameters where parameter ='NLS_CHARACTERSET';   
+## 关闭数据库
+SQL> shutdown immediate;               
+## 启动到 mount状态，oracle分为4个状态，详情请百度
+SQL> startup mount;                    
+## 设置session ，下同
+SQL> ALTER SYSTEM ENABLE RESTRICTED SESSION;                        
+SQL> ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0;
+SQL> ALTER SYSTEM SET AQ_TM_PROCESSES=0;
+## 打开oracle到 open状态
+SQL> alter database open;                               
+## 修改编码为 ZHS16GBK
+SQL> ALTER DATABASE character set INTERNAL_USE ZHS16GBK;                
+## 重启oracle ，先关闭，再启动
+SQL> shutdown immediate;                      
+SQL> startup;
+```
+
+
+
 ## 升华
 
 Docker真的好用！（俗
