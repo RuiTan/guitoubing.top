@@ -3,7 +3,7 @@ title: dotnet基本配置及EFCore连接Mysql
 date: 2018-06-26 16:57:08
 tags: 
     - Dotnet
-    -  数据库
+    - 数据库
 
 categories: archives
 ---

@@ -15,13 +15,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Archer">
-<meta property="og:url" content="http://blog.guitoubing.top/tags/引导修复/index.html">
+<meta name="description" content="更新中……">
+<meta name="keywords" content="Hadoop,云计算">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hadoop-Tags">
+<meta property="og:url" content="http://blog.guitoubing.top/2018/12/12/Hadoop-Tags/index.html">
 <meta property="og:site_name" content="Archer">
+<meta property="og:description" content="更新中……">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-12-11T16:39:31.379Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Archer">
+<meta name="twitter:title" content="Hadoop-Tags">
+<meta name="twitter:description" content="更新中……">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -53,7 +58,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Tag: 引导修复 | Archer</title>
+<title>Hadoop-Tags | Archer</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -63,9 +68,9 @@
         fancybox: true,
         animate: true,
         isHome: false,
-        isPost: false,
+        isPost: true,
         isArchive: false,
-        isTag: true,
+        isTag: false,
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
@@ -272,60 +277,248 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap">
+      <div class="body-wrap"><article id="post-Hadoop-Tags" class="article article-type-post" itemscope itemprop="blogPost">
   
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2018/11/06/记一次Win10-Fedora双系统的小折腾/" class="archive-article-date">
-      <time datetime="2018-11-06T13:21:10.000Z" itemprop="datePublished">11-06</time>
+    <div class="article-meta">
+      <a href="/2018/12/12/Hadoop-Tags/" class="article-date">
+      <time datetime="2018-12-11T16:33:02.000Z" itemprop="datePublished">2018-12-12</time>
 </a>
 
 
-        </div>
-         
+    </div>
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/11/06/记一次Win10-Fedora双系统的小折腾/">记一次Win10+Fedora双系统的小折腾</a>
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Hadoop-Tags
     </h1>
   
 
-        <div class="article-info info-on-archive">
-          
+      </header>
+      
+      <div class="article-info article-info-post">
+        
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/archives/">archives</a>
+    <a class="article-category-link" href="/categories/archive/">-- archive</a>
     </div>
 
 
-          
+        
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Win10/">Win10</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/双系统/">双系统</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/引导修复/">引导修复</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/云计算/">云计算</a></li></ul>
     </div>
 
-        </div>
         <div class="clearfix"></div>
-    </header>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <blockquote>
+<p>更新中……</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="Hadoop-Tags"><a href="#Hadoop-Tags" class="headerlink" title="Hadoop Tags"></a>Hadoop Tags</h1><h2 id="HDFS"><a href="#HDFS" class="headerlink" title="HDFS"></a>HDFS</h2><ol>
+<li><p>NameNode内存要求较高，存储文件系统元结构（文件目录结构、分块情况、每块位置、权限等）</p>
+</li>
+<li><p>文件分块默认最小块128M</p>
+</li>
+<li><p><code>jps</code>命令查看NameNode/DataNode是否启动</p>
+<ol>
+<li><del>jps在jdk8u191中好像不适用，暂未找到解决方法</del></li>
+</ol>
+</li>
+<li><p><code>ip:9870</code>利用web界面查看Hadoop节点信息（Mac上端口号为<code>50070</code>）</p>
+</li>
+<li><p>进入用户目录下的<code>.ssh</code>目录，执行<code>ssh-keygen -t rsa</code>创建公钥私钥，使用<code>ssh-copy-id ${hostname}</code>将公钥传给每个节点（NameNode和DataNode都需要）</p>
+</li>
+<li><p>使用<code>hadoop fs -ls /</code>查看Hadoop上所有文件，使用<code>hadoop fs -put ${filename} /</code>上传文件…</p>
+</li>
+<li><p><code>hdfs-site.xml</code>中修改<code>dfs.replication</code>配置可修改文件备份份数（默认为3），修改<code>dfs.namenode.heartbead.recheck-interval</code>指定Hadoop检查机器运行情况的时间间隔（默认3000000ms）</p>
+<p>注意：</p>
+<ol>
+<li>例如当备份份数为2时，现在有三台DataNode机器，文件被分为2个block，block1位于1和2上，block2位于1和3上，这是若机器3宕机了，hdfs会在设定的<code>dfs.namenode.heartbead.recheck-interval</code>时间间隔内检查出机器3，此时block2数量变为1，hdfs会自动将1中的block2复制一份到另外一台可用机器上（此处为2）。当机器3恢复运行时，3中备份的block2会自动删除。</li>
+<li>当使用java访问hdfs时，不会使用<code>hdfs-site.xml</code>中的<code>dfs.replication</code>，而会默认使用3，可在java的<code>configuration</code>中配置为指定值</li>
+</ol>
+</li>
+<li><p><code>分鱼展</code>:分块、冗余、可扩展</p>
+</li>
+</ol>
+<h2 id="Yarn"><a href="#Yarn" class="headerlink" title="Yarn"></a>Yarn</h2><ol>
+<li><p>ResourceManage</p>
+</li>
+<li><p>NodeManage一般与DataNode放一起 </p>
+</li>
+<li><p>Yarn逻辑上与HDFS完全分离，但一般绑定HDFS一起使用</p>
+</li>
+<li><p><code>yarn-site.xml</code>的配置</p>
+<p><strong>注意：master与slaves都需要进行配置。</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.hostname<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>master<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>mapred-site.xml</code>的配置</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li>仅NameNode需要配置</li>
+<li>MapReduce不一定需要Yarn</li>
+<li>若不配MapReduce，其会仅在单机跑</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="TODO-List"><a href="#TODO-List" class="headerlink" title="TODO List"></a>TODO List</h1><ul>
+<li>安全与权限（kerberos）</li>
+<li>Secondary NameNode（check point NameNode）</li>
+<li>HA（High Ability）实现</li>
+<li>Federation，超大规模数据中心</li>
+</ul>
+
+      
+    </div>
+    
   </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/12/12/Hadoop-Tags/">Hadoop-Tags</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Rui</a></p>
+        <p><span>发布时间:</span>2018-12-12, 00:33:02</p>
+        <p><span>最后更新:</span>2018-12-12, 00:39:31</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/12/12/Hadoop-Tags/" title="Hadoop-Tags">http://blog.guitoubing.top/2018/12/12/Hadoop-Tags/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.guitoubing.top/2018/12/12/Hadoop-Tags/　　作者: Rui" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/11/24/Practice/">
+                    Best Practice
+                </a>
+            </div>
+        
+    </nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hadoop-Tags"><span class="toc-number">1.</span> <span class="toc-text">Hadoop Tags</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HDFS"><span class="toc-number">1.1.</span> <span class="toc-text">HDFS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Yarn"><span class="toc-number">1.2.</span> <span class="toc-text">Yarn</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#TODO-List"><span class="toc-number">2.</span> <span class="toc-text">TODO List</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Hadoop-Tags　| Archer　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+        <div class="addthis_sharing_toolbox"></div>
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'http://blog.guitoubing.top/2018/12/12/Hadoop-Tags/';
+            this.page.identifier = '2018/12/12/Hadoop-Tags/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//guitoubing-top.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
 
     
 
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/11/24/Practice/" title="下一篇: Best Practice">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/12/12/Hadoop-Tags/">Hadoop-Tags</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/24/Practice/">Best Practice</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/12/使用Docker安装Oracle-12c/">感谢Docker,让我远离环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/06/记一次Win10-Fedora双系统的小折腾/">记一次Win10+Fedora双系统的小折腾</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/28/JavaFX-学习小记/">JavaFX 学习小记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/TimesTen内存数据库课程笔记/">TimesTen内存数据库课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/软件工程课程笔记/">软件工程课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/计算机网络课程笔记/">计算机网络课程笔记（更新中）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/26/Dotnet/">dotnet基本配置及EFCore连接Mysql</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/26/2017-10-14/">我们梦中见</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
 </div>
       <footer id="footer">
     <div class="outer">

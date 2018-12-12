@@ -72,7 +72,8 @@ alter user test quota 50M on users;
 
 ```shell
 -- 在系统命令下连接
-sqlplus test/test
+cd $ORACLE_HOME/bin
+./sqlplus test/test
 ```
 
 ```plsql
@@ -110,7 +111,13 @@ COMMENT ON TABLE T_RECORDS  IS '通话清单表';
 
 进入`external_data`路径下并创建以下文件：
 
-`contro_mobiles.ctl:`
+```shell
+$ cd /home/oracle/data
+$ vi control_mobiles.ctl
+$ vi control_records.ctl
+```
+
+`control_mobiles.ctl:`
 
 ```ctl
 LOAD DATA
@@ -150,8 +157,8 @@ TRAILING NULLCOLS
 在该路径下执行导入操作：
 
 ```shell
-$ sqlldr userid=test/test control=control_mobiles.ctl
-$ sqlldr userid=test/test control=control_records.ctl
+$ $ORACLE_HOME/bin/sqlldr userid=test/test control=control_mobiles.ctl
+$ $ORACLE_HOME/bin/sqlldr userid=test/test control=control_records.ctl
 ```
 
 > 教程中命令为：
@@ -480,17 +487,17 @@ END;
 >
 > 用于管理job的package
 >
-> **oracle限定的job_queue_process:**
+> **oracle限定的job_queue_processes:**
 >
 > oracle中有一个对任务可启动进程的数量进行限制的参数：
 >
 > ```plsql
-> SQL> show job_queue_process;
+> SQL> show parameter job_queue_processes;
 > NAME				     TYPE	 VALUE
 > ----------------------------------------------------------
-> job_queue_processes		 integer	 10
+> job_queue_processeses		 integer	 10
 >
-> SQL> alter system set job_queue_process=0...1000;
+> SQL> alter system set job_queue_processes=0...1000;
 > ```
 >
 > **使用ctrl+c是无法停止job的:**

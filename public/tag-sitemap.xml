@@ -24,20 +24,6 @@
     </url>
 
     <url>
-        <loc>http://blog.guitoubing.top/tags/Dotnet/</loc>
-        <lastmod>2018-11-06T13:19:32.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-        <lastmod>2018-11-06T13:19:32.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://blog.guitoubing.top/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</loc>
         <lastmod>2018-11-06T13:19:32.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -109,14 +95,42 @@
 
     <url>
         <loc>http://blog.guitoubing.top/tags/TimesTen/</loc>
-        <lastmod>2018-11-25T19:05:44.393Z</lastmod>
+        <lastmod>2018-12-05T11:30:20.453Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://blog.guitoubing.top/tags/%E5%86%85%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-        <lastmod>2018-11-25T19:05:44.393Z</lastmod>
+        <lastmod>2018-12-05T11:30:20.453Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Dotnet/</loc>
+        <lastmod>2018-12-11T16:33:44.757Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+        <lastmod>2018-12-11T16:33:44.757Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Hadoop/</loc>
+        <lastmod>2018-12-11T16:39:31.379Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/</loc>
+        <lastmod>2018-12-11T16:39:31.379Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
