@@ -4,12 +4,19 @@
 
 # Site
 title: Archer
-subtitle:
+subtitle: 我们梦中见
 description:
 keywords:
 author: Rui
 language:
+  - en
+  - zh-cn
 timezone:
+
+search:
+  path: search.json
+  field: all
+  content: true
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
@@ -40,7 +47,7 @@ relative_link: false
 future: true
 highlight:
   enable: true
-  line_number: true
+  line_number: false
   auto_detect: false
   tab_replace:
   
@@ -56,7 +63,7 @@ index_generator:
 # Category & Tag
 default_category: uncategorized
 category_map:
-tag_map:
+tag_map: tags
 
 # Date / Time format
 ## Hexo uses Moment.js to parse and display date
@@ -73,7 +80,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: yelee
+theme: default-next
 stylus:
   compress: true
 

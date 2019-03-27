@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en,zh-cn,default">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/images/favicon.png?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="一、实验前准备机器配置 时间计算标准SQL执行过程首先，本实验的目的是优化数据库，减少数据库语句执行的时间，在此之前，我们要明白一点数据库执行时间这句话包含了哪些东西。我们从数据库执行一条SQL语句的过程来看，对于MySQL、Oracle、TimesTen这些具有内部优化的数据库来说，一般的执行步骤是：  而我们的关注点应放在语句执行这一步骤上。 语句执行步骤进一步深入MySQLMySQL的执行时">
+<meta name="keywords" content="Oracle,Timesten">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库与内存数据库实验报告">
+<meta property="og:url" content="http://blog.guitoubing.top/2019/03/05/数据库与内存数据库实验报告/index.html">
+<meta property="og:site_name" content="Archer">
+<meta property="og:description" content="一、实验前准备机器配置 时间计算标准SQL执行过程首先，本实验的目的是优化数据库，减少数据库语句执行的时间，在此之前，我们要明白一点数据库执行时间这句话包含了哪些东西。我们从数据库执行一条SQL语句的过程来看，对于MySQL、Oracle、TimesTen这些具有内部优化的数据库来说，一般的执行步骤是：  而我们的关注点应放在语句执行这一步骤上。 语句执行步骤进一步深入MySQLMySQL的执行时">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://blog.guitoubing.top/images/image-20190114060005845.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/image-20190113214926175.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/image-20190113211220925.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/image-20190114052126486.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/time_3.2_4min.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/process_list.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/explain_3.2.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/detail_3.2.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/explain_3.2_index.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/detail_index_3.2.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1-B%E6%A0%91%E7%B4%A2%E5%BC%95.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1-%E4%BD%8D%E5%9B%BE%E7%B4%A2%E5%BC%95.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/image-20190113230831573.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/image-20190113230717837.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/image-20190113230627090.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/3-%E4%B8%8D%E7%94%A8%E7%B4%A2%E5%BC%95.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/3-%E5%BC%BA%E5%88%B6B%E6%A0%91.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/3-%E5%BC%BA%E5%88%B6%E4%BD%8D%E5%9B%BE.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/3-B%E6%A0%91.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/3-%E4%BD%8D%E5%9B%BE.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/5-1-1.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/5-2.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/5-3.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/5-4-1.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/5-5-1.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/5-6.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/5-7.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/5-8.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/5-9.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%8810.48.45.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%8810.47.49.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%8810.50.07.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%8810.57.10.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-14%20%E4%B8%8A%E5%8D%8812.30.46.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-14%20%E4%B8%8A%E5%8D%8812.30.46.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-14%20%E4%B8%8A%E5%8D%8812.33.27.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-14%20%E4%B8%8A%E5%8D%8812.35.22.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/no-inmemory.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/inmemory.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%889.14.59.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%889.25.22.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/image-20190114004746346.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%889.32.45.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%889.38.39.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%889.35.11.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%889.37.57.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/11b.PNG">
+<meta property="og:image" content="http://blog.guitoubing.top/images/11a.PNG">
+<meta property="og:image" content="http://blog.guitoubing.top/images/12b.PNG">
+<meta property="og:image" content="http://blog.guitoubing.top/images/12a.PNG">
+<meta property="og:image" content="http://blog.guitoubing.top/images/image-20190114062154430.png">
+<meta property="og:updated_time" content="2019-03-05T12:38:38.160Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据库与内存数据库实验报告">
+<meta name="twitter:description" content="一、实验前准备机器配置 时间计算标准SQL执行过程首先，本实验的目的是优化数据库，减少数据库语句执行的时间，在此之前，我们要明白一点数据库执行时间这句话包含了哪些东西。我们从数据库执行一条SQL语句的过程来看，对于MySQL、Oracle、TimesTen这些具有内部优化的数据库来说，一般的执行步骤是：  而我们的关注点应放在语句执行这一步骤上。 语句执行步骤进一步深入MySQLMySQL的执行时">
+<meta name="twitter:image" content="http://blog.guitoubing.top/images/image-20190114060005845.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Archer" type="application/atom+xml"/>
+
+
+
+
+  <link rel="canonical" href="http://blog.guitoubing.top/2019/03/05/数据库与内存数据库实验报告/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>数据库与内存数据库实验报告 | Archer</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-108090005-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-108090005-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Archer</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">我们梦中见</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br/>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br/>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+  
+  
+
+  
+
+  <a href="https://github.com/ruitan" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" style="fill: #222; color: #fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.guitoubing.top/2019/03/05/数据库与内存数据库实验报告/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Rui"/>
+      <meta itemprop="description" content=""/>
+      <meta itemprop="image" content="/images/favicon.png"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Archer"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据库与内存数据库实验报告
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-05 20:34:59 / Modified: 20:38:38" itemprop="dateCreated datePublished" datetime="2019-03-05T20:34:59+08:00">2019-03-05</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/archives/" itemprop="url" rel="index"><span itemprop="name">archives</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、实验前准备"><a href="#一、实验前准备" class="headerlink" title="一、实验前准备"></a>一、实验前准备</h2><h3 id="机器配置"><a href="#机器配置" class="headerlink" title="机器配置"></a>机器配置</h3><p><img src="/images/image-20190114060005845.png" alt="image-20190114060005845"></p>
+<h3 id="时间计算标准"><a href="#时间计算标准" class="headerlink" title="时间计算标准"></a>时间计算标准</h3><h4 id="SQL执行过程"><a href="#SQL执行过程" class="headerlink" title="SQL执行过程"></a>SQL执行过程</h4><p>首先，本实验的目的是优化数据库，减少数据库语句执行的时间，在此之前，我们要明白一点<code>数据库执行时间</code>这句话包含了哪些东西。我们从数据库执行一条SQL语句的过程来看，对于MySQL、Oracle、TimesTen这些具有内部优化的数据库来说，一般的执行步骤是：</p>
+<p><img src="/images/image-20190113214926175.png" alt="image-20190113214926175"></p>
+<p>而我们的关注点应放在语句执行这一步骤上。</p>
+<h4 id="语句执行步骤进一步深入"><a href="#语句执行步骤进一步深入" class="headerlink" title="语句执行步骤进一步深入"></a>语句执行步骤进一步深入</h4><h5 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h5><p>MySQL的执行时间为以下项目的加和：</p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Desription</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Checking permissions</td>
+<td>检查用户的权限</td>
+</tr>
+<tr>
+<td>2. Opening tables</td>
+<td>打开表</td>
+</tr>
+<tr>
+<td>3. Init</td>
+<td>初始化过程</td>
+</tr>
+<tr>
+<td>4. System lock</td>
+<td>获取锁</td>
+</tr>
+<tr>
+<td>5. Optimizing</td>
+<td>优化SQL语句</td>
+</tr>
+<tr>
+<td>6. Statistics</td>
+<td>分析SQL语句</td>
+</tr>
+<tr>
+<td>7. Preparing</td>
+<td>准备执行条件</td>
+</tr>
+<tr>
+<td>8. Executing</td>
+<td>执行SQL语句</td>
+</tr>
+<tr>
+<td>9. Sending data</td>
+<td>进行磁盘的IO以及数据的发送返回</td>
+</tr>
+<tr>
+<td>10. End</td>
+<td>执行结束</td>
+</tr>
+<tr>
+<td>11. Closing tables</td>
+<td>关闭表</td>
+</tr>
+<tr>
+<td>12. Freeing items</td>
+<td>释放资源</td>
+</tr>
+<tr>
+<td>13. Cleaning up</td>
+<td>清理缓存以及临时空间</td>
+</tr>
+</tbody>
+</table>
+<h5 id="Oracle"><a href="#Oracle" class="headerlink" title="Oracle"></a>Oracle</h5><p>一条SQL语句在进入<code>语句执行</code>这一步骤之后，若不在高速缓存中，数据库会从数据文件中把<code>所在位置</code>移动到<code>高速缓存</code>中而后返回给客户端。这也就意味着，同一条语句在以后的执行中都只从高速缓存取数据（前提是高速缓存<code>未被清除</code>）。这样想的话，我们要做的优化应该是一条SQL语句在第一次进入数据库时数据库作出的应答。</p>
+<p>那么，我们通过数据库工具来查看执行的SQL语句的时间应该是不准的：<strong>因为我们不知道这条语句是不是第一次执行，或者说我们不知道高速缓存中有没有我们需要的数据</strong>。这里我们选择使用Oracle的执行计划来看SQL语句的准确的执行过程以及其<code>开销</code>。如下图：</p>
+<p><img src="/images/image-20190113211220925.png" alt="image-20190113211220925"></p>
+<p>我们的关注点在上图中的<code>COST</code>，cost是Oracle里判定效率的唯一标准，Oracle的优化器会计算当前SQL语句的最低cost方案，而后为其选择执行计划。Oracle中定义了语句的一次执行开销<code>cost = CPU cost + IO cost</code>，对于cost，我们可以理解为一次过程所需要访问的Block数量，那么执行时间就是<code>t = Block数量 * Block处理时间</code>。</p>
+<p>后续实验过程中的Oracle部分我们都是通过执行计划及cost来做对比。为此我们写了一个procedure来记录一条语句执行计划中记录的cost：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- 计算query的cost</span><br><span class="line">create or replace procedure calc_cost(query_ varchar2, func_ number, desc_ varchar2) is</span><br><span class="line">  cpu_cost number := 0;</span><br><span class="line">  io_cost number := 0;</span><br><span class="line">  cost_ number := 0;</span><br><span class="line">  -- 一条SQL语句的唯一标识</span><br><span class="line">  hash_v number := 0;</span><br><span class="line">  -- 获取上述标识</span><br><span class="line">  select_v_sql varchar2(255) := &apos;select hash_value into :x from v$sql a where a.SQL_TEXT like &apos;&apos;:y&apos;&apos;&apos;;</span><br><span class="line">  -- 获取cost</span><br><span class="line">  select_v_sql_plan varchar2(255) := &apos;select max(cpu_cost) , max(io_cost) into :x :y from V$SQL_PLAN a where hash_value=:z&apos;;</span><br><span class="line">  -- 结果保存</span><br><span class="line">  insert_result varchar2(255) := &apos;insert into t_cost_record values(:x,:y,:z,:a,:b,:c)&apos;;</span><br><span class="line">begin</span><br><span class="line">  execute immediate select_v_sql using hash_v, query_;</span><br><span class="line">  execute immediate select_v_sql_plan using cpu_cost, io_cost, cost_;</span><br><span class="line">  execute immediate insert_result using id_seq.nextval, func_, cpu_cost, io_cost, cost_, desc_;</span><br><span class="line">end;</span><br></pre></td></tr></table></figure>
+<h5 id="TimesTen"><a href="#TimesTen" class="headerlink" title="TimesTen"></a>TimesTen</h5><p>对于TimesTen来说，不如Oracle的优化器来的智能，它完全靠速度制胜。Oracle中我们讨论了执行时间<code>t = Block数量 * Block处理时间</code>，TimesTen就是在Block处理时间上有很大的优势。遗憾的是TimesTen中没有作为本身的高速缓存这一说，这也就意味着一条SQL语句进入TimesTen时都要经过<code>SQL Prepare -&gt; SQL Execution -&gt; SQL Fetch</code>这一完整的过程，如下：</p>
+<p><img src="/images/image-20190114052126486.png" alt="image-20190114052126486"></p>
+<h2 id="二、MySQL实验过程"><a href="#二、MySQL实验过程" class="headerlink" title="二、MySQL实验过程"></a>二、MySQL实验过程</h2><p>功能：查询电影评论平均分排行前一百的电影</p>
+<h3 id="SQL语句"><a href="#SQL语句" class="headerlink" title="SQL语句"></a>SQL语句</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select  m.name_, sum(c1.score) as movie_avg_comment_score</span><br><span class="line">from movie m  , comment_1 c1</span><br><span class="line">where m.id_ = c1.movie_id</span><br><span class="line">group by m.name_</span><br><span class="line">order by movie_avg_comment_score desc</span><br><span class="line">limit 100;</span><br></pre></td></tr></table></figure>
+<h3 id="仅有主键索引"><a href="#仅有主键索引" class="headerlink" title="仅有主键索引"></a>仅有主键索引</h3><p>执行之后得到如下的时间消耗：</p>
+<p><img src="/images/time_3.2_4min.png" alt="time_3.2_4min"></p>
+<p>这个时间相比其他数据库慢得多（oracle 约4s)，不符合预期的耗时，且在执行时mysqld的cpu占用率非常高。于是根据以下步骤查看sql执行慢的原因。</p>
+<h3 id="MySQL进程表"><a href="#MySQL进程表" class="headerlink" title="MySQL进程表"></a>MySQL进程表</h3><p>使用<code>show processlist</code>命令查看正在执行的sql语句列表：</p>
+<p><img src="/images/process_list.png" alt="process_list"></p>
+<p>可以看到当前执行的语句就是我们的目标语句，并且没有其他语句在与当前查询语句竞争资源，所以应该把语句执行过慢点原因定位到查询语句本身。</p>
+<h3 id="解释执行计划"><a href="#解释执行计划" class="headerlink" title="解释执行计划"></a>解释执行计划</h3><p>通过查看process list得知对应语句有问题之后，使用<code>describe</code>命令查看当前SQL语句的执行计划，MySQL的执行计划与其他相关参数：</p>
+<p><img src="/images/explain_3.2.png" alt="explain_3.2"></p>
+<p>可以看到在执行计划中，movie表有可选的主码索引，但是在这个场景中mysql并没有选择使用主码索引，没有使用索引是导致时间过慢点一个原因，于是可以考虑在电影名字字段上建立索引。</p>
+<h3 id="执行过程"><a href="#执行过程" class="headerlink" title="执行过程"></a>执行过程</h3><p>为了进一步查看SQL语句具体的系统能耗分布，我们选择使用<code>profiling</code>来分析我们SQL语句的执行过程，在没有创建其他索引的情况下我们得到如下的时间消耗分析：</p>
+<p><img src="/images/detail_3.2.png" alt="detail_3.2"></p>
+<p>我们可以看到其中能耗占比最高的是 <code>Sending data</code>项，查看官方文档相关解释：</p>
+<blockquote>
+<p>The thread is reading and processing rows for a <code>SELECT</code> statement, and sending data to the client. Because operations occurring during this state tend to perform large amounts of disk access (reads), it is often the longest-running state over the lifetime of a given query.</p>
+<p>该线程正在读取和处理SELECT语句的行，并将数据发送到客户端。 由于在此状态期间发生的操作往往会执行大量磁盘访问（读取），因此它通常是给定查询生命周期中运行时间最长的状态</p>
+</blockquote>
+<p>所以这个与我们的磁盘IO的速度以及网络的传输速度有关，磁盘的IO除了受到硬件本身的限制之外还会与数据库的索引有关，更换性能更好的磁盘或者建立适当的索引以减少磁盘IO数量都可以提高查询语句的执行速度。</p>
+<h3 id="建立索引"><a href="#建立索引" class="headerlink" title="建立索引"></a>建立索引</h3><p>根据以上分析过程得到的结论，我们在电影表的名字字段上建立合适的索引，我们在mysql中选择了B-Tree索引。</p>
+<p>建立索引之后再查看相同SQL语句的执行计划：</p>
+<p><img src="/images/explain_3.2_index.png" alt="explain_3.2_index"></p>
+<p><code>key</code>字段上的值从原来的<code>null</code> 变成了我们刚刚创建的索引。</p>
+<p>执行该SQL语句，并在结束后使用<code>Profiling</code>查看优化后的执行时间：</p>
+<p>sending data: 从磁盘读取数据，将数据返回，表示磁盘IO</p>
+<p>create index：使用临时表来处理select语句</p>
+<p><img src="/images/detail_index_3.2.png" alt="detail_index_3.2"></p>
+<p>可以看到<code>Sending data</code>的值明显小于优化前，总的执行时间也变为优化前的1/5，所以增加索引能够在很大程度上加快查询的速度。</p>
+<h3 id="实验结论"><a href="#实验结论" class="headerlink" title="实验结论"></a>实验结论</h3><p>综合其他实验，在大数据的处理上MySQL数据库的性能远不如ORACLE及TIMESTEN数据库，有数十倍的耗时差距，而且MySQL作为一个轻量级的数据库，支持的索引类型也少于其他两个数据库，在SQL语句的优化方面也不如ORACLE数据库那般强大。所以在当前的实验环境下我们更倾向于使用ORACLE数据库与TIMESTEN数据库进行对比。</p>
+<h2 id="三、Oracle实验过程"><a href="#三、Oracle实验过程" class="headerlink" title="三、Oracle实验过程"></a>三、Oracle实验过程</h2><h3 id="实验1：SQL各子句条件顺序对查询效率的影响"><a href="#实验1：SQL各子句条件顺序对查询效率的影响" class="headerlink" title="实验1：SQL各子句条件顺序对查询效率的影响"></a>实验1：SQL各子句条件顺序对查询效率的影响</h3><h4 id="查询语句"><a href="#查询语句" class="headerlink" title="查询语句"></a>查询语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> T_MOVIE.NAME_, T_MOVIE.YEAR_ <span class="keyword">FROM</span> T_MOVIE,T_MOVIE_REGION,T_REGION</span><br><span class="line"><span class="keyword">WHERE</span> T_REGION.ID_=T_MOVIE_REGION.REGION_ID <span class="keyword">AND</span> T_MOVIE.ID_=T_MOVIE_REGION.MOVIE_ID</span><br><span class="line"><span class="keyword">AND</span> T_REGION.NAME_=<span class="string">'美国'</span> <span class="keyword">AND</span> T_MOVIE.SCORE_&gt;<span class="number">6</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="实验方式"><a href="#实验方式" class="headerlink" title="实验方式"></a>实验方式</h4><p>通过对MySQL、Oracle、TimesTen中SQL语句中select、from、where子句的排序顺序进行调换，观察执行计划的改变</p>
+<h4 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h4><ol>
+<li>SELECT子句中，结果集的排序方式不会影响执行计划</li>
+<li>FROM子句中，各个表的排序方式不会影响执行计划</li>
+<li>WHERE子句中，各个条件的排序方式不会影响执行计划，优化器会首先将筛选条件应用于表进行过滤，最后逐次执行表的连接。</li>
+</ol>
+<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><p>自Oracle6以来，一直采用RBO（Rule-Based Optimization 基于规则的优化器），其基于一套严格死板的使用规则。由于其对于规则的崇尚性，SQL语句的写法则尤为重要。而自Oracle8以来，Oracle引入了一种新的优化方式，即CBO（Cost-Based Optimization 基于代价的优化器），从Oracle 10g开始RBO被完全舍弃。使用CBO优化器时，对SQL语句的要求变得没有那么苛刻，优化器会选择开销比较小的方式执行，而不由用户所写的表的顺序、条件的顺序决定。MySQL与TimesTen的优化器也是如此，有其自己的选择。</p>
+<blockquote>
+<h3 id="连接方式和连接顺序"><a href="#连接方式和连接顺序" class="headerlink" title="连接方式和连接顺序"></a>连接方式和连接顺序</h3><p><strong>连接顺序</strong>：连接顺序表明以哪张表为驱动表来连接其他表的先后顺序。即以某张表为基点，根据其中的信息再去访问其他的表。</p>
+<p><strong>连接方式</strong>：简单来讲，就是两个表获得满足条件的数据时的连接过程。主要有三种表连接方式，嵌套循环（NESTED LOOPS）、哈希连接（HASH JOIN）和排序-合并连接（SORT MERGE JOIN）。</p>
+<h4 id="排序-合并连接"><a href="#排序-合并连接" class="headerlink" title="排序-合并连接"></a>排序-合并连接</h4><p>假设有查询：select a.name, b.name from table_A a join table_B b on (a.id = b.id)</p>
+<p>内部连接过程：</p>
+<p>a) 生成 row source 1 需要的数据，按照连接操作关联列（如示例中的a.id）对这些数据进行排序</p>
+<p>b) 生成 row source 2 需要的数据，按照与 a) 中对应的连接操作关联列（b.id）对数据进行排序</p>
+<p>c) 两边已排序的行放在一起执行合并操作（对两边的数据集进行扫描并判断是否连接）</p>
+<p>延伸：</p>
+<p>如果示例中的连接操作关联列 a.id，b.id 之前就已经被排过序了的话，连接速度便可大大提高，因为排序是很费时间和资源的操作，尤其对于有大量数据的表。</p>
+<p>故可以考虑在 a.id，b.id 上建立索引让其能预先排好序。<strong>不过遗憾的是</strong>，由于返回的结果集中包括所有字段，所以通常的执行计划中，即使连接列存在索引，也不会进入到执行计划中，除非进行一些特定列处理（如仅仅只查询有索引的列等）。</p>
+<p>排序-合并连接的表无驱动顺序，谁在前面都可以；</p>
+<p>排序-合并连接<strong>适用</strong>的连接条件有： <strong>&lt;   &lt;=   =   &gt;   &gt;= ，不适用</strong>的连接条件有： <strong>&lt;&gt;    like</strong></p>
+<h4 id="嵌套循环"><a href="#嵌套循环" class="headerlink" title="嵌套循环"></a>嵌套循环</h4><p>内部连接过程：</p>
+<p>a) 取出 row source 1 的 row 1（第一行数据），遍历 row source 2 的所有行并检查是否有匹配的，取出匹配的行放入结果集中</p>
+<p>b) 取出 row source 1 的 row 2（第二行数据），遍历 row source 2 的所有行并检查是否有匹配的，取出匹配的行放入结果集中</p>
+<p>c) ……</p>
+<p>若 row source 1 （即驱动表）中返回了 N 行数据，则 row source 2 也相应的会被全表遍历 N 次。</p>
+<p>因为 row source 1 的每一行都会去匹配 row source 2 的所有行，所以当 row source 1 返回的行数尽可能少并且能高效访问 row source 2（如建立适当的索引）时，效率较高。</p>
+<p>嵌套循环的表有驱动顺序，注意选择合适的驱动表。嵌套循环连接有一个其他连接方式没有的好处是：<strong>可以先返回已经连接的行</strong>，而不必等所有的连接操作处理完才返回数据，这样可以实现快速响应。</p>
+<p>应尽可能使用限制条件（Where过滤条件）使驱动表（row source 1）返回的行数尽可能少，同时在匹配表（row source 2）的连接操作关联列上建立唯一索引（UNIQUE INDEX）或是选择性较好的非唯一索引，此时嵌套循环连接的执行效率会变得很高。若驱动表返回的行数较多，即使匹配表连接操作关联列上存在索引，连接效率也不会很高。</p>
+<h4 id="哈希连接"><a href="#哈希连接" class="headerlink" title="哈希连接"></a>哈希连接</h4><p><strong>哈希连接只适用于等值连接（即连接条件为  =  ）</strong></p>
+<p>HASH JOIN对两个表做连接时并不一定是都进行全表扫描，其并不限制表访问方式；</p>
+<p>内部连接过程简述：</p>
+<p>a) 取出 row source 1（驱动表，在HASH JOIN中又称为Build Table） 的数据集，然后将其构建成内存中的一个 Hash Table（Hash函数的Hash KEY就是连接操作关联列），创建Hash位图（bitmap）</p>
+<p>b) 取出 row source 2（匹配表）的数据集，对其中的每一条数据的连接操作关联列使用相同的Hash函数并找到对应的 a) 里的数据在 Hash Table 中的位置，在该位置上检查能否找到匹配的数据</p>
+</blockquote>
+<h3 id="实验2：B树索引与位图索引的比较"><a href="#实验2：B树索引与位图索引的比较" class="headerlink" title="实验2：B树索引与位图索引的比较"></a>实验2：B树索引与位图索引的比较</h3><h4 id="sql语句"><a href="#sql语句" class="headerlink" title="sql语句"></a>sql语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 小基数</span></span><br><span class="line"><span class="keyword">SELECT</span> T_MOVIE.NAME_, T_MOVIE.YEAR_</span><br><span class="line"><span class="keyword">FROM</span> T_MOVIE,T_MOVIE_REGION,T_REGION</span><br><span class="line"><span class="keyword">WHERE</span> T_REGION.ID_=T_MOVIE_REGION.REGION_ID</span><br><span class="line"><span class="keyword">AND</span> T_MOVIE.ID_=T_MOVIE_REGION.MOVIE_ID</span><br><span class="line"><span class="keyword">AND</span> T_REGION.NAME_=<span class="string">'美国'</span></span><br><span class="line"><span class="keyword">AND</span> T_MOVIE.SCORE_&gt;<span class="number">6</span>;</span><br><span class="line"><span class="comment">-- 大基数</span></span><br><span class="line"><span class="keyword">SELECT</span> T_MOVIE.NAME_, T_MOVIE.YEAR_</span><br><span class="line"><span class="keyword">FROM</span> T_ACTOR,T_ACT,T_MOVIE</span><br><span class="line"><span class="keyword">WHERE</span> T_ACTOR.NAME_=<span class="string">'Tom Byron'</span></span><br><span class="line"><span class="keyword">AND</span> T_MOVIE.SCORE_&gt;<span class="number">6</span></span><br><span class="line"><span class="keyword">AND</span> T_ACTOR.ID_=T_ACT.ACTOR_ID</span><br><span class="line"><span class="keyword">AND</span> T_MOVIE.ID_=T_ACT.MOVIE_ID;</span><br></pre></td></tr></table></figure>
+<h4 id="索引语句"><a href="#索引语句" class="headerlink" title="索引语句"></a>索引语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- B树</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> IX_MOVIE_SCORE <span class="keyword">ON</span> T_MOVIE(SCORE_);</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> IX_MOVIE_NAME <span class="keyword">ON</span> T_MOVIE(NAME_);</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> IX_ACTOR_NAME <span class="keyword">ON</span> T_ACTOR(NAME_);</span><br><span class="line"><span class="comment">-- BitMap</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">BITMAP</span> <span class="keyword">INDEX</span> IXBM_MOVIE_NAME <span class="keyword">ON</span> T_MOVIE(NAME_);</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">BITMAP</span> <span class="keyword">INDEX</span> IXBM_MOVIE_SCORE <span class="keyword">ON</span> T_MOVIE(SCORE_);</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">BITMAP</span> <span class="keyword">INDEX</span> IXBM_ACTOR_NAME <span class="keyword">ON</span> T_ACTOR(NAME_);</span><br></pre></td></tr></table></figure>
+<h4 id="查询消耗"><a href="#查询消耗" class="headerlink" title="查询消耗"></a>查询消耗</h4><p>B树索引（小基数）</p>
+<p><img src="/images/1-B%E6%A0%91%E7%B4%A2%E5%BC%95.png" alt="B树索引"></p>
+<p>位图索引（小基数）</p>
+<p><img src="/images/1-%E4%BD%8D%E5%9B%BE%E7%B4%A2%E5%BC%95.png" alt="位图索引"></p>
+<p>不加索引（大基数）</p>
+<p><img src="/images/image-20190113230831573.png" alt="image-20190113230831573"></p>
+<p>B树索引（大基数）</p>
+<p><img src="/images/image-20190113230717837.png" alt="image-20190113230717837"></p>
+<p>位图索引（大基数）</p>
+<p><img src="/images/image-20190113230627090.png" alt="image-20190113230627090"></p>
+<h4 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h4><p>即使在字段基数较大的情况下，位图索引依然有比B树索引更好的表现。但是有个问题，创建位图索引时所需的时间更长。此外，由于表中该字段的更改都会导致对位图的修改，所以位图索引不适用于并发的情况。</p>
+<h3 id="实验3：Oracle优化器对索引的选择"><a href="#实验3：Oracle优化器对索引的选择" class="headerlink" title="实验3：Oracle优化器对索引的选择"></a>实验3：Oracle优化器对索引的选择</h3><blockquote>
+<h2 id="关于索引"><a href="#关于索引" class="headerlink" title="关于索引"></a>关于索引</h2><h4 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h4><ul>
+<li>B树索引（默认的索引）</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&gt; CREATE INDEX IX_MOVIE_SCORE ON T_MOVIE(SCORE_);</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<ul>
+<li>位图索引：以位图的形式存储每个值对应的的一组rowid</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&gt; CREATE BITMAP INDEX IXBM_REGION_NAME ON T_REGION(NAME_);</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<ul>
+<li>基于函数的索引：利于对某个字段查询时需要同时使用函数或计算的情景</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&gt; CREATE INDEX upper_ix ON employees (UPPER(last_name)); </span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<ul>
+<li><p>分区索引：本地分区索引的分区完全依赖于其索引所在表，而全局分区索引的分区机制和表分区可能一样也可能不一样</p>
+<ul>
+<li>range范围分区</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&gt;   CREATE INDEX cost_ix ON sales (amount_sold)</span><br><span class="line">&gt;    GLOBAL PARTITION BY RANGE (amount_sold)</span><br><span class="line">&gt;       (PARTITION p1 VALUES LESS THAN (1000),</span><br><span class="line">&gt;        PARTITION p2 VALUES LESS THAN (2500),</span><br><span class="line">&gt;        PARTITION p3 VALUES LESS THAN (MAXVALUE));</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><p>hash哈希分区</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&gt;   CREATE INDEX cust_last_name_ix ON customers (cust_last_name)</span><br><span class="line">&gt;   GLOBAL PARTITION BY HASH (cust_last_name)</span><br><span class="line">&gt;   PARTITIONS 4;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>list列表分区：一个分区对应指定列的特定的值，以列举的方式进行分区</li>
+<li>组合分区（range-hash，range-list）</li>
+</ul>
+<h4 id="什么时候用索引"><a href="#什么时候用索引" class="headerlink" title="什么时候用索引"></a>什么时候用索引</h4><p>对于Oracle的CBO来说，只有在使用索引能提高效率（估算的效率）时才会使用索引。对于程序员自己进行数据库管理的时候，一般有：</p>
+<p><strong>需要使用索引来优化查询的情况：</strong></p>
+<ul>
+<li>一个属性的值分布非常广，变化的范围跨度很大。</li>
+<li>一般来说，常常需要被用在SQL语句的where中的限制条件的属性最好为其建立索引。</li>
+<li>表经常被访问且需要访问的数据量仅占一部分。</li>
+</ul>
+<p><strong>不适合用索引的情况：</strong></p>
+<ul>
+<li>表很小</li>
+<li>表经常被更新</li>
+<li>属性不经常作为where中的限制条件的属性存在</li>
+<li>查询得到的数据占总量的很大部分</li>
+</ul>
+<p>对于数据经常更新的情况，DBA要定时进行索引的重构（rebuild）以维持索引的可用性。</p>
+<h4 id="影响优化器决策的因素"><a href="#影响优化器决策的因素" class="headerlink" title="影响优化器决策的因素"></a>影响优化器决策的因素</h4><ul>
+<li>进行全表扫描需要读取的数据块数量；</li>
+<li>进行索引查询需要读取的数据块数量，这主要是基于对WHERE子句谓词返回的记录数目估计；</li>
+<li>进行全表扫描时多块读的相关开销，以及为满足索引查询进行的单块读的开销；</li>
+<li>内存中对缓存中的索引块和数据块数目的假设。</li>
+</ul>
+<h4 id="索引失效的可能原因"><a href="#索引失效的可能原因" class="headerlink" title="索引失效的可能原因"></a>索引失效的可能原因</h4><p>以下是一些常见的定义了索引当Oracle并未使用的原因：</p>
+<ul>
+<li>不等于情况，即“&lt;&gt;”</li>
+<li>字符串匹配like中百分号在第一位的情况，即“%XXX”</li>
+<li>表没有进行分析更新统计信息</li>
+<li>使用复合索引但单独引用且非复合索引的第一属性</li>
+<li>对索引进行计算，此时需要建立索引函数</li>
+<li>属性为字符串但在where中没有加引号</li>
+<li>使用not in，not exists</li>
+<li>使用了其他索引</li>
+</ul>
+<h4 id="强制使用索引"><a href="#强制使用索引" class="headerlink" title="强制使用索引"></a>强制使用索引</h4><p>如果想要强制使用索引，则可以在查询语句的select单词后加上/*+index (tablename indexname)*/，这样可以规定Oracle选择使用indexname的索引的执行计划。该方法已在前面实验中使用，不再赘述。</p>
+</blockquote>
+<h4 id="sql语句-1"><a href="#sql语句-1" class="headerlink" title="sql语句"></a>sql语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> T_MOVIE.NAME_, T_MOVIE.YEAR_</span><br><span class="line"><span class="keyword">FROM</span> T_MOVIE,T_MOVIE_REGION,T_REGION</span><br><span class="line"><span class="keyword">WHERE</span> T_REGION.ID_=T_MOVIE_REGION.REGION_ID</span><br><span class="line"><span class="keyword">AND</span> T_MOVIE.ID_=T_MOVIE_REGION.MOVIE_ID</span><br><span class="line"><span class="keyword">AND</span> T_REGION.NAME_=<span class="string">'美国'</span></span><br><span class="line"><span class="keyword">AND</span> T_MOVIE.SCORE_&gt;<span class="number">6</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="查询消耗-1"><a href="#查询消耗-1" class="headerlink" title="查询消耗"></a>查询消耗</h4><p>不用索引（不论是B树索引还是位图索引都不使用）</p>
+<p><img src="/images/3-%E4%B8%8D%E7%94%A8%E7%B4%A2%E5%BC%95.png" alt="3-不用索引"></p>
+<p>强制使用B树索引</p>
+<p><img src="/images/3-%E5%BC%BA%E5%88%B6B%E6%A0%91.png" alt="3-强制B树"></p>
+<p>强制使用位图索引</p>
+<p><img src="/images/3-%E5%BC%BA%E5%88%B6%E4%BD%8D%E5%9B%BE.png" alt="3-强制位图"></p>
+<h4 id="sql语句-2"><a href="#sql语句-2" class="headerlink" title="sql语句"></a>sql语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> T_MOVIE.NAME_, T_MOVIE.YEAR_</span><br><span class="line"><span class="keyword">FROM</span> T_MOVIE,T_MOVIE_REGION,T_REGION</span><br><span class="line"><span class="keyword">WHERE</span> T_REGION.ID_=T_MOVIE_REGION.REGION_ID</span><br><span class="line"><span class="keyword">AND</span> T_MOVIE.ID_=T_MOVIE_REGION.MOVIE_ID</span><br><span class="line"><span class="keyword">AND</span> T_REGION.NAME_=<span class="string">'美国'</span></span><br><span class="line"><span class="keyword">AND</span> T_MOVIE.SCORE_&gt;<span class="number">9</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="查询消耗-2"><a href="#查询消耗-2" class="headerlink" title="查询消耗"></a>查询消耗</h4><p>B树索引（未使用）</p>
+<p><img src="/images/3-B%E6%A0%91.png" alt="3-B树"></p>
+<p>位图索引</p>
+<p><img src="/images/3-%E4%BD%8D%E5%9B%BE.png" alt="3-位图"></p>
+<h4 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h4><p>由此可见，即使在有索引的情况下，oracle优化器也可能选择不使用索引。CBO优化器会对每种执行计划计算一个COST，并采用COST最小的执行计划。如果一个表有索引或多种索引，其会选择最好的一种索引方式扫描表，或者甚至不用索引而用全局扫描方式。</p>
+<p>另外对于符合筛选条件的数据，当占全表的比例越小、数据量越小时，使用索引的可能性越大。如在这次实验中，条件为”T_MOVIE.SCORE_ &gt;9”时会使用索引，而”T_MOVIE.SCORE_ &gt;6”时不会。</p>
+<p>此外，由于位图索引导致的COST要小于B树索引，因此在相同的查询中，使用位图索引的可能性比B树索引更大。</p>
+<h3 id="实验4：Oracle分区索引"><a href="#实验4：Oracle分区索引" class="headerlink" title="实验4：Oracle分区索引"></a>实验4：Oracle分区索引</h3><h4 id="sql语句-3"><a href="#sql语句-3" class="headerlink" title="sql语句"></a>sql语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> T_COMMENT.SUMMARY_,T_COMMENT.SCORE_,T_COMMENT.TIME_</span><br><span class="line"><span class="keyword">FROM</span> T_COMMENT,T_MOVIE</span><br><span class="line"><span class="keyword">WHERE</span> T_MOVIE.ID_=T_COMMENT.MOVIE_ID</span><br><span class="line"><span class="keyword">AND</span> T_COMMENT.SCORE_&gt;<span class="number">6</span></span><br><span class="line"><span class="keyword">AND</span> T_MOVIE.NAME_=<span class="string">'Blindsided'</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="实验结果-1"><a href="#实验结果-1" class="headerlink" title="实验结果"></a>实验结果</h4><ol>
+<li><p>未分区表+无索引</p>
+<p><img src="/images/5-1-1.png" alt="5-1-1"></p>
+</li>
+<li><p>未分区表+B树索引</p>
+<p><img src="/images/5-2.png" alt="5-2"></p>
+</li>
+<li><p>未分区表+位图索引</p>
+<p><img src="/images/5-3.png" alt="5-3"></p>
+</li>
+<li><p>分区表+无索引</p>
+<p><img src="/images/5-4-1.png" alt="5-4-1"></p>
+</li>
+<li><p>分区表+全局不分区B树索引</p>
+<p><img src="/images/5-5-1.png" alt="5-5-1"></p>
+</li>
+<li><p>分区表+本地(哈希分区)B树索引</p>
+<p><img src="/images/5-6.png" alt="5-6"></p>
+</li>
+<li><p>分区表+本地(哈希分区)位图索引</p>
+<p><img src="/images/5-7.png" alt="5-7"></p>
+</li>
+<li><p>分区表+全局哈希分区索引</p>
+<p><img src="/images/5-8.png" alt="5-8"></p>
+</li>
+<li><p>分区表+全局范围分区索引</p>
+<p><img src="/images/5-9.png" alt="5-9"></p>
+</li>
+</ol>
+<h4 id="分析-3"><a href="#分析-3" class="headerlink" title="分析"></a>分析</h4><ol>
+<li><p>在未建索引时，分区表的COST是未分区表的十倍多。原因是分区所依据的键（字段）不是直接的查询条件——我们以评论表的movie_id字段为依据建哈希分区表，但在查询的时候并不直接以movie_id为查询条件。导致连接表的时候，需要访问多个分区，反而造成COST大大增长。</p>
+<p>后来我们重新设计一个以movie_id为查询条件的sql语句，结果显示分区表的COST大约是未分区表的1/4（一共分了4个区），证明在以分区依据的字段为直接查询条件时，分区表能够体现比较好的性能，能够避免对一部分数据的访问。</p>
+</li>
+<li><p>在分区表上建索引比在未分区表上建索引后的开销更小，不论分区表上的索引是全局还是本地，不论是否是分区索引。在我们的实验场景中，尽管movie_id不是直接的查询条件而是join表的条件，但是在添加索引后，依然能够大大减少join表的开销从而提升效率。</p>
+</li>
+<li><p>在我们的实验场景中，全局的分区索引，不论是哈希分区还是范围分区，COST是一样的。</p>
+</li>
+<li><p>本地索引的效率略微比全局索引的效率好。根据查到的资料，本地索引的可维护性好，能够自动维护，不需要人工干预，但因把索引分成多个分区导致每次的索引访问都需要遍历所有索引分区，所以索引访问性能下降。因此比较适合OLAP系统。而全局索引的可维护性差，分区表发生改变时，需要用命令手动更新索引，但索引访问性能比本地分区索引要好。因此比较适合OLTP系统。</p>
+</li>
+</ol>
+<h3 id="实验5：Oracle使用复合索引"><a href="#实验5：Oracle使用复合索引" class="headerlink" title="实验5：Oracle使用复合索引"></a>实验5：Oracle使用复合索引</h3><h4 id="SQL语句-1"><a href="#SQL语句-1" class="headerlink" title="SQL语句"></a>SQL语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> T_COMMENT_1.SUMMARY_, T_COMMENT_1.SCORE_</span><br><span class="line"><span class="keyword">from</span> T_COMMENT_1, T_MOVIE</span><br><span class="line"><span class="keyword">where</span> T_MOVIE.ID_ = T_COMMENT_1.MOVIE_ID <span class="keyword">and</span> T_COMMENT_1.SCORE_ &gt; <span class="number">7</span> <span class="keyword">and</span> T_MOVIE.NAME_ = <span class="string">'The Notebook'</span>;</span><br></pre></td></tr></table></figure>
+<p>第一次查询：T_COMMENT_1上只有主键的唯一索引。</p>
+<p>第二次查询：在MOVIE_ID上建立一个B-tree索引COMMENT_1_MOVIE。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> COMMENT_1_MOVIE <span class="keyword">on</span> T_COMMENT_1(MOVIE_ID);</span><br></pre></td></tr></table></figure>
+<p>第三次查询：使第二次的索引invisible，在SCORE_上建立一个B-tree索引T_COMMENT_SCORE_INDEX。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">index</span> COMMENT_1_MOVIE <span class="keyword">invisible</span>;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> T_COMMENT_SCORE_INDEX <span class="keyword">on</span> T_COMMENT_1(SCORE_);</span><br></pre></td></tr></table></figure>
+<p>第四次查询：将第二次和第三次的索引都保持为visible，在MOVIE_ID和SCORE_上建立一个复合索引COMMENT_1_MOVIE_SCORE。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">index</span> COMMENT_1_MOVIE <span class="keyword">visible</span>;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> COMMENT_1_MOVIE_SCORE <span class="keyword">on</span> T_COMMENT_1(MOVIE_ID, SCORE_);</span><br></pre></td></tr></table></figure>
+<h4 id="实验结果-2"><a href="#实验结果-2" class="headerlink" title="实验结果"></a>实验结果</h4><p><strong>第一次查询：</strong></p>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%8810.48.45.png" alt="屏幕快照 2019-01-13 下午10.48.45"></p>
+<p>全表扫描，花销很大</p>
+<p><strong>第二次查询：</strong></p>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%8810.47.49.png" alt="屏幕快照 2019-01-13 下午10.47.49"></p>
+<p>利用在MOVIE_ID上的索引，在T_COMMENT_1中访问的数据量和花销都大幅度下降。</p>
+<p><strong>第三次查询：</strong></p>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%8810.50.07.png" alt="屏幕快照 2019-01-13 下午10.50.07"></p>
+<p>如果只有在SCORE_上的索引，根据CBO，Oracle并没有使用这个索引，而是依旧使用全表扫描，可知该索引并没有提升性能。</p>
+<p>易知，如果在这个时候将MOVIE_ID上的索引设为visible，Oracle会使用MOVIE_ID上的索引。</p>
+<p><strong>第四次查询：</strong></p>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%8810.57.10.png" alt="屏幕快照 2019-01-13 下午10.57.10"></p>
+<p>Oracle使用了复合索引，尽管在当前问题下COST花销与只有MOVIE_ID的索引差不多，但是其访问的记录数（CARDINALITY）显著减小，体现了复合索引给查询带来的性能提升。</p>
+<h3 id="实验6：物化视图对SQL查询性能的提升"><a href="#实验6：物化视图对SQL查询性能的提升" class="headerlink" title="实验6：物化视图对SQL查询性能的提升"></a>实验6：物化视图对SQL查询性能的提升</h3><h4 id="SQL语句-2"><a href="#SQL语句-2" class="headerlink" title="SQL语句"></a>SQL语句</h4><p><strong>原始查询语句：</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> T_DIRECTOR.NAME_, T_MOVIE.NAME_ MOVIE_NAME, <span class="keyword">AVG</span>(T_COMMENT_1.SCORE_) SCORE</span><br><span class="line"><span class="keyword">from</span> T_DIRECTOR, T_DIRECT, T_MOVIE, T_COMMENT_1</span><br><span class="line"><span class="keyword">where</span> T_DIRECTOR.ID_ = T_DIRECT.DIRECTOR_ID <span class="keyword">and</span> T_DIRECT.MOVIE_ID = T_MOVIE.ID_ <span class="keyword">and</span> T_COMMENT_1.MOVIE_ID = T_MOVIE.ID_ <span class="keyword">and</span> T_DIRECTOR.NAME_ <span class="keyword">like</span> <span class="string">'黑泽明%'</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> T_DIRECTOR.NAME_, T_DIRECTOR.ID_, T_MOVIE.NAME_, T_MOVIE.ID_, T_MOVIE.YEAR_ ;</span><br></pre></td></tr></table></figure>
+<p>创建一个<strong>普通视图</strong>：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> DIRECTOR_MOVIE_FAKE</span><br><span class="line"><span class="keyword">AS</span></span><br><span class="line"><span class="keyword">select</span> T_DIRECTOR.NAME_, T_DIRECTOR.ID_, T_MOVIE.NAME_ MOVIE_NAME, T_MOVIE.ID_ MOVIE_ID, T_MOVIE.YEAR_, <span class="keyword">AVG</span>(T_COMMENT_1.SCORE_) SCORE</span><br><span class="line"><span class="keyword">from</span> T_DIRECTOR, T_DIRECT, T_MOVIE, T_COMMENT_1</span><br><span class="line"><span class="keyword">where</span> T_DIRECTOR.ID_ = T_DIRECT.DIRECTOR_ID <span class="keyword">and</span> T_DIRECT.MOVIE_ID = T_MOVIE.ID_ <span class="keyword">and</span> T_COMMENT_1.MOVIE_ID = T_MOVIE.ID_</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> T_DIRECTOR.NAME_, T_DIRECTOR.ID_, T_MOVIE.NAME_, T_MOVIE.ID_, T_MOVIE.YEAR_;</span><br></pre></td></tr></table></figure>
+<p>使用普通视图进行查询：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> NAME_, MOVIE_NAME, SCORE <span class="keyword">from</span> DIRECTOR_MOVIE_FAKE <span class="keyword">where</span> NAME_ <span class="keyword">like</span> <span class="string">'黑泽明%'</span>;</span><br></pre></td></tr></table></figure>
+<p>创建<strong>物化视图</strong>：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">MATERIALIZED</span> <span class="keyword">VIEW</span> DIRECTOR_MOVIE</span><br><span class="line"><span class="keyword">BUILD</span> <span class="keyword">IMMEDIATE</span></span><br><span class="line"><span class="keyword">REFRESH</span> <span class="keyword">FORCE</span></span><br><span class="line"><span class="keyword">ON</span> <span class="keyword">DEMAND</span></span><br><span class="line"><span class="keyword">ENABLE</span> <span class="keyword">QUERY</span> REWRITE</span><br><span class="line"><span class="keyword">AS</span></span><br><span class="line"><span class="keyword">select</span> T_DIRECTOR.NAME_, T_DIRECTOR.ID_, T_MOVIE.NAME_ MOVIE_NAME, T_MOVIE.ID_ MOVIE_ID, T_MOVIE.YEAR_, <span class="keyword">AVG</span>(T_COMMENT_1.SCORE_) SCORE</span><br><span class="line"><span class="keyword">from</span> T_DIRECTOR, T_DIRECT, T_MOVIE, T_COMMENT_1</span><br><span class="line"><span class="keyword">where</span> T_DIRECTOR.ID_ = T_DIRECT.DIRECTOR_ID <span class="keyword">and</span> T_DIRECT.MOVIE_ID = T_MOVIE.ID_ <span class="keyword">and</span> T_COMMENT_1.MOVIE_ID = T_MOVIE.ID_</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> T_DIRECTOR.NAME_, T_DIRECTOR.ID_, T_MOVIE.NAME_, T_MOVIE.ID_, T_MOVIE.YEAR_;</span><br></pre></td></tr></table></figure>
+<p>设置<strong>创建时生成数据</strong>，<strong>按需要刷新</strong>，<strong>刷新方式为FORCE</strong>。</p>
+<p>根据视图进行如上查询：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> NAME_, MOVIE_NAME, SCORE <span class="keyword">from</span> DIRECTOR_MOVIE <span class="keyword">where</span> NAME_ <span class="keyword">like</span> <span class="string">'黑泽明%'</span>;</span><br></pre></td></tr></table></figure>
+<p>由于物化视图与表类似，可以给其建立索引，以下给导演名<strong>建立索引</strong>：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">BITMAP</span> <span class="keyword">INDEX</span> DIRECTOR_MOVIE_INAME_INDEX <span class="keyword">ON</span> DIRECTOR_MOVIE (NAME_);</span><br></pre></td></tr></table></figure>
+<p><strong>再次使用物化视图查询</strong>：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> NAME_, MOVIE_NAME, SCORE <span class="keyword">from</span> DIRECTOR_MOVIE <span class="keyword">where</span> NAME_ <span class="keyword">like</span> <span class="string">'黑泽明%'</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="实验结果-3"><a href="#实验结果-3" class="headerlink" title="实验结果"></a>实验结果</h4><p><strong>使用原始查询：</strong></p>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-14%20%E4%B8%8A%E5%8D%8812.30.46.png" alt="屏幕快照 2019-01-14 上午12.27.37"></p>
+<p>具有极大的花销。</p>
+<p><strong>创建视图后的查询：</strong></p>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-14%20%E4%B8%8A%E5%8D%8812.30.46.png" alt="屏幕快照 2019-01-14 上午12.30.46"></p>
+<p>其执行计划与<strong>原始查询</strong>一致。</p>
+<p><strong>创建物化视图后的查询：</strong></p>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-14%20%E4%B8%8A%E5%8D%8812.33.27.png" alt="屏幕快照 2019-01-14 上午12.33.27"></p>
+<p>其<strong>直接在物化视图中进行查询</strong>，执行计划即为简单，花销大幅度减小。</p>
+<p><strong>给物化视图创建索引后的查询：</strong></p>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-14%20%E4%B8%8A%E5%8D%8812.35.22.png" alt="屏幕快照 2019-01-14 上午12.35.22"></p>
+<p>建立索引后通过范围索引扫描该物化视图进行查询，其COST数字小得令人惊奇。</p>
+<h4 id="分析-4"><a href="#分析-4" class="headerlink" title="分析"></a>分析</h4><p>1.建立普通视图并不能提升性能。因为普通是虚拟的，对视图的操作实际都转变为了对各表的SQL操作，其与原始查询完全一致。</p>
+<p>2.物化视图是一种物理表，对于物化视图的查询是直接的，跟表一样。因此建立物化视图可以大幅度减小花销，但是同时，物化视图也会产生大量的维护成本。因此程序员应该根据实际情况建立物化视图以优化查询。</p>
+<p>3.物化视图同样可以增添索引，增加索引后Oracle对物化视图可以通过索引进行扫描，进一步提高效率。</p>
+<blockquote>
+<h3 id="物化视图与普通视图"><a href="#物化视图与普通视图" class="headerlink" title="物化视图与普通视图"></a>物化视图与普通视图</h3><p>视图只是一种虚拟表。实际上，<strong>对视图的查询真正转换成了相应的SQL语句再对各表进行连接查询，因此其性能提升有限，只是方便了使用</strong>。</p>
+<p>而物化视图是实质化的视图，是<strong>物理表</strong>，可以像表一样进行查询，建立索引，占用真正的存储空间，需要被刷新。</p>
+<h3 id="刷新模式"><a href="#刷新模式" class="headerlink" title="刷新模式"></a>刷新模式</h3><p><strong>on demand：</strong>顾名思义，仅在该物化视图“需要”被刷新了，才进行刷新(REFRESH)，即更新物化视图，以保证和基表数据的一致性;</p>
+<p><strong>on commit</strong>：提交触发，一旦基表有了commit，即事务提交，则立刻刷新，立刻更新物化视图，使得数据和基表一致。一般用这种方法在操作基表时速度会比较慢。</p>
+<p>创建物化视图时未作指定，则Oracle按 on demand 模式来创建。</p>
+<h3 id="刷新方法"><a href="#刷新方法" class="headerlink" title="刷新方法"></a>刷新方法</h3><p><strong>完全刷新（COMPLETE）</strong>： 会删除表中所有的记录（如果是单表刷新，可能会采用TRUNCATE的方式），然后根据物化视图中查询语句的定义重新生成物化视图。 </p>
+<p><strong>快速刷新（FAST）</strong>： 采用增量刷新的机制，只将自上次刷新以后对基表进行的所有操作刷新到物化视图中去。FAST必须创建基于主表的视图日志。对于增量刷新选项，如果在子查询中存在分析函数，则物化视图不起作用。</p>
+<p><strong>FORCE方式</strong>： 这是默认的数据刷新方式。Oracle会自动判断是否满足快速刷新的条件，如果满足则进行快速刷新，否则进行完全刷新。</p>
+</blockquote>
+<h3 id="实验7：Oracle-In-Memory性能分析"><a href="#实验7：Oracle-In-Memory性能分析" class="headerlink" title="实验7：Oracle In Memory性能分析"></a>实验7：Oracle In Memory性能分析</h3><h4 id="Sql语句"><a href="#Sql语句" class="headerlink" title="Sql语句"></a>Sql语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> T_MOVIE.NAME_, <span class="keyword">SUM</span>(T_COMMENT_2.SCORE_) s <span class="keyword">FROM</span> T_MOVIE,T_COMMENT_2 <span class="keyword">WHERE</span> T_MOVIE.ID_=T_COMMENT_2.MOVIE_ID <span class="keyword">GROUP</span> <span class="keyword">BY</span> T_MOVIE.NAME_ <span class="keyword">ORDER</span> <span class="keyword">BY</span> s <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="设置In-Memory"><a href="#设置In-Memory" class="headerlink" title="设置In Memory"></a>设置In Memory</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> T_MOVIE.NAME_ <span class="keyword">IN</span> <span class="keyword">MEMORY</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="实验结果-4"><a href="#实验结果-4" class="headerlink" title="实验结果"></a>实验结果</h4><p><strong>原始查询</strong>：</p>
+<p><img src="/images/no-inmemory.png" alt="no-inmemory"></p>
+<p><strong>In Memory查询：</strong></p>
+<p><img src="/images/inmemory.png" alt="inmemory"></p>
+<h4 id="结果分析"><a href="#结果分析" class="headerlink" title="结果分析"></a>结果分析</h4><p>遗憾的是与想象的不同，Oracle和Oracle In Memory在COST上面结果相同，但是事实上在我们同样的实验环境下测试二者时间时，In Memory确实会比Oracle好很多。其实简单思考一下，这是应该的，前面我们说过执行时间<code>t = Block数量 * Block处理时间</code>，不难知道差距还是出在Block处理时间上。</p>
+<h3 id="实验8：Oracle执行计划浅析-Oracle表的访问方式"><a href="#实验8：Oracle执行计划浅析-Oracle表的访问方式" class="headerlink" title="实验8：Oracle执行计划浅析(Oracle表的访问方式)"></a>实验8：Oracle执行计划浅析(Oracle表的访问方式)</h3><p>对T_MOVIE表进行查询，其本身有在其主码(ID_)上的UNIQUE INDEX和LENGTH_上的B-tree INDEX。</p>
+<h4 id="根据UNIQUE-INDEX（ID-）返回唯一记录"><a href="#根据UNIQUE-INDEX（ID-）返回唯一记录" class="headerlink" title="根据UNIQUE INDEX（ID_）返回唯一记录"></a>根据UNIQUE INDEX（ID_）返回唯一记录</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> T_MOVIE <span class="keyword">where</span> ID_ = <span class="number">20050</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%889.14.59.png" alt="屏幕快照 2019-01-13 下午9.14.59"></p>
+<p>使用的是索引唯一扫描</p>
+<h4 id="根据ID-返回少部分记录"><a href="#根据ID-返回少部分记录" class="headerlink" title="根据ID_返回少部分记录"></a>根据ID_返回少部分记录</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> T_MOVIE <span class="keyword">where</span> ID_ &lt; <span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%889.25.22.png" alt="屏幕快照 2019-01-13 下午9.25.22"></p>
+<p>使用的是索引范围扫描</p>
+<h4 id="根据LENGTH-返回大量数据"><a href="#根据LENGTH-返回大量数据" class="headerlink" title="根据LENGTH_返回大量数据"></a>根据LENGTH_返回大量数据</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> T_MOVIE <span class="keyword">where</span> LENGTH_ &lt;<span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/image-20190114004746346.png" alt="image-20190114004746346"></p>
+<h4 id="全查询MOVIE-和TYPE-返回其ID"><a href="#全查询MOVIE-和TYPE-返回其ID" class="headerlink" title="全查询MOVIE_和TYPE_返回其ID_"></a>全查询MOVIE_和TYPE_返回其ID_</h4><p><strong>全查询MOVIE_：</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> ID_ <span class="keyword">from</span> T_MOVIE;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%889.32.45.png" alt="屏幕快照 2019-01-13 下午9.32.45"></p>
+<p>采用的是索引快速扫描（因为数据量较多）</p>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%889.38.39.png" alt="屏幕快照 2019-01-13 下午9.38.39"></p>
+<p>且返回结果无顺序（从578开始，一段有序，即代表是一个索引数据块）。</p>
+<p><strong>全查询TYPE_:</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> ID_ <span class="keyword">from</span> T_TYPE;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%889.35.11.png" alt="屏幕快照 2019-01-13 下午9.35.11"></p>
+<p>采用的是索引全扫描（因为数据量较小）</p>
+<p><img src="/images/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-01-13%20%E4%B8%8B%E5%8D%889.37.57.png" alt="屏幕快照 2019-01-13 下午9.37.57"></p>
+<p>返回结果有顺序</p>
+<blockquote>
+<h3 id="执行计划中的访问方式"><a href="#执行计划中的访问方式" class="headerlink" title="执行计划中的访问方式"></a>执行计划中的访问方式</h3><p>访问方式即分为全表扫描（TABLE ACCESS FULL）和各种类型索引扫描（TABLE INDEX SCAN）。Oracle会根据表和索引的信息，推算执行的SQL语句从表中取多少数据以及这些数据是怎么分布的。</p>
+<h4 id="TABLE-ACCESS-FULL（全表扫描）"><a href="#TABLE-ACCESS-FULL（全表扫描）" class="headerlink" title="TABLE ACCESS FULL（全表扫描）"></a>TABLE ACCESS FULL（全表扫描）</h4><p><strong>Oracle会读取表中所有的行，并检查每一行是否满足SQL语句中的 where限制条件</strong>。全表扫描时可以使用多块读（即一次I/O读取多块数据块）操作来提升吞吐量。<strong>数据量太大的表不建议使用全表扫描，除非本身需要取出的数据较多，占到表数据总量的 5% ~ 10% 或以上</strong>。</p>
+<h4 id="TABLE-ACCESS-ROWID（通过ROWID的表存取）"><a href="#TABLE-ACCESS-ROWID（通过ROWID的表存取）" class="headerlink" title="TABLE ACCESS ROWID（通过ROWID的表存取）"></a>TABLE ACCESS ROWID（通过ROWID的表存取）</h4><p><strong>ROWID是由Oracle自动加在表中每行最后的一列伪列</strong>，表中并不会物理存储ROWID的值。程序员可以像使用其它列一样使用它，但不能对该列的值进行增、删、改操作。一旦一行数据插入后，则其对应的ROWID在该行的生命周期内是唯一的，即使发生行迁移，该行的ROWID值也不变。</p>
+<p>ROWID可以被视为每条记录的“指针”。<strong>它指出了该行所在的数据文件、数据块以及行在该块中的位置，所以通过ROWID可以快速定位到目标数据上，这也是Oracle中存取单行数据最快的方法</strong>。</p>
+<h4 id="TABLE-ACCESS-BY-INDEX-SCAN（索引扫描）"><a href="#TABLE-ACCESS-BY-INDEX-SCAN（索引扫描）" class="headerlink" title="TABLE ACCESS BY INDEX SCAN（索引扫描）"></a>TABLE ACCESS BY INDEX SCAN（索引扫描）</h4><p>在索引块中，既存储每个索引的键值，也存储具有该键值的行的ROWID。因此索引扫描其实分为两步：扫描索引得到对应的ROWID；通过ROWID定位到具体的行读取数据。</p>
+<p>索引扫描主要分为以下几种：</p>
+<h5 id="INDEX-UNIQUE-SCAN-索引唯一扫描"><a href="#INDEX-UNIQUE-SCAN-索引唯一扫描" class="headerlink" title="INDEX UNIQUE SCAN 索引唯一扫描"></a>INDEX UNIQUE SCAN 索引唯一扫描</h5><p>对应UNIQUE INDEX（唯一性索引）的扫描方式，其<strong>只会应用在返回一条记录的情况下</strong>。该点在之前的实验中已经描述。</p>
+<h5 id="INDEX-RANGE-SCAN-索引范围扫描"><a href="#INDEX-RANGE-SCAN-索引范围扫描" class="headerlink" title="INDEX RANGE SCAN 索引范围扫描"></a>INDEX RANGE SCAN 索引范围扫描</h5><p>主要是使用在需要返回多行记录的情况下，常见为以下三种：</p>
+<ul>
+<li>在唯一索引列上使用了范围操作符（如：&gt;   &lt;   &lt;&gt;   &gt;=   &lt;=   between）</li>
+<li>在组合索引上，只使用部分列进行查询（查询时必须包含前导列，否则会走全表扫描）</li>
+<li>对非唯一索引列上进行的任何查询</li>
+</ul>
+<p>如果在查询的过程中需要访问的记录数很多，分布很广，这个时候Oracle会根据CBO原则认为使用索引的花销可能比全表扫描大，会使用全表扫描。</p>
+<h5 id="INDEX-FULL-SCAN-索引全扫描"><a href="#INDEX-FULL-SCAN-索引全扫描" class="headerlink" title="INDEX FULL SCAN 索引全扫描"></a>INDEX FULL SCAN 索引全扫描</h5><p>进行全索引扫描时，查询出的数据都必须从索引中可以直接得到。其常发生在要查询的列包含唯一索引且需要对表中的所有数据都要查询。<strong>索引全扫描返回的结果有顺序。</strong></p>
+<h5 id="INDEX-FAST-FULL-SCAN-索引快速全扫描"><a href="#INDEX-FAST-FULL-SCAN-索引快速全扫描" class="headerlink" title="INDEX FAST FULL SCAN 索引快速全扫描"></a>INDEX FAST FULL SCAN 索引快速全扫描</h5><p>索引快速全扫描与索引全扫描类似，只是其在查找索引时会用一种更为快速的方式（简单来说是根据索引块的物理顺序而省去较为繁琐的逻辑顺序），其更适合于数据量大的表进行全查询，<strong>其一个特点就是返回的记录不按照顺序。</strong></p>
+</blockquote>
+<h2 id="四、TimesTen实验过程"><a href="#四、TimesTen实验过程" class="headerlink" title="四、TimesTen实验过程"></a>四、TimesTen实验过程</h2><h3 id="实验概述"><a href="#实验概述" class="headerlink" title="实验概述"></a>实验概述</h3><p>调用自己改写的 AliTT11.sql，查看 SQLPrepare，SQLExecute，FetchLoop 的查询时间；</p>
+<p>所有实验中，查询时间分为增加索引前、增加索引后、按照 timesten 建议添加索引三类，针对每一类时间分别有第一次执行时间和之后的平均查询时间两种；</p>
+<p>在首次执行查询语句时，timesten首先需要对语句进行预编译，因此首次执行的 SQLPrepare 时间相比之后的时间较长，之后的准备时间就相应缩短了很多。</p>
+<h3 id="实验1"><a href="#实验1" class="headerlink" title="实验1"></a>实验1</h3><h4 id="实验内容"><a href="#实验内容" class="headerlink" title="实验内容"></a>实验内容</h4><p>某地区评分6以上的所有电影的名字和上映时间</p>
+<h4 id="查询语句-1"><a href="#查询语句-1" class="headerlink" title="查询语句"></a>查询语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> DBIM.T_MOVIE.NAME_, DBIM.T_MOVIE.YEAR_</span><br><span class="line"><span class="keyword">FROM</span> DBIM.T_MOVIE, DBIM.T_MOVIE_REGION, DBIM.T_REGION</span><br><span class="line"><span class="keyword">WHERE</span> DBIM.T_REGION.ID_ = DBIM.T_MOVIE_REGION.REGION_ID</span><br><span class="line"><span class="keyword">AND</span> DBIM.T_MOVIE.ID_ = DBIM.T_MOVIE_REGION.MOVIE_ID</span><br><span class="line"><span class="keyword">AND</span> DBIM.T_REGION.NAME_ = <span class="string">'美国'</span></span><br><span class="line"><span class="keyword">AND</span> DBIM.T_MOVIE.SCORE_ &gt; <span class="number">6</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="添加的索引"><a href="#添加的索引" class="headerlink" title="添加的索引"></a>添加的索引</h4><table>
+<thead>
+<tr>
+<th>表明</th>
+<th>列名</th>
+<th>索引类型</th>
+<th>是否唯一</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Movie</td>
+<td>id_</td>
+<td>hash</td>
+<td>unique</td>
+</tr>
+<tr>
+<td>Movie</td>
+<td>score_</td>
+<td>range</td>
+<td></td>
+</tr>
+<tr>
+<td>Region</td>
+<td>id_</td>
+<td>hash</td>
+<td>unique</td>
+</tr>
+<tr>
+<td>Movie_region</td>
+<td>region_id</td>
+<td>hash</td>
+<td></td>
+</tr>
+<tr>
+<td>Movie_region</td>
+<td>movie_id</td>
+<td>hash</td>
+</tr>
+</tbody>
+</table>
+<h4 id="查询时间"><a href="#查询时间" class="headerlink" title="查询时间"></a>查询时间</h4><table>
+<thead>
+<tr>
+<th>时间类型</th>
+<th>Before1</th>
+<th>Before2</th>
+<th>After1</th>
+<th>After2</th>
+<th>建议1</th>
+<th>建议2</th>
+<th>提高百分比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQLPrepare</td>
+<td>0.001845</td>
+<td>0.000059</td>
+<td>0.000878</td>
+<td>0.000054</td>
+<td>0.000807</td>
+<td>0.000055</td>
+<td></td>
+</tr>
+<tr>
+<td>SQLExecute</td>
+<td>0.075809</td>
+<td>0.061819</td>
+<td>0.000037</td>
+<td>0.000025</td>
+<td>0.000034</td>
+<td>0.000025</td>
+<td>99.96%</td>
+</tr>
+<tr>
+<td>FetchLoop</td>
+<td>0.000004</td>
+<td>0.000002</td>
+<td>0.000002</td>
+<td>0.000001</td>
+<td>0.000003</td>
+<td>0.000002</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>执行计划 (before)</li>
+</ul>
+<p><img src="/images/11b.PNG" alt="11b"></p>
+<ul>
+<li>执行计划 (after)</li>
+</ul>
+<p><img src="/images/11a.PNG" alt="11a"></p>
+<h4 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h4><p>添加索引后速度大大提升，因为在 region 表中指定了查询条件，添加索引后可以快速从表项中匹配到指定条件的项；在添加之前，timesten 自动帮我们在 movie 表上的 id 字段上添加了临时哈希索引，除此之外，我们额外为几个 where 条件语句的查询字段都增加了索引， 因此提高了效率。</p>
+<p>执行计划</p>
+<ul>
+<li><p>before</p>
+<p>在两层嵌套循环中，顺序执行在region表中的查询、region表与联系表的join，循环结束后生成一个指定地区内的所有电影联系表；内层嵌套完成后，通过散列索引匹配movie表与内存循环生成的联系表，join筛选后生成结果列表</p>
+</li>
+<li><p>after</p>
+<p>添加索引之后，过程与添加之前相同，但由于内层循环内使用散列索引而不是顺序执行，因此查询速度比较快，加上没有临时创建索引的时间开销，所以相比之下大大提高了查询效率。</p>
+</li>
+</ul>
+<h3 id="实验2"><a href="#实验2" class="headerlink" title="实验2"></a>实验2</h3><h4 id="实验内容-1"><a href="#实验内容-1" class="headerlink" title="实验内容"></a>实验内容</h4><p>所有地区全部电影的平均评分排行榜（前100）</p>
+<h4 id="查询语句-2"><a href="#查询语句-2" class="headerlink" title="查询语句"></a>查询语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> (<span class="keyword">SELECT</span> DBIM.T_REGION.NAME_, <span class="keyword">SUM</span>(DBIM.T_MOVIE.SCORE_) s</span><br><span class="line"><span class="keyword">FROM</span> DBIM.T_REGION, DBIM.T_MOVIE_REGION, DBIM.T_MOVIE</span><br><span class="line"><span class="keyword">WHERE</span> DBIM.T_MOVIE.ID_ = DBIM.T_MOVIE_REGION.MOVIE_ID</span><br><span class="line"><span class="keyword">AND</span> DBIM.T_REGION.ID_ = DBIM.T_MOVIE_REGION.REGION_ID</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> DBIM.T_REGION.NAME_</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> s <span class="keyword">DESC</span>) <span class="keyword">WHERE</span> <span class="keyword">ROWNUM</span> &lt; <span class="number">101</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="添加的索引-1"><a href="#添加的索引-1" class="headerlink" title="添加的索引"></a>添加的索引</h4><table>
+<thead>
+<tr>
+<th>表明</th>
+<th>列名</th>
+<th>索引类型</th>
+<th>是否唯一</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Movie</td>
+<td>id_</td>
+<td>hash</td>
+<td>unique</td>
+</tr>
+<tr>
+<td>Movie</td>
+<td>score_</td>
+<td>range</td>
+<td></td>
+</tr>
+<tr>
+<td>Region</td>
+<td>name_</td>
+<td>hash</td>
+<td>unique</td>
+</tr>
+<tr>
+<td>Region</td>
+<td>id_</td>
+<td>hash</td>
+<td>unique</td>
+</tr>
+<tr>
+<td>Movie_region</td>
+<td>region_id</td>
+<td>hash</td>
+<td></td>
+</tr>
+<tr>
+<td>Movie_region</td>
+<td>movie_id</td>
+<td>hash</td>
+</tr>
+</tbody>
+</table>
+<h4 id="查询时间-1"><a href="#查询时间-1" class="headerlink" title="查询时间"></a>查询时间</h4><table>
+<thead>
+<tr>
+<th>时间类型</th>
+<th>Before(1)</th>
+<th>Before(2)</th>
+<th>After(1)</th>
+<th>After(2)</th>
+<th>建议(1)</th>
+<th>建议(2)</th>
+<th>提高百分比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQLPrepare</td>
+<td>0.001253</td>
+<td>0.000081</td>
+<td>0.001004</td>
+<td>0.000054</td>
+<td>0.000985</td>
+<td>0.000056</td>
+<td></td>
+</tr>
+<tr>
+<td>SQLExecute</td>
+<td>0.353111</td>
+<td>0.335902</td>
+<td>0.337983</td>
+<td>0.313458</td>
+<td>0.313004</td>
+<td>0.312695</td>
+<td>7%</td>
+</tr>
+<tr>
+<td>FetchLoop</td>
+<td>0.000045</td>
+<td>0.000020</td>
+<td>0.000018</td>
+<td>0.000018</td>
+<td>0.000018</td>
+<td>0.000017</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>执行计划 (before)</li>
+</ul>
+<p><img src="/images/12b.PNG" alt="12b"></p>
+<ul>
+<li>执行计划 (after)</li>
+</ul>
+<p><img src="/images/12a.PNG" alt="12a"></p>
+<h4 id="原因分析-1"><a href="#原因分析-1" class="headerlink" title="原因分析"></a>原因分析</h4><p>添加索引之前，timesten 自动在 movie 和 region 表的 id 字段上都设置了相应的哈希索引，而我们添加索引后与添加之前的执行计划中的索引项没有差别，因此效率几乎没有变化，加上 sum 聚合操作、group by、order by 操作都要进行费时间的全表扫描，所以需要较长时间完成查询。</p>
+<blockquote>
+<h4 id="实验1和2分析总结"><a href="#实验1和2分析总结" class="headerlink" title="实验1和2分析总结"></a>实验1和2分析总结</h4><p>指定条件的查询：</p>
+<ul>
+<li><p>建立索引之前</p>
+<p>timesten在某个相对较小的表上建立临时索引（散列索引或范围索引），在其他表上进行顺序扫描，执行查询语句中的条件匹配，建立索引的过程会造成时间上的消耗；</p>
+</li>
+<li><p>建立索引之后</p>
+<p>自己建立的索引覆盖timesten优化建立的索引，由于索引提前建立，因此没有建立索引带来的额外时间开销，而且在此类查询中我们在所有查询涉及字段上都建立了索引（tt自身优化通常只在一个表上建立索引），所以与建立索引之前相比有极大的性能提升。</p>
+</li>
+</ul>
+<p>聚合查询：</p>
+<ul>
+<li><p>执行计划Before：</p>
+<p>先顺序扫描关系表act的记录字段id，利用临时HASH索引 actor.id_，将act表中对应记录与act的记录通过字段相连；对(这些/该)拼接记录逐条利用临时HASH索引 movie.id ,接上movie表中符合条件的记录字段。</p>
+</li>
+<li><p>执行计划After：</p>
+<p>先顺序扫描关系表movie的记录字段id ，利用HASH索引 act.id_，将act表中对应记录与act的记录通过字段相连；针对第一次hash检索出的 act.id，再对(这些/该)拼接记录逐条利用临时HASH索引 actor.id ,接上actor表中符合条件的记录字段。</p>
+</li>
+<li><p>主要原因在于：第一次顺序扫描的关系表act，外码引用actor表的主码(1:1)，movie表(1:1)，hash索引查询唯一记录快；第二次顺序扫描的表为movie表，将对应多条act表里的记录（1:many），对应多个演员(1:many)。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="实验3：AWT"><a href="#实验3：AWT" class="headerlink" title="实验3：AWT"></a>实验3：AWT</h3><h4 id="创建-AWT-直写缓存组"><a href="#创建-AWT-直写缓存组" class="headerlink" title="创建 AWT 直写缓存组"></a>创建 AWT 直写缓存组</h4><ul>
+<li>缓存表<ul>
+<li>t_moive</li>
+<li>t_comment_1</li>
+</ul>
+</li>
+<li>选择理由<ul>
+<li>动态缓存组适用于不从 oracle 中预加载数据的场景</li>
+<li>Movie 表和评论表体量较大，不需要从 oracle 中提前加载</li>
+</ul>
+</li>
+</ul>
+<h4 id="测试-AWT-修改数据"><a href="#测试-AWT-修改数据" class="headerlink" title="测试 AWT 修改数据"></a>测试 AWT 修改数据</h4><ul>
+<li><p>修改电影评论表</p>
+</li>
+<li><p>修改语句</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">UPDATE DBIM.T_COMMENT_1</span><br><span class="line">SET SUMMARY_=&apos;A&apos;</span><br><span class="line">WHERE DBIM.T_COMMENT_1.SCORE_&gt;8</span><br><span class="line">AND DBIM.T_COMMENT_1.MOVIE_ID = 1;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>踩坑</p>
+<ul>
+<li>update语句指定修改的表名后，set字段不需要再次声明表名（否则报错）</li>
+<li>修改数据前要开启 replication agent</li>
+<li>执行update语句后要提交事务</li>
+</ul>
+</li>
+</ul>
+<h3 id="实验4：查看不同数据类型对查询效率的影响"><a href="#实验4：查看不同数据类型对查询效率的影响" class="headerlink" title="实验4：查看不同数据类型对查询效率的影响"></a>实验4：查看不同数据类型对查询效率的影响</h3><h4 id="表字节大小"><a href="#表字节大小" class="headerlink" title="表字节大小"></a>表字节大小</h4><table>
+<thead>
+<tr>
+<th>表名</th>
+<th>行数</th>
+<th>字节大小</th>
+<th>有数据类型映射的字节大小</th>
+<th>节约百分比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Movie</td>
+<td>292352</td>
+<td>47301232（nomapping）</td>
+<td>26293000（optimal）</td>
+<td>45%</td>
+</tr>
+<tr>
+<td>Comment</td>
+<td>9805336</td>
+<td>2528884600（nomapping）</td>
+<td>404967952（optimal）</td>
+<td>84%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="压缩设置"><a href="#压缩设置" class="headerlink" title="压缩设置"></a>压缩设置</h4><p><img src="/images/image-20190114062154430.png" alt="image-20190114062154430"></p>
+<h4 id="数据类型映射结果"><a href="#数据类型映射结果" class="headerlink" title="数据类型映射结果"></a>数据类型映射结果</h4><table>
+<thead>
+<tr>
+<th>表</th>
+<th>字段</th>
+<th>noMapping</th>
+<th>standardMapping</th>
+<th>aggressive</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Region</td>
+<td>id_</td>
+<td>NUMBER(11,0)</td>
+<td>TT_BIGINT</td>
+<td>TT_SMALINT</td>
+</tr>
+<tr>
+<td>Region</td>
+<td>name_</td>
+<td>VARCHAR(255 BYTE)</td>
+<td>VARCHAR(255 BYTE)</td>
+<td>VARCHAR(80 BYTE)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="结果分析-1"><a href="#结果分析-1" class="headerlink" title="结果分析"></a>结果分析</h4><ul>
+<li>对相同的表来说，从 oracle 导入 timesten 中如果不进行压缩（nomapping），与进行最优化数据类型映射+aggressive mapping + optimal compression 相比，大约浪费了45%的空间；</li>
+<li>对于不同数量级的表来说，千万数量级的 comment 表不进行压缩时浪费84%所有的空间，比十万数量级的 movie 表浪费的空间多了接近一倍。</li>
+</ul>
+<h3 id="实验5：根据优化建议建立索引"><a href="#实验5：根据优化建议建立索引" class="headerlink" title="实验5：根据优化建议建立索引"></a>实验5：根据优化建议建立索引</h3><h4 id="SQL语句-3"><a href="#SQL语句-3" class="headerlink" title="SQL语句"></a>SQL语句</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">Command&gt; call ttIndexAdviceCaptureOutput(0);</span><br><span class="line">&lt; 6, create index T_MOVIE_i1 on DBIM.T_MOVIE(ID_); &gt;</span><br><span class="line">&lt; 7, create index T_COMMENT_1_i2 on DBIM.T_COMMENT_1(MOVIE_ID,SCORE_); &gt;</span><br><span class="line">2 rows found.</span><br></pre></td></tr></table></figure>
+<h4 id="实验对象"><a href="#实验对象" class="headerlink" title="实验对象"></a>实验对象</h4><ul>
+<li>实验3.2语句</li>
+</ul>
+<h4 id="实验结果-5"><a href="#实验结果-5" class="headerlink" title="实验结果"></a>实验结果</h4><ul>
+<li>Before：自己建立索引后的查询时间</li>
+<li>After：根据 timesten 查询优化建议建立索引后的查询时间</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>时间类型</th>
+<th>Before(1)</th>
+<th>Before(2)</th>
+<th>After(1)</th>
+<th>After(2)</th>
+<th>提高百分比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQLPrepare</td>
+<td>0.001527</td>
+<td>0.000049</td>
+<td>0.000822</td>
+<td>0.000049</td>
+<td></td>
+</tr>
+<tr>
+<td>SQLExecute</td>
+<td>4.139655</td>
+<td>3.556375</td>
+<td>3.301318</td>
+<td>3.302092</td>
+<td>7.18%</td>
+</tr>
+<tr>
+<td>FetchLoop</td>
+<td>0.000047</td>
+<td>0.000027</td>
+<td>0.000018</td>
+<td>0.000017</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+      <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center;">
+  <img id="wechat_subscriber_qcode" src="/images/qcode.jpg" alt="Rui wechat" style="width: 200px; max-width: 100%;"/>
+  <div>我们梦中见</div>
+</div>
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>哟，小老板</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById(&quot;QR&quot;); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Rui WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Rui Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Oracle/" rel="tag"># Oracle</a>
+          
+            <a href="/tags/Timesten/" rel="tag"># Timesten</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/31/数据仓库期末项目文档/" rel="next" title="数据仓库期末项目文档">
+                <i class="fa fa-chevron-left"></i> 数据仓库期末项目文档
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/06/深入学习Java（更新中）/" rel="prev" title="深入学习Java（更新中）">
+                深入学习Java（更新中） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/favicon.png"
+                alt="Rui"/>
+            
+              <p class="site-author-name" itemprop="name">Rui</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ruitan" title="GitHub &rarr; https://github.com/ruitan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:tanrui106@gmail.com" title="E-Mail &rarr; mailto:tanrui106@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、实验前准备"><span class="nav-number">1.</span> <span class="nav-text">一、实验前准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#机器配置"><span class="nav-number">1.1.</span> <span class="nav-text">机器配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间计算标准"><span class="nav-number">1.2.</span> <span class="nav-text">时间计算标准</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL执行过程"><span class="nav-number">1.2.1.</span> <span class="nav-text">SQL执行过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#语句执行步骤进一步深入"><span class="nav-number">1.2.2.</span> <span class="nav-text">语句执行步骤进一步深入</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MySQL"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">MySQL</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Oracle"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">Oracle</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TimesTen"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">TimesTen</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、MySQL实验过程"><span class="nav-number">2.</span> <span class="nav-text">二、MySQL实验过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL语句"><span class="nav-number">2.1.</span> <span class="nav-text">SQL语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仅有主键索引"><span class="nav-number">2.2.</span> <span class="nav-text">仅有主键索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL进程表"><span class="nav-number">2.3.</span> <span class="nav-text">MySQL进程表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解释执行计划"><span class="nav-number">2.4.</span> <span class="nav-text">解释执行计划</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行过程"><span class="nav-number">2.5.</span> <span class="nav-text">执行过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建立索引"><span class="nav-number">2.6.</span> <span class="nav-text">建立索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验结论"><span class="nav-number">2.7.</span> <span class="nav-text">实验结论</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、Oracle实验过程"><span class="nav-number">3.</span> <span class="nav-text">三、Oracle实验过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实验1：SQL各子句条件顺序对查询效率的影响"><span class="nav-number">3.1.</span> <span class="nav-text">实验1：SQL各子句条件顺序对查询效率的影响</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#查询语句"><span class="nav-number">3.1.1.</span> <span class="nav-text">查询语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实验方式"><span class="nav-number">3.1.2.</span> <span class="nav-text">实验方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实验结果"><span class="nav-number">3.1.3.</span> <span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析"><span class="nav-number">3.1.4.</span> <span class="nav-text">分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接方式和连接顺序"><span class="nav-number">3.2.</span> <span class="nav-text">连接方式和连接顺序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#排序-合并连接"><span class="nav-number">3.2.1.</span> <span class="nav-text">排序-合并连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#嵌套循环"><span class="nav-number">3.2.2.</span> <span class="nav-text">嵌套循环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#哈希连接"><span class="nav-number">3.2.3.</span> <span class="nav-text">哈希连接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验2：B树索引与位图索引的比较"><span class="nav-number">3.3.</span> <span class="nav-text">实验2：B树索引与位图索引的比较</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sql语句"><span class="nav-number">3.3.1.</span> <span class="nav-text">sql语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引语句"><span class="nav-number">3.3.2.</span> <span class="nav-text">索引语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询消耗"><span class="nav-number">3.3.3.</span> <span class="nav-text">查询消耗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析-1"><span class="nav-number">3.3.4.</span> <span class="nav-text">分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验3：Oracle优化器对索引的选择"><span class="nav-number">3.4.</span> <span class="nav-text">实验3：Oracle优化器对索引的选择</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于索引"><span class="nav-number">4.</span> <span class="nav-text">关于索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#索引类型"><span class="nav-number">4.0.1.</span> <span class="nav-text">索引类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#什么时候用索引"><span class="nav-number">4.0.2.</span> <span class="nav-text">什么时候用索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#影响优化器决策的因素"><span class="nav-number">4.0.3.</span> <span class="nav-text">影响优化器决策的因素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引失效的可能原因"><span class="nav-number">4.0.4.</span> <span class="nav-text">索引失效的可能原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#强制使用索引"><span class="nav-number">4.0.5.</span> <span class="nav-text">强制使用索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sql语句-1"><span class="nav-number">4.0.6.</span> <span class="nav-text">sql语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询消耗-1"><span class="nav-number">4.0.7.</span> <span class="nav-text">查询消耗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sql语句-2"><span class="nav-number">4.0.8.</span> <span class="nav-text">sql语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询消耗-2"><span class="nav-number">4.0.9.</span> <span class="nav-text">查询消耗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析-2"><span class="nav-number">4.0.10.</span> <span class="nav-text">分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验4：Oracle分区索引"><span class="nav-number">4.1.</span> <span class="nav-text">实验4：Oracle分区索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sql语句-3"><span class="nav-number">4.1.1.</span> <span class="nav-text">sql语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实验结果-1"><span class="nav-number">4.1.2.</span> <span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析-3"><span class="nav-number">4.1.3.</span> <span class="nav-text">分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验5：Oracle使用复合索引"><span class="nav-number">4.2.</span> <span class="nav-text">实验5：Oracle使用复合索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL语句-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">SQL语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实验结果-2"><span class="nav-number">4.2.2.</span> <span class="nav-text">实验结果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验6：物化视图对SQL查询性能的提升"><span class="nav-number">4.3.</span> <span class="nav-text">实验6：物化视图对SQL查询性能的提升</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL语句-2"><span class="nav-number">4.3.1.</span> <span class="nav-text">SQL语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实验结果-3"><span class="nav-number">4.3.2.</span> <span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析-4"><span class="nav-number">4.3.3.</span> <span class="nav-text">分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#物化视图与普通视图"><span class="nav-number">4.4.</span> <span class="nav-text">物化视图与普通视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#刷新模式"><span class="nav-number">4.5.</span> <span class="nav-text">刷新模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#刷新方法"><span class="nav-number">4.6.</span> <span class="nav-text">刷新方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验7：Oracle-In-Memory性能分析"><span class="nav-number">4.7.</span> <span class="nav-text">实验7：Oracle In Memory性能分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Sql语句"><span class="nav-number">4.7.1.</span> <span class="nav-text">Sql语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置In-Memory"><span class="nav-number">4.7.2.</span> <span class="nav-text">设置In Memory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实验结果-4"><span class="nav-number">4.7.3.</span> <span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结果分析"><span class="nav-number">4.7.4.</span> <span class="nav-text">结果分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验8：Oracle执行计划浅析-Oracle表的访问方式"><span class="nav-number">4.8.</span> <span class="nav-text">实验8：Oracle执行计划浅析(Oracle表的访问方式)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#根据UNIQUE-INDEX（ID-）返回唯一记录"><span class="nav-number">4.8.1.</span> <span class="nav-text">根据UNIQUE INDEX（ID_）返回唯一记录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#根据ID-返回少部分记录"><span class="nav-number">4.8.2.</span> <span class="nav-text">根据ID_返回少部分记录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#根据LENGTH-返回大量数据"><span class="nav-number">4.8.3.</span> <span class="nav-text">根据LENGTH_返回大量数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#全查询MOVIE-和TYPE-返回其ID"><span class="nav-number">4.8.4.</span> <span class="nav-text">全查询MOVIE_和TYPE_返回其ID_</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行计划中的访问方式"><span class="nav-number">4.9.</span> <span class="nav-text">执行计划中的访问方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TABLE-ACCESS-FULL（全表扫描）"><span class="nav-number">4.9.1.</span> <span class="nav-text">TABLE ACCESS FULL（全表扫描）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TABLE-ACCESS-ROWID（通过ROWID的表存取）"><span class="nav-number">4.9.2.</span> <span class="nav-text">TABLE ACCESS ROWID（通过ROWID的表存取）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TABLE-ACCESS-BY-INDEX-SCAN（索引扫描）"><span class="nav-number">4.9.3.</span> <span class="nav-text">TABLE ACCESS BY INDEX SCAN（索引扫描）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#INDEX-UNIQUE-SCAN-索引唯一扫描"><span class="nav-number">4.9.3.1.</span> <span class="nav-text">INDEX UNIQUE SCAN 索引唯一扫描</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#INDEX-RANGE-SCAN-索引范围扫描"><span class="nav-number">4.9.3.2.</span> <span class="nav-text">INDEX RANGE SCAN 索引范围扫描</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#INDEX-FULL-SCAN-索引全扫描"><span class="nav-number">4.9.3.3.</span> <span class="nav-text">INDEX FULL SCAN 索引全扫描</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#INDEX-FAST-FULL-SCAN-索引快速全扫描"><span class="nav-number">4.9.3.4.</span> <span class="nav-text">INDEX FAST FULL SCAN 索引快速全扫描</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、TimesTen实验过程"><span class="nav-number">5.</span> <span class="nav-text">四、TimesTen实验过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实验概述"><span class="nav-number">5.1.</span> <span class="nav-text">实验概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验1"><span class="nav-number">5.2.</span> <span class="nav-text">实验1</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实验内容"><span class="nav-number">5.2.1.</span> <span class="nav-text">实验内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询语句-1"><span class="nav-number">5.2.2.</span> <span class="nav-text">查询语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加的索引"><span class="nav-number">5.2.3.</span> <span class="nav-text">添加的索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询时间"><span class="nav-number">5.2.4.</span> <span class="nav-text">查询时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原因分析"><span class="nav-number">5.2.5.</span> <span class="nav-text">原因分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验2"><span class="nav-number">5.3.</span> <span class="nav-text">实验2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实验内容-1"><span class="nav-number">5.3.1.</span> <span class="nav-text">实验内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询语句-2"><span class="nav-number">5.3.2.</span> <span class="nav-text">查询语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加的索引-1"><span class="nav-number">5.3.3.</span> <span class="nav-text">添加的索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询时间-1"><span class="nav-number">5.3.4.</span> <span class="nav-text">查询时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原因分析-1"><span class="nav-number">5.3.5.</span> <span class="nav-text">原因分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实验1和2分析总结"><span class="nav-number">5.3.6.</span> <span class="nav-text">实验1和2分析总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验3：AWT"><span class="nav-number">5.4.</span> <span class="nav-text">实验3：AWT</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建-AWT-直写缓存组"><span class="nav-number">5.4.1.</span> <span class="nav-text">创建 AWT 直写缓存组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试-AWT-修改数据"><span class="nav-number">5.4.2.</span> <span class="nav-text">测试 AWT 修改数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验4：查看不同数据类型对查询效率的影响"><span class="nav-number">5.5.</span> <span class="nav-text">实验4：查看不同数据类型对查询效率的影响</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#表字节大小"><span class="nav-number">5.5.1.</span> <span class="nav-text">表字节大小</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#压缩设置"><span class="nav-number">5.5.2.</span> <span class="nav-text">压缩设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据类型映射结果"><span class="nav-number">5.5.3.</span> <span class="nav-text">数据类型映射结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结果分析-1"><span class="nav-number">5.5.4.</span> <span class="nav-text">结果分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验5：根据优化建议建立索引"><span class="nav-number">5.6.</span> <span class="nav-text">实验5：根据优化建议建立索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL语句-3"><span class="nav-number">5.6.1.</span> <span class="nav-text">SQL语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实验对象"><span class="nav-number">5.6.2.</span> <span class="nav-text">实验对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实验结果-5"><span class="nav-number">5.6.3.</span> <span class="nav-text">实验结果</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rui</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.0.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://blog.guitoubing.top/2019/03/05/数据库与内存数据库实验报告/";
+    this.page.identifier = "2019/03/05/数据库与内存数据库实验报告/";
+    this.page.title = '数据库与内存数据库实验报告';
+    };
+  function loadComments() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://guitoubing-top.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', '' + +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+  
+    $(function() {
+      var offsetTop = $('#comments').offset().top - $(window).height();
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        loadComments();
+      } else {
+        $(window).on('scroll.disqus_scroll', function() {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = $('#comments').offset().top - $(window).height();
+          var scrollTop = $(window).scrollTop();
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            $(window).off('.disqus_scroll');
+            loadComments();
+          }
+        });
+      }
+    });
+  
+</script>
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<style>
+  .copy-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #333;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+    
+    user-select: none;
+    outline: 0;
+  }
+
+  .highlight-wrap .copy-btn {
+    transition: opacity .3s ease-in-out;
+    opacity: 0;
+    padding: 2px 6px;
+    position: absolute;
+    
+      right: 4px;
+      top: 8px;
+    
+  }
+
+  .highlight-wrap:hover .copy-btn,
+  .highlight-wrap .copy-btn:focus {
+    opacity: 1;
+  }
+
+  .highlight-wrap {
+    position: relative;
+  }
+</style>
+<script>
+  $('.highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('Copy').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('Copy');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+</body>
+</html>

@@ -37,7 +37,7 @@ categories:
 
 ### 问题截图
 
-![Win10报错](/img/bVbjaD6.jpeg)
+![Win10报错](/images/bVbjaD6.jpeg)
 
 如上所示，错误信息提示文件`\Windows\System32\winload.efi`出错，导致我一直陷入找`winload.efi`文件错误的怪圈。
 
@@ -49,7 +49,7 @@ categories:
 
 在PE中使用bootice的bcd编辑功能，打开了Win10所在磁盘中的BCD文件（C:\EFI\Microsoft\Boot\BCD），发现其中的**【启动设备】**项下的**启动磁盘**和**启动分区**项被置空了，我将其填写完毕后（如下图所示）发现Win10就可以正常启动了，我想这应该是我在安装Fedora时的一些不当操作使得BCD文件被修改的缘故而让Win10无法正常启动（Bootice使用方法可参见[此博客](https://blog.csdn.net/testcs_dn/article/details/47904937)）。
 
-![bootice选项](/img/image-20181106214511931.png)
+![bootice选项](/images/image-20181106214511931.png)
 
 #### 疑问：
 

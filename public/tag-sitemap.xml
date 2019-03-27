@@ -3,62 +3,6 @@
 
 
     <url>
-        <loc>http://blog.guitoubing.top/tags/Hexo/</loc>
-        <lastmod>2018-11-06T13:19:32.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E5%A4%A7%E4%B8%89%E4%B8%8A%E7%AC%94%E8%AE%B0/</loc>
-        <lastmod>2018-11-06T13:19:32.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/</loc>
-        <lastmod>2018-11-06T13:19:32.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</loc>
-        <lastmod>2018-11-06T13:19:32.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/Win10/</loc>
-        <lastmod>2018-11-07T02:57:04.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/Linux/</loc>
-        <lastmod>2018-11-07T02:57:04.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E5%8F%8C%E7%B3%BB%E7%BB%9F/</loc>
-        <lastmod>2018-11-07T02:57:04.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E5%BC%95%E5%AF%BC%E4%BF%AE%E5%A4%8D/</loc>
-        <lastmod>2018-11-07T02:57:04.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://blog.guitoubing.top/tags/JavaFX/</loc>
         <lastmod>2018-11-13T10:52:26.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -73,36 +17,8 @@
     </url>
 
     <url>
-        <loc>http://blog.guitoubing.top/tags/Java/</loc>
-        <lastmod>2018-11-13T10:52:26.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://blog.guitoubing.top/tags/Docker/</loc>
         <lastmod>2018-11-25T14:17:59.444Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/Oracle/</loc>
-        <lastmod>2018-11-25T14:17:59.444Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/TimesTen/</loc>
-        <lastmod>2018-12-05T11:30:20.453Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E5%86%85%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-        <lastmod>2018-12-05T11:30:20.453Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -122,15 +38,113 @@
     </url>
 
     <url>
+        <loc>http://blog.guitoubing.top/tags/Hexo/</loc>
+        <lastmod>2019-02-26T05:47:30.844Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/TimesTen/</loc>
+        <lastmod>2019-02-26T05:48:13.649Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E5%86%85%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+        <lastmod>2019-02-26T05:48:13.649Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Win10/</loc>
+        <lastmod>2019-02-26T05:48:31.567Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Linux/</loc>
+        <lastmod>2019-02-26T05:48:31.567Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E5%8F%8C%E7%B3%BB%E7%BB%9F/</loc>
+        <lastmod>2019-02-26T05:48:31.567Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E5%BC%95%E5%AF%BC%E4%BF%AE%E5%A4%8D/</loc>
+        <lastmod>2019-02-26T05:48:31.567Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/</loc>
+        <lastmod>2019-02-26T05:48:36.467Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Oracle/</loc>
+        <lastmod>2019-03-05T12:38:38.160Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Timesten/</loc>
+        <lastmod>2019-03-05T12:38:38.160Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</loc>
+        <lastmod>2019-03-06T13:08:43.357Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://blog.guitoubing.top/tags/Hadoop/</loc>
-        <lastmod>2018-12-11T16:39:31.379Z</lastmod>
+        <lastmod>2019-03-11T04:43:12.437Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://blog.guitoubing.top/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/</loc>
-        <lastmod>2018-12-11T16:39:31.379Z</lastmod>
+        <lastmod>2019-03-11T04:43:12.437Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E5%A4%A7%E4%B8%89%E4%B8%8A%E7%AC%94%E8%AE%B0/</loc>
+        <lastmod>2019-03-11T04:56:31.454Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/</loc>
+        <lastmod>2019-03-11T04:56:31.454Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Java/</loc>
+        <lastmod>2019-03-27T15:59:55.169Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

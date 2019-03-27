@@ -8,6 +8,20 @@
     </url>
     
     <url>
+        <loc>http://blog.guitoubing.top/categories/</loc>
+        <lastmod>2019-03-11T04:42:18.090Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>http://blog.guitoubing.top/tags/</loc>
+        <lastmod>2019-03-11T04:40:16.421Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
         <loc>http://blog.guitoubing.top/about/</loc>
         <lastmod>2018-11-06T14:05:46.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -17,13 +31,6 @@
     <url>
         <loc>http://blog.guitoubing.top//404.html</loc>
         <lastmod>2018-11-05T17:11:24.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
-        <loc>http://blog.guitoubing.top/tags/</loc>
-        <lastmod>2018-11-05T17:00:28.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>

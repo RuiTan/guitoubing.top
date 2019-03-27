@@ -6,7 +6,8 @@ tags:
     - 内存数据库 
     - 大三上笔记
 
-categories: archives
+categories: 
+    - archives
 ---
 # 内存计算与内存数据库
 
@@ -468,9 +469,9 @@ call ttOptUpdateStats;
 
 配置如下：
 
-![TimesTen数据库连接配置](/img/image-20181018140355729.png)
+![TimesTen数据库连接配置](/images/image-20181018140355729.png)
 
-![Oracle数据库连接配置](/img/image-20181018140412582.png)
+![Oracle数据库连接配置](/images/image-20181018140412582.png)
 
 #### plsql语法
 
@@ -482,7 +483,7 @@ call ttOptUpdateStats;
 >
 > As [Figure 9-1](https://docs.oracle.com/cd/B10501_01/appdev.920/a96624/09_packs.htm#5871) shows, you can think of the spec as an operational interface and of the body as a "black box." You can debug, enhance, or replace a package body without changing the interface (package spec) to the package.
 >
-> ![包](/img/image-20181018143452887.png)
+> ![包](/images/image-20181018143452887.png)
 >
 > ——[Oracle PL/SQL Package文档](https://docs.oracle.com/cd/B10501_01/appdev.920/a96624/09_packs.htm#362)
 
