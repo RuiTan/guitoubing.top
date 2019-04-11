@@ -8,8 +8,8 @@
     </url>
 
     <url>
-        <loc>http://blog.guitoubing.top/2019/03/27/Java%E7%B1%BB%E4%B8%8E%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/</loc>
-        <lastmod>2019-03-27T15:59:55.169Z</lastmod>
+        <loc>http://blog.guitoubing.top/2019/04/11/%E6%B7%B1%E5%85%A5GC/</loc>
+        <lastmod>2019-04-11T02:39:47.809Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -17,7 +17,15 @@
 
     <url>
         <loc>http://blog.guitoubing.top/2019/03/06/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0Java%EF%BC%88%E6%9B%B4%E6%96%B0%E4%B8%AD%EF%BC%89/</loc>
-        <lastmod>2019-03-24T14:25:51.788Z</lastmod>
+        <lastmod>2019-03-27T16:25:32.529Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/2019/03/27/Java%E7%B1%BB%E4%B8%8E%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/</loc>
+        <lastmod>2019-03-27T15:59:55.169Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
