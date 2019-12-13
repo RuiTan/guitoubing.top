@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en,zh-cn,default">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/images/favicon.png?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="概述EntityFramework是一种对象关系映射器ORM，它使.NET开发人员能够使用.NET对象处理数据库。它消除了开发人员通常需要编写的大多数数据访问代码的需要。 环境配置本次实验我使用最新的Microsoft Visual Studio Community 2019版本进行实验，环境配置过程中也是历经坎坷，在此记录如下。 VS2019连接MySQL使用VS2019连接MySQL时需要两个">
+<meta name="keywords" content=".NET">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# - .NETFramework及EntityFramework">
+<meta property="og:url" content="http://blog.guitoubing.top/2019/04/18/NET-Framework及EntityFramework/index.html">
+<meta property="og:site_name" content="Archer">
+<meta property="og:description" content="概述EntityFramework是一种对象关系映射器ORM，它使.NET开发人员能够使用.NET对象处理数据库。它消除了开发人员通常需要编写的大多数数据访问代码的需要。 环境配置本次实验我使用最新的Microsoft Visual Studio Community 2019版本进行实验，环境配置过程中也是历经坎坷，在此记录如下。 VS2019连接MySQL使用VS2019连接MySQL时需要两个">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555337368613.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555337410546.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555337487973.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555335982957.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555336042119.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555336181441.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555336839432.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555337786084.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555338066598.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555338108853.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555338141910.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555338199372.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555338281068.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555338670472.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555338761379.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555348366529.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555348996560.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555349943322.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555350134801.png">
+<meta property="og:updated_time" content="2019-10-20T09:08:41.777Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C# - .NETFramework及EntityFramework">
+<meta name="twitter:description" content="概述EntityFramework是一种对象关系映射器ORM，它使.NET开发人员能够使用.NET对象处理数据库。它消除了开发人员通常需要编写的大多数数据访问代码的需要。 环境配置本次实验我使用最新的Microsoft Visual Studio Community 2019版本进行实验，环境配置过程中也是历经坎坷，在此记录如下。 VS2019连接MySQL使用VS2019连接MySQL时需要两个">
+<meta name="twitter:image" content="http://blog.guitoubing.top/images/1555337368613.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Archer" type="application/atom+xml"/>
+
+
+
+
+  <link rel="canonical" href="http://blog.guitoubing.top/2019/04/18/NET-Framework及EntityFramework/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>C# - .NETFramework及EntityFramework | Archer</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-108090005-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-108090005-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Archer</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">我们梦中见</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br/>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br/>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+  
+  
+
+  
+
+  <a href="https://github.com/ruitan" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" style="fill: #222; color: #fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.guitoubing.top/2019/04/18/NET-Framework及EntityFramework/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Rui"/>
+      <meta itemprop="description" content=""/>
+      <meta itemprop="image" content="/images/favicon.png"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Archer"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">C# - .NETFramework及EntityFramework
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-04-18 11:07:39" itemprop="dateCreated datePublished" datetime="2019-04-18T11:07:39+08:00">2019-04-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-10-20 17:08:41" itemprop="dateModified" datetime="2019-10-20T17:08:41+08:00">2019-10-20</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p><code>EntityFramework</code>是一种对象关系映射器<code>ORM</code>，它使<code>.NET</code>开发人员能够使用<code>.NET</code>对象处理数据库。它消除了开发人员通常需要编写的大多数数据访问代码的需要。</p>
+<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><p>本次实验我使用最新的<code>Microsoft Visual Studio Community 2019</code>版本进行实验，环境配置过程中也是历经坎坷，在此记录如下。</p>
+<h3 id="VS2019连接MySQL"><a href="#VS2019连接MySQL" class="headerlink" title="VS2019连接MySQL"></a>VS2019连接MySQL</h3><p>使用VS2019连接MySQL时需要两个必备的程序：</p>
+<ul>
+<li><p><a href="https://cdn.mysql.com//Downloads/MySQL-for-VisualStudio/mysql-for-visualstudio-1.2.8.msi" target="_blank" rel="noopener">mysql-for-visualstudio-1.2.8.msi</a>：<code>MySQL for Visual Studio</code>是<code>MySQL</code>提供给<code>Microsoft Visual Studio</code>的驱动，用来实现对MySQL对象和数据的访问。</p>
+</li>
+<li><p><a href="https://cdn.mysql.com//Downloads/Connector-Net/mysql-connector-net-6.10.8.msi" target="_blank" rel="noopener">mysql-connector-net-6.10.8.msi</a>：<code>MySQL Connector / NET</code>能够开发需要与<code>MySQL</code>进行安全，高性能数据连接的.NET应用程序。它实现了所需的<code>ADO.NET</code>接口，并集成到<code>ADO.NET</code>感知工具中。</p>
+</li>
+</ul>
+<p>下载并安装完成之后，启动<code>VS2019</code>，选择<code>工具</code>-&gt;<code>连接到数据库</code>：</p>
+<p><img src="/images/1555337368613.png" alt="1555337368613"></p>
+<p>选择<code>MySQL Database</code>数据源：</p>
+<p><img src="/images/1555337410546.png" alt="1555337410546"></p>
+<p>填入我在<code>ADO.NET实验</code>中创建的数据库参数如下：</p>
+<p><img src="/images/1555337487973.png" alt="1555337487973"></p>
+<p>至此，关于<code>VS2019</code>连接<code>MySQL</code>的配置已经完成。</p>
+<h3 id="关于创建的项目类型"><a href="#关于创建的项目类型" class="headerlink" title="关于创建的项目类型"></a>关于创建的项目类型</h3><p>在<code>.NET</code>家族中有<code>.NET Core</code>和<code>.NET Framework</code>两大平台，他们的区别如下：</p>
+<p><strong>.NET Framework</strong>：支持<code>Windows</code>和<code>Web</code>应用程序。今天，您可以使用<code>Windows</code>窗体，<code>WPF</code>和<code>UWP</code>在<code>.NET Framework</code>中构建<code>Windows</code>应用程序。<code>ASP.NET MVC</code>用于在<code>.NET Framework</code>中构建<code>Web应用程序</code>。</p>
+<p><strong>.NET Core</strong>：是一种新的开源和跨平台框架，用于为包括<code>Windows</code>，<code>Mac</code>和<code>Linux</code>在内的所有操作系统构建应用程序。<code>.NET Core</code>仅支持<code>UWP</code>和<code>ASP.NET Core</code>。<code>UWP</code>用于构建<code>Windows 10</code>目标<code>Windows</code>和移动应用程序。<code>ASP.NET Core</code>用于构建基于浏览器的<code>Web应用程序</code>。 </p>
+<p>而在<code>VS2019</code>中也有两大类项目类型：</p>
+<ul>
+<li><p>.NET Core应用</p>
+<p><img src="/images/1555335982957.png" alt="1555335982957"></p>
+</li>
+<li><p>.NET Framework应用</p>
+<p><img src="/images/1555336042119.png" alt="1555336042119"></p>
+</li>
+</ul>
+<p>而我们本次实验一定要选择<code>.NET Framework</code>应用，否则无法通过<code>EntityFramework</code>创建实体数据模型。</p>
+<h3 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h3><p>这里我选择的是<code>控制台应用(.NET Framework)</code>：</p>
+<p><img src="/images/1555336181441.png" alt="1555336181441"></p>
+<p>注意最后一项<code>框架</code>最好选择<code>4.6.0</code>以上的框架，这里我选择最新版本<code>4.7.2</code>。</p>
+<h3 id="NuGet添加程序包"><a href="#NuGet添加程序包" class="headerlink" title="NuGet添加程序包"></a>NuGet添加程序包</h3><p><img src="/images/1555336839432.png" alt="1555336839432"></p>
+<p>使用NuGet添加程序包时最要紧的就是程序包的版本问题。</p>
+<p><strong>注意！！！：</strong>在前面安装MySQL Connector / NET时，选择的版本是6.10.8，因此我们这里的MySql.Data和MySql.Data.Entity两个程序包的版本也需要一致为<code>v6.10.8</code>，否则会出现各式各样的错误，我遇到的错误有以下两个：</p>
+<ol>
+<li><p><img src="/images/1555337786084.png" alt="1555337786084"></p>
+</li>
+<li><p>在1问题解决后，点击下一步会闪退。</p>
+</li>
+</ol>
+<p>至此环境配置已完成，下面针对EntityFramework三种模型来说明。</p>
+<h2 id="DB-First（来自数据库的EF设计器）"><a href="#DB-First（来自数据库的EF设计器）" class="headerlink" title="DB First（来自数据库的EF设计器）"></a>DB First（来自数据库的EF设计器）</h2><p>右键项目解决方案，选择<code>添加</code>-&gt;<code>新建项</code>：</p>
+<p><img src="/images/1555338066598.png" alt="1555338066598"></p>
+<p>选择<code>ADO.NET实体数据模型</code>，单击<code>下一步</code>：</p>
+<p><img src="/images/1555338108853.png" alt="1555338108853"></p>
+<p>选择<code>来自数据库的EF设计器</code>，单击<code>下一步</code>：</p>
+<p><img src="/images/1555338141910.png" alt="1555338141910"></p>
+<p>点击<code>是，在连接字符串中包含敏感数据</code>，单击<code>下一步</code>：</p>
+<p><img src="/images/1555338199372.png" alt="1555338199372"></p>
+<p>在<code>表</code>选项前打勾，单击完成：</p>
+<p><img src="/images/1555338281068.png" alt="1555338281068"></p>
+<p>完成后会发现，项目解决方案中出现了<code>Model1.edmx</code>文件，里面有两种主要的类<code>DBContext</code>和<code>DBSet</code>：</p>
+<p><img src="/images/1555338670472.png" alt="1555338670472"></p>
+<h3 id="DbSet"><a href="#DbSet" class="headerlink" title="DbSet"></a>DbSet</h3><p><code>DbSet</code>对应于数据库中的表，意即每个实体表对应一个<code>DbSet</code>实体类，相当于数据的集合，可通过此类间接对数据库表进行<code>ACID操作</code>再通过<code>DbContext</code>关联到数据库。具体操作再介绍完<code>DbContext</code>后一齐举例。</p>
+<h3 id="DbContext"><a href="#DbContext" class="headerlink" title="DbContext"></a>DbContext</h3><p> <code>DbContext</code>类是实体框架的重要组成部分。它是您的域或实体类与数据库之间的桥梁。</p>
+<p><img src="/images/1555338761379.png" alt="1555338761379"></p>
+<p><code>DbContext</code>是负责与数据交互作为对象的主要类。<code>DbContext</code>负责以下活动：</p>
+<ol>
+<li><code>EntitySet</code>： <code>DbContext</code>包含映射到数据库表的所有实体的实体集（<code>DbSet &lt;TEntity&gt;</code>）。</li>
+<li>查询（Querying）： <code>DbContext</code>将<code>LINQ-to-Entities</code>查询转换为<code>SQL查询</code>并将其发送到数据库。</li>
+<li>更改跟踪（Change Tracking）：跟踪实体在从数据库查询后发生的更改。</li>
+<li>持久数据（Persisting Data）：它还根据实体的状态对数据库执行插入，更新和删除操作。</li>
+<li>缓存（Caching）： DbContext默认进行一级缓存。它存储在上下文类生命周期中已经被检索的实体。</li>
+<li>管理关系（Manage Relationship）： <code>DbContext</code>还使用<code>DB-First</code>或<code>Model-First</code>方法使用<code>CSDL</code>，<code>MSL</code>和<code>SSDL</code>或者使用<code>Code-First</code>方法使用流利的<code>API</code>来管理关系。</li>
+<li>对象实现（Object Materialization）： <code>DbContext</code>将原始表数据转换为实体对象。</li>
+</ol>
+<p>下面是使用<code>DBContext</code>的示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using System.Linq;</span><br><span class="line">using System.Text;</span><br><span class="line">using System.Threading.Tasks;</span><br><span class="line"></span><br><span class="line">namespace EF</span><br><span class="line">&#123;</span><br><span class="line">    class Program</span><br><span class="line">    &#123;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;</span><br><span class="line">            assignment4Entities entities = new assignment4Entities();</span><br><span class="line"></span><br><span class="line">            // 增</span><br><span class="line">            student student = new student</span><br><span class="line">            &#123;</span><br><span class="line">                Id = 4,</span><br><span class="line">                Name = &quot;Tanrui&quot;,</span><br><span class="line">                Age = 23</span><br><span class="line">            &#125;;</span><br><span class="line">            entities.student.Add(student);</span><br><span class="line">            student = new student</span><br><span class="line">            &#123;</span><br><span class="line">                Id = 5,</span><br><span class="line">                Name = &quot;TanRui&quot;,</span><br><span class="line">                Age = 23</span><br><span class="line">            &#125;;</span><br><span class="line">            entities.student.Add(student);</span><br><span class="line">            entities.SaveChanges();</span><br><span class="line"></span><br><span class="line">            // 删</span><br><span class="line">            foreach (var stu in entities.student.Where(stu =&gt; stu.Name == &quot;Tanrui1&quot;))</span><br><span class="line">            &#123;</span><br><span class="line">                entities.student.Remove(stu);</span><br><span class="line">            &#125;</span><br><span class="line">            entities.SaveChanges();</span><br><span class="line"></span><br><span class="line">            // 改</span><br><span class="line">            foreach ( var stu in entities.student.Where(stu =&gt; stu.Name == &quot;TanRui&quot;) )</span><br><span class="line">            &#123;</span><br><span class="line">                stu.Age = 25;</span><br><span class="line">            &#125;</span><br><span class="line">            entities.SaveChanges();</span><br><span class="line"></span><br><span class="line">            // 查（使用Linq）</span><br><span class="line">            var query = from s in entities.student</span><br><span class="line">                        select new</span><br><span class="line">                        &#123;</span><br><span class="line">                            Name = s.Name,</span><br><span class="line">                            Age = s.Age</span><br><span class="line">                        &#125;;</span><br><span class="line">            foreach(var item in query)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(item);</span><br><span class="line">            &#125;</span><br><span class="line">            Console.ReadKey();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可通过数据库查看数据变化情况如期望一样。</p>
+<h2 id="Code-First（空Code-First模型）"><a href="#Code-First（空Code-First模型）" class="headerlink" title="Code First（空Code First模型）"></a>Code First（空Code First模型）</h2><p>创建步骤和<code>DB First</code>类似，区别如下：</p>
+<p>在选择<code>实体数据模型内容</code>时选择<code>空Code First模型</code>，直接点击完成即可：</p>
+<p><img src="/images/1555348366529.png" alt="1555348366529"></p>
+<p>点击完成后我们发现解决方案中出现了<code>Model1.cs</code>文件，同时查看<code>App.Config</code>文件发现多了下面内容：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">connectionStrings</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">add</span> <span class="attr">name</span>=<span class="string">"Model1"</span> <span class="attr">connectionString</span>=<span class="string">"data source=(LocalDb)\MSSQLLocalDB;initial catalog=EF.Model1;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework"</span> <span class="attr">providerName</span>=<span class="string">"System.Data.SqlClient"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">connectionStrings</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>VS2019</code>默认使用<code>SQLserver数据库文件</code>格式存储<code>Code First</code>生成的数据模型，而此处我们要使用的是<code>MySQL数据库</code>，因此需要更改<code>connectionStrings</code>参数如下：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">connectionStrings</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">add</span> <span class="attr">name</span>=<span class="string">"Model1"</span> <span class="attr">providerName</span>=<span class="string">"MySql.Data.MySqlClient"</span> <span class="attr">connectionString</span>=<span class="string">"server=localhost;userid=tanrui;password=tanrui;database=assignment4;persistsecurityinfo=True"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">connectionStrings</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>配置文件修改好之后，我们还需要修改<code>Model1.cs</code>文件，先看自动生成的内容：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">namespace EF</span><br><span class="line">&#123;</span><br><span class="line">    using System;</span><br><span class="line">    using System.Data.Entity;</span><br><span class="line">    using System.Linq;</span><br><span class="line">    [DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]</span><br><span class="line">    public class Model1 : DbContext</span><br><span class="line">    &#123;</span><br><span class="line">        //您的上下文已配置为从您的应用程序的配置文件(App.config 或 Web.config)</span><br><span class="line">        //使用“Model1”连接字符串。默认情况下，此连接字符串针对您的 LocalDb 实例上的</span><br><span class="line">        //“EF.Model1”数据库。</span><br><span class="line">        // </span><br><span class="line">        //如果您想要针对其他数据库和/或数据库提供程序，请在应用程序配置文件中修改“Model1”</span><br><span class="line">        //连接字符串。</span><br><span class="line">        public Model1()</span><br><span class="line">            : base(&quot;name=Model1&quot;)</span><br><span class="line">        &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //为您要在模型中包含的每种实体类型都添加 DbSet。有关配置和使用 Code First  模型</span><br><span class="line">        //的详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=390109。</span><br><span class="line"></span><br><span class="line">        public virtual DbSet&lt;MyEntity&gt; MyEntities &#123; get; set; &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public class MyEntity</span><br><span class="line">    &#123;</span><br><span class="line">        public int Id &#123; get; set; &#125;</span><br><span class="line">        public string Name &#123; get; set; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>VS2019</code>为我们自动生成的<code>Model1.cs</code>中已经给出了最基本的<code>Code First范例</code>，这里为了简便起见，我们没有新建<code>MyEntity.cs文件</code>，而是直接在<code>Model1.cs</code>中声明此<code>Model类</code>，并在<code>Model1类</code>中定义对应的<code>DbSet对象</code>。</p>
+<p>注意，上述代码中第6行的 <code>[DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]</code>内容需要手动添加，自动生成时不会自动添加。</p>
+<p>至此我们假设已经创建了一个简单的逻辑表，现在需要将其同步到数据库中：</p>
+<p><img src="/images/1555348996560.png" alt="1555348996560"></p>
+<p>如图，打开<code>程序包管理器控制台</code>，输入如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 为项目启用迁移</span><br><span class="line">PM&gt; Enable-Migrations</span><br><span class="line"># 为当前设计器代码模型生成一次快照，在搭建迁移基架时会使用最近一次的快照，意即更改代码后，需要重新执行此命令</span><br><span class="line">PM&gt; Add-Migration AddMyEntity</span><br><span class="line"># 将更改迁移到数据库</span><br><span class="line">PM&gt; Update-Database -Verbose</span><br></pre></td></tr></table></figure>
+<p>可能出现的错误：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">未为提供程序“MySql.Data.MySqlClient”找到任何 MigrationSqlGenerator。请在目标迁移配置类中使用 SetSqlGenerator 方法以注册其他 SQL 生成器。</span><br></pre></td></tr></table></figure>
+<p>原因：在Model1类定义前未手动添加<code>[DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]</code>。</p>
+<p>当上述迁移成功完成后，就可以测试数据库是否真正生效了，测试代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using System.Linq;</span><br><span class="line">using System.Text;</span><br><span class="line">using System.Threading.Tasks;</span><br><span class="line"></span><br><span class="line">namespace EF</span><br><span class="line">&#123;</span><br><span class="line">    class Program</span><br><span class="line">    &#123;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;</span><br><span class="line">            Model1 model = new Model1();</span><br><span class="line">            MyEntity entity = new MyEntity</span><br><span class="line">            &#123;</span><br><span class="line">                Id = 1,</span><br><span class="line">                Name = &quot;Tanrui&quot;</span><br><span class="line">            &#125;;</span><br><span class="line">            model.MyEntities.Add(entity);</span><br><span class="line">            model.SaveChanges();</span><br><span class="line">            Console.ReadKey();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行完之后查看数据库：</p>
+<p><img src="/images/1555349943322.png" alt="1555349943322"></p>
+<p>可以看到，<code>myentities表</code>已成功添加到数据库中，一行数据也成功插入到表中了。</p>
+<blockquote>
+<p>Tips: 注意到Code First还有个来自数据库的Code First，它实际上是根据现有的表生成对应的代码设计器，用户需要修改表结构时可通过修改设计器，而后更新迁移再更新到数据库中，个人感觉这和DB First没什么区别，而且不如DB First来的灵活。</p>
+<p><img src="/images/1555350134801.png" alt="1555350134801"></p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+      <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center;">
+  <img id="wechat_subscriber_qcode" src="/images/qcode.jpg" alt="Rui wechat" style="width: 200px; max-width: 100%;"/>
+  <div>我们梦中见</div>
+</div>
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>哟，小老板</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById(&quot;QR&quot;); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Rui WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Rui Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NET/" rel="tag"># .NET</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/18/Framework/" rel="next" title="C# - ADO.NET配置说明">
+                <i class="fa fa-chevron-left"></i> C# - ADO.NET配置说明
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/03/C-ReadWriteLock/" rel="prev" title="C# - 实现读写锁">
+                C# - 实现读写锁 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/favicon.png"
+                alt="Rui"/>
+            
+              <p class="site-author-name" itemprop="name">Rui</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ruitan" title="GitHub &rarr; https://github.com/ruitan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:tanrui106@gmail.com" title="E-Mail &rarr; mailto:tanrui106@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境配置"><span class="nav-number">2.</span> <span class="nav-text">环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#VS2019连接MySQL"><span class="nav-number">2.1.</span> <span class="nav-text">VS2019连接MySQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于创建的项目类型"><span class="nav-number">2.2.</span> <span class="nav-text">关于创建的项目类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建项目"><span class="nav-number">2.3.</span> <span class="nav-text">创建项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NuGet添加程序包"><span class="nav-number">2.4.</span> <span class="nav-text">NuGet添加程序包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DB-First（来自数据库的EF设计器）"><span class="nav-number">3.</span> <span class="nav-text">DB First（来自数据库的EF设计器）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DbSet"><span class="nav-number">3.1.</span> <span class="nav-text">DbSet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DbContext"><span class="nav-number">3.2.</span> <span class="nav-text">DbContext</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-First（空Code-First模型）"><span class="nav-number">4.</span> <span class="nav-text">Code First（空Code First模型）</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rui</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.0.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://blog.guitoubing.top/2019/04/18/NET-Framework及EntityFramework/";
+    this.page.identifier = "2019/04/18/NET-Framework及EntityFramework/";
+    this.page.title = 'C# - .NETFramework及EntityFramework';
+    };
+  function loadComments() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://guitoubing-top.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', '' + +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+  
+    $(function() {
+      var offsetTop = $('#comments').offset().top - $(window).height();
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        loadComments();
+      } else {
+        $(window).on('scroll.disqus_scroll', function() {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = $('#comments').offset().top - $(window).height();
+          var scrollTop = $(window).scrollTop();
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            $(window).off('.disqus_scroll');
+            loadComments();
+          }
+        });
+      }
+    });
+  
+</script>
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<style>
+  .copy-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #333;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+    
+    user-select: none;
+    outline: 0;
+  }
+
+  .highlight-wrap .copy-btn {
+    transition: opacity .3s ease-in-out;
+    opacity: 0;
+    padding: 2px 6px;
+    position: absolute;
+    
+      right: 4px;
+      top: 8px;
+    
+  }
+
+  .highlight-wrap:hover .copy-btn,
+  .highlight-wrap .copy-btn:focus {
+    opacity: 1;
+  }
+
+  .highlight-wrap {
+    position: relative;
+  }
+</style>
+<script>
+  $('.highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('Copy').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('Copy');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+</body>
+</html>

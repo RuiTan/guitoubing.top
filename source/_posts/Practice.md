@@ -1,11 +1,11 @@
 ---
-title: Best Practice
+title: 内存数据库 - Best Practice
 date: 2018-11-24 14:18:44
 tags:
     - TimesTen
     - 内存数据库
 categories:
-    - archives
+    - 数据库
 ---
 
 > Oracle专家的三次授课。

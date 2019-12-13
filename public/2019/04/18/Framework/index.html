@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en,zh-cn,default">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/images/favicon.png?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="概述ADO.NET提供对数据库如MySQL和XML这样的数据源以及通过OLE DB和ODBC公开的数据源的一致访问。共享数据的使用方应用程序可以使用ADO.NET连接到这些数据源，并可以检索、处理和更新其中包含的数据。 安装MySQL数据库创建数据库PS A:\&amp;gt; cd .\MySQL\mysql-5.7.25-winx64\bin\# 安装MySQL服务PS A:\MySQL\mysql-">
+<meta name="keywords" content=".NET">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# - ADO.NET配置说明">
+<meta property="og:url" content="http://blog.guitoubing.top/2019/04/18/Framework/index.html">
+<meta property="og:site_name" content="Archer">
+<meta property="og:description" content="概述ADO.NET提供对数据库如MySQL和XML这样的数据源以及通过OLE DB和ODBC公开的数据源的一致访问。共享数据的使用方应用程序可以使用ADO.NET连接到这些数据源，并可以检索、处理和更新其中包含的数据。 安装MySQL数据库创建数据库PS A:\&amp;gt; cd .\MySQL\mysql-5.7.25-winx64\bin\# 安装MySQL服务PS A:\MySQL\mysql-">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555227842703.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555227964411.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555228253075.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/1555228331186.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/image-20190414160931753.png">
+<meta property="og:image" content="http://blog.guitoubing.top/images/image-20190414161020200.png">
+<meta property="og:updated_time" content="2019-10-20T08:53:44.822Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C# - ADO.NET配置说明">
+<meta name="twitter:description" content="概述ADO.NET提供对数据库如MySQL和XML这样的数据源以及通过OLE DB和ODBC公开的数据源的一致访问。共享数据的使用方应用程序可以使用ADO.NET连接到这些数据源，并可以检索、处理和更新其中包含的数据。 安装MySQL数据库创建数据库PS A:\&amp;gt; cd .\MySQL\mysql-5.7.25-winx64\bin\# 安装MySQL服务PS A:\MySQL\mysql-">
+<meta name="twitter:image" content="http://blog.guitoubing.top/images/1555227842703.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Archer" type="application/atom+xml"/>
+
+
+
+
+  <link rel="canonical" href="http://blog.guitoubing.top/2019/04/18/Framework/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>C# - ADO.NET配置说明 | Archer</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-108090005-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-108090005-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Archer</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">我们梦中见</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br/>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br/>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+  
+  
+
+  
+
+  <a href="https://github.com/ruitan" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" style="fill: #222; color: #fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.guitoubing.top/2019/04/18/Framework/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Rui"/>
+      <meta itemprop="description" content=""/>
+      <meta itemprop="image" content="/images/favicon.png"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Archer"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">C# - ADO.NET配置说明
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-04-18 11:04:15" itemprop="dateCreated datePublished" datetime="2019-04-18T11:04:15+08:00">2019-04-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-10-20 16:53:44" itemprop="dateModified" datetime="2019-10-20T16:53:44+08:00">2019-10-20</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p><code>ADO.NET</code>提供对数据库如<code>MySQL</code>和<code>XML</code>这样的数据源以及通过<code>OLE DB</code>和<code>ODBC</code>公开的数据源的一致访问。共享数据的使用方应用程序可以使用<code>ADO.NET</code>连接到这些数据源，并可以检索、处理和更新其中包含的数据。</p>
+<h2 id="安装MySQL数据库"><a href="#安装MySQL数据库" class="headerlink" title="安装MySQL数据库"></a>安装MySQL数据库</h2><h3 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">PS A:\&gt; cd .\MySQL\mysql-5.7.25-winx64\bin\</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装MySQL服务</span></span><br><span class="line">PS A:\MySQL\mysql-5.7.25-winx64\bin&gt; .\mysqld install</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 初始化MySQL数据库，创建无root密码的root用户</span></span><br><span class="line">PS A:\MySQL\mysql-5.7.25-winx64\bin&gt; mysqld --initialize-insecure</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 启动MySQL服务</span></span><br><span class="line">PS A:\MySQL\mysql-5.7.25-winx64\bin&gt; net start mysql</span><br><span class="line">MySQL 服务正在启动 .</span><br><span class="line">MySQL 服务已经启动成功。</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建用户，设置密码并赋予权限</span></span><br><span class="line">PS A:\MySQL\mysql-5.7.25-winx64\bin&gt; mysql -uroot</span><br><span class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</span><br><span class="line">Your MySQL connection id is 2</span><br><span class="line">Server version: 5.7.25 MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建用户并设置密码</span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> create user <span class="string">'tanrui'</span>@<span class="string">'localhost'</span> identified by <span class="string">'tanrui'</span>;</span></span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 赋予权限</span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> grant all privileges on *.* to <span class="string">'tanrui'</span>@<span class="string">'localhost'</span>;</span></span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> <span class="built_in">exit</span></span></span><br><span class="line">Bye</span><br><span class="line"><span class="meta">#</span><span class="bash"> 以新用户登录数据库</span></span><br><span class="line">PS A:\MySQL\mysql-5.7.25-winx64\bin&gt; mysql -utanrui -ptanrui</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</span><br><span class="line">Your MySQL connection id is 7</span><br><span class="line">Server version: 5.7.25 MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建数据库</span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> create database Assignment4;</span></span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line"></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> show databases;</span></span><br><span class="line">+--------------------+</span><br><span class="line">| Database           |</span><br><span class="line">+--------------------+</span><br><span class="line">| information_schema |</span><br><span class="line">| assignment4        |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">+--------------------+</span><br><span class="line">5 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+<h3 id="使用DataGrip连接数据库"><a href="#使用DataGrip连接数据库" class="headerlink" title="使用DataGrip连接数据库"></a>使用DataGrip连接数据库</h3><p>设置连接参数如下，点击<code>OK</code>完成连接：</p>
+<p><img src="/images/1555227842703.png" alt="1555227842703"></p>
+<p>右键<code>assignment4</code>数据库点击<code>New</code>-&gt;<code>Table</code>创建<code>Student</code>和<code>Score</code>新表：</p>
+<p><img src="/images/1555227964411.png" alt="1555227964411"></p>
+<p><img src="/images/1555228253075.png" alt="1555228253075"></p>
+<p><img src="/images/1555228331186.png" alt="1555228331186"></p>
+<h2 id="Visual-Studio-Nuget包管理"><a href="#Visual-Studio-Nuget包管理" class="headerlink" title="Visual Studio Nuget包管理"></a>Visual Studio Nuget包管理</h2><p>本次实验需要用到<code>MySQL</code>一些操作，因此需要在<code>Visual Studio</code>中添加相应的包，如下：</p>
+<p><img src="/images/image-20190414160931753.png" alt="image-20190414160931753"></p>
+<p>打开<code>Nuget包管理器</code>，下载<code>Mysql.Data</code>和<code>System.Data.DataSetExtensions</code>两个包，前者提供<code>MySQL</code>连接驱动，后者主要是提供<code>C#</code>中对于数据库表操作的一些语法支持。</p>
+<p><img src="/images/image-20190414161020200.png" alt="image-20190414161020200"></p>
+<h2 id="ADONET基础编程"><a href="#ADONET基础编程" class="headerlink" title="ADONET基础编程"></a>ADONET基础编程</h2><h3 id="一个小示例"><a href="#一个小示例" class="headerlink" title="一个小示例"></a>一个小示例</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using System.Linq;</span><br><span class="line">using System.Text;</span><br><span class="line">using System.Data;</span><br><span class="line">using MySql.Data.MySqlClient;</span><br><span class="line"></span><br><span class="line">namespace ADONET</span><br><span class="line">&#123;</span><br><span class="line">    class Program</span><br><span class="line">    &#123;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(&quot;Hello World!&quot;);</span><br><span class="line">            //ADO.NET 几个关键对象</span><br><span class="line">            //(1) Connection对象 用于连接数据库</span><br><span class="line">            //(2) Command对象 对数据源执行命令</span><br><span class="line">            //(3) DataReader对象 用户从数据源读取数据</span><br><span class="line">            //(4) DataAdapter对象 从数据源读取数据并且填充数据集对象 </span><br><span class="line">            //(5) DataSet对象 相当于内存数据库</span><br><span class="line">            //(6) DataTable对象 相当于内存数据库中的表格</span><br><span class="line">            string connString = &quot;server = 127.0.0.1; user id = tanrui; password = tanrui; persistsecurityinfo = True; database = assignment4&quot;;</span><br><span class="line">            MySqlConnection conn = new MySqlConnection(connString);</span><br><span class="line">            conn.Open();</span><br><span class="line"></span><br><span class="line">            MySqlCommand cmd = new MySqlCommand();</span><br><span class="line">            cmd.Connection = conn;</span><br><span class="line">            //ExecuteNonQuery的简单使用</span><br><span class="line">                        cmd.CommandText = &quot;insert into Student values (1,&apos;zhangsan1&apos;,20)&quot;;</span><br><span class="line">                        cmd.ExecuteNonQuery();</span><br><span class="line">                        cmd.CommandText = &quot;insert into Student values (2,&apos;zhangsan2&apos;,19)&quot;;</span><br><span class="line">                        cmd.ExecuteNonQuery();</span><br><span class="line">                        cmd.CommandText = &quot;insert into Student values (3,&apos;zhangsan3&apos;,22)&quot;;</span><br><span class="line">                        cmd.ExecuteNonQuery();</span><br><span class="line">                        cmd.CommandText = &quot;insert into Score values (1,80,85)&quot;;</span><br><span class="line">                        cmd.ExecuteNonQuery();</span><br><span class="line">                        cmd.CommandText = &quot;insert into Score values (2,90,95)&quot;;</span><br><span class="line">                        cmd.ExecuteNonQuery();</span><br><span class="line">                        cmd.CommandText = &quot;insert into Score values (3,86,75)&quot;;</span><br><span class="line">                        cmd.ExecuteNonQuery();</span><br><span class="line">                       </span><br><span class="line">            //参数化查询的使用，是目前唯一可以预防SQL Injection的方法</span><br><span class="line">            cmd.CommandText = @&quot;INSERT INTO Student (Id,Name,Age) VALUES (@Id,@Name,@Age)&quot;;</span><br><span class="line">                        cmd.Parameters.Add(new MySqlParameter(&quot;@Id&quot;, 100));</span><br><span class="line">                        cmd.Parameters.Add(new MySqlParameter(&quot;@Name&quot;,</span><br><span class="line">            &quot;newstudent&quot;));</span><br><span class="line">                        cmd.Parameters.Add(new MySqlParameter(&quot;@Age&quot;, 18));</span><br><span class="line">                        cmd.ExecuteNonQuery();</span><br><span class="line">            //ExecuteReader的简单使用</span><br><span class="line">            cmd.CommandText = &quot;select Count(*) from Student&quot;;</span><br><span class="line">            object nRows = cmd.ExecuteScalar();</span><br><span class="line">            Console.WriteLine(&quot;nRows: &#123;0&#125;&quot;, nRows);</span><br><span class="line"></span><br><span class="line">cmd.CommandText = &quot;select * from Student&quot;;</span><br><span class="line">            MySqlDataReader dr = cmd.ExecuteReader();</span><br><span class="line">            while(dr.Read())</span><br><span class="line">            &#123;</span><br><span class="line">                 Console.WriteLine(&quot;One Row: &#123;0&#125;,&#123;1&#125;,&#123;2&#125;&quot;,</span><br><span class="line">dr.GetValue(0), dr[&quot;Name&quot;], dr.GetValue( dr.GetOrdinal(&quot;Age&quot;) ));</span><br><span class="line">            &#125;</span><br><span class="line">            dr.Close();</span><br><span class="line">            //使用MySqlDataAdapter填充DataSet</span><br><span class="line">            DataSet ds = new DataSet();</span><br><span class="line">            MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);</span><br><span class="line">            cmd.CommandText = &quot;select * from Student&quot;;</span><br><span class="line">            adapter.Fill(ds, &quot;Student&quot;);</span><br><span class="line">            cmd.CommandText = &quot;select * from Score&quot;;</span><br><span class="line">            adapter.Fill(ds, &quot;Score&quot;);</span><br><span class="line">            DataTable Student = ds.Tables[&quot;Student&quot;];</span><br><span class="line">            DataTable Score = ds.Tables[&quot;Score&quot;];</span><br><span class="line">            //LINQ与DataTable的结合</span><br><span class="line">            var qry = from s in Student.AsEnumerable()</span><br><span class="line">                      join c in Score.AsEnumerable() on s.Field&lt;int&gt;(&quot;Id&quot;) equals c.Field&lt;int&gt;(&quot;StudentId&quot;)</span><br><span class="line">                      where c.Field&lt;int&gt;(&quot;English&quot;) &gt; 80</span><br><span class="line">                      select new</span><br><span class="line">                      &#123;</span><br><span class="line">                          Name = s.Field&lt;string&gt;(&quot;Name&quot;),</span><br><span class="line">                          English = c.Field&lt;int&gt;(&quot;English&quot;),</span><br><span class="line">                          Maths = c.Field&lt;int&gt;(&quot;Maths&quot;)</span><br><span class="line">                      &#125;;</span><br><span class="line">            foreach (var item in qry)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(item);</span><br><span class="line">            &#125;</span><br><span class="line">            //可以使用using模式进行资源的释放</span><br><span class="line">            conn.Close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">/* Output:</span><br><span class="line">Hello World!</span><br><span class="line">nRows: 4</span><br><span class="line">One Row: 1,zhangsan1,20</span><br><span class="line">One Row: 2,zhangsan2,19</span><br><span class="line">One Row: 3,zhangsan3,22</span><br><span class="line">One Row: 100,newstudent,18</span><br><span class="line">&#123; Name = zhangsan2, English = 90, Maths = 95 &#125;</span><br><span class="line">&#123; Name = zhangsan3, English = 86, Maths = 75 &#125;</span><br><span class="line">*/~</span><br></pre></td></tr></table></figure>
+<p>上述例子将ADONET中几个主要对象综合到了一起，下面逐一介绍各个对象的功能及用法。</p>
+<h3 id="Connection"><a href="#Connection" class="headerlink" title="Connection"></a>Connection</h3><p><code>Connection对象</code>用于和数据库交互，若要操作数据库必须与其连接。创建连接时需要指定<code>数据库服务器</code>、<code>数据库名</code>、<code>用户名</code>、<code>密码</code>以及<code>其他所需参数</code>。例如本例中的<code>connString</code>：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string connString = &quot;server = 127.0.0.1; user id = tanrui; password = tanrui; persistsecurityinfo = 	True; database = assignment4&quot;;</span><br></pre></td></tr></table></figure>
+<p>每一种数据源都有特定的<code>Connection类</code>，例如本例中的<code>MySqlConnection</code>：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">MySqlConnection conn = new MySqlConnection(connString);</span><br></pre></td></tr></table></figure>
+<p>与<code>Java</code>不同，<code>C#</code>中创建的<code>Connection对象</code>是使用正常的构造函数创建一个连接，而<code>Java</code>中使用的是<strong>单例模式</strong>创建数据库连接。</p>
+<h3 id="Command"><a href="#Command" class="headerlink" title="Command"></a>Command</h3><p><code>Command对象</code>针对<code>Connection对象</code>指定的数据源执行SQL语句和存储过程及函数。这个对象是架构在<code>Connection对象</code>上的，也就是说<code>Command对象</code>通过<code>Connection对象</code>操作数据源。</p>
+<p>同样，对于每一种数据源都有特定的<code>Command类</code>，例如本例中：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">MySqlCommand cmd = new MySqlCommand();</span><br><span class="line">cmd.Connection = conn;</span><br></pre></td></tr></table></figure>
+<p>在创建了<code>MySqlCommand对象</code>后还需为其指定对应的<code>Connection对象</code>。</p>
+<h4 id="增删改操作"><a href="#增删改操作" class="headerlink" title="增删改操作"></a>增删改操作</h4><p><code>ExecuteNonQuery()</code>方法主要用于<code>Command对象</code>的<code>增删改</code>操作。</p>
+<p><code>Command对象</code>的基本使用方法如例中所示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cmd.CommandText = &quot;insert into Student values (1,&apos;zhangsan1&apos;,20)&quot;;</span><br><span class="line">cmd.ExecuteNonQuery();</span><br></pre></td></tr></table></figure>
+<p>先指定其<code>CommandText</code>即SQL语句，而后调用<code>ExecuteNonQuery()</code>方法完成query。</p>
+<p>上述SQL操作方法很容易被非法分子通过字符串拼接等方式进行<code>SQL注入攻击</code>，我们可以使用<code>Parameters</code>修饰SQL语句，以防止<code>SQL注入攻击</code>：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cmd.CommandText = @&quot;INSERT INTO Student (Id,Name,Age) VALUES (@Id,@Name,@Age)&quot;;</span><br><span class="line">cmd.Parameters.Add(new MySqlParameter(&quot;@Id&quot;, 100));</span><br><span class="line">cmd.Parameters.Add(new MySqlParameter(&quot;@Name&quot;, &quot;newstudent&quot;));</span><br><span class="line">cmd.Parameters.Add(new MySqlParameter(&quot;@Age&quot;, 18));</span><br><span class="line">cmd.ExecuteNonQuery();</span><br></pre></td></tr></table></figure>
+<h4 id="查询操作"><a href="#查询操作" class="headerlink" title="查询操作"></a>查询操作</h4><p>查询由于返回的结果的复杂性，一般有<code>ExecuteScalar()</code>和<code>ExecuteReader()</code>两种方法。</p>
+<p><code>ExecuteScalar()</code>主要用于<strong>SQL查询语句只返回一个数据</strong>，例如<code>Count操作</code>、<code>Max操作</code>等的返回值：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cmd.CommandText = &quot;select Count(*) from Student&quot;;</span><br><span class="line">object nRows = cmd.ExecuteScalar();</span><br><span class="line">Console.WriteLine(&quot;nRows: &#123;0&#125;&quot;, nRows);</span><br></pre></td></tr></table></figure>
+<p><code>ExecuteReader()</code>返回一个<code>DataReader对象</code>，即结果集，下面会重点讨论该对象。</p>
+<h3 id="DataReader"><a href="#DataReader" class="headerlink" title="DataReader"></a>DataReader</h3><p><code>DataReader对象</code>是对数据源的查询结果的<strong>基于流的、仅向前的只读检索</strong>，它不会更新数据。</p>
+<p>它是基于<code>Command对象</code>的，意即只能通过调用<code>特定Command对象</code>的<code>ExecuteReader()</code>方法以获取<code>DataReader对象</code>：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">MySqlDataReader dr = cmd.ExecuteReader();</span><br><span class="line">while(dr.Read())</span><br><span class="line">&#123;</span><br><span class="line">         Console.WriteLine(&quot;One Row: &#123;0&#125;,&#123;1&#125;,&#123;2&#125;&quot;,</span><br><span class="line">         										dr.GetValue(0),</span><br><span class="line">         										dr[&quot;Name&quot;],</span><br><span class="line">         										dr.GetValue(dr.GetOrdinal(&quot;Age&quot;) </span><br><span class="line">         									));</span><br><span class="line">&#125;</span><br><span class="line">dr.Close();</span><br></pre></td></tr></table></figure>
+<p>同样，特定的数据源也是有特定类型的<code>DataReader类</code>，其都是通过继承<code>DbDataReader类</code>实现的。</p>
+<p>由于<code>Read()</code>方法返回是否有下一行的布尔值，因此很适合使用<code>while循环</code>遍历结果。</p>
+<p>从代码中易知，<code>DataReader对象</code>的<code>Read()</code>方法是通过循环从数据源中每次获取一行数据，类似于plsql中的游标，他除了读取效率很高之外，牺牲了很多其他特性，例如对结果的排序、更改等。</p>
+<h3 id="DataSet和DataAdapter"><a href="#DataSet和DataAdapter" class="headerlink" title="DataSet和DataAdapter"></a>DataSet和DataAdapter</h3><p><code>DataSet类</code>包含数据的数据表集合。它用于在<strong>不与数据源交互</strong>的情况下获取数据，这就是为什么它也被称为<code>断开数据访问方法</code>。这是一个<strong>内存数据存储</strong>，可以<strong>同时容纳多个表</strong>。可以使用<code>DataRelation</code>对象来关联这些表。 <code>DataSet</code>也可以用来读写<code>XML文档</code>中的数据。</p>
+<p><code>DataAdapter</code>是<code>ADO.NET</code>数据提供程序的一部分。<code>DataAdapter</code>提供<strong>数据集和数据源之间的通信</strong>。我们可以将<code>DataAdapter</code>与<code>DataSet</code>对象结合使用。注意<code>DataAdapter类</code>也是<strong>各个数据源有各自的实现方法</strong>。</p>
+<p><code>DataAdapter</code>通过映射<code>Fill()</code>方法提供此组合，该方法更改<code>DataSet</code>中的数据以匹配数据源中的数据。也就是说，这两个对象组合起来以实现<code>数据访问</code>和<code>数据操作</code>功能：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DataSet ds = new DataSet();</span><br><span class="line">SqlDataAdapter adapter = new SqlDataAdapter(cmd); cmd.CommandText = &quot;select * from Student&quot;; adapter.Fill(ds, &quot;Student&quot;);</span><br><span class="line">cmd.CommandText = &quot;select * from Score&quot;; adapter.Fill(ds, &quot;Score&quot;);</span><br><span class="line">DataTable Student = ds.Tables[&quot;Student&quot;]; DataTable Score = ds.Tables[&quot;Score&quot;];</span><br></pre></td></tr></table></figure>
+<p>通过代码，我们可以看到<code>DataSet</code>是<strong>独立于数据源的数据集</strong>，即<strong>对于任何数据源，都提供一致的关系编程模型</strong>。</p>
+<p>相比于<code>DataReader</code>，<code>DataSet</code><strong>一次性将所有数据放入内存中</strong>，同时还提供了很多额外的数据集操作方法，因此<strong>速度很快且很方便</strong>，但是<strong>对内存资源会有很大的消耗</strong>。</p>
+<h3 id="DataTable"><a href="#DataTable" class="headerlink" title="DataTable"></a>DataTable</h3><p><code>DataTable</code>类将关系数据表示为表格形式。<code>ADO.NET</code>提供了一个<code>DataTable</code>类来独立创建和使用数据表。一般与<code>DataSet</code>一起使用。 </p>
+<p>在创建<code>DataTable</code>之前，<strong>必须包含<code>System.Data</code>名称空间</strong>。同时由于本例中使用了<code>AsEnumerable()</code>方法，因此还<strong>必须使用<code>Nuget</code>添加<code>System.Data.DataSetExtensions</code>包</strong>，<strong>否则会报错</strong>。</p>
+<p>我们可以使用LINQ语法对DataTable进行查询，实现代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var qry = from s in Student.AsEnumerable()</span><br><span class="line">					join c in Score.AsEnumerable() on s.Field&lt;int&gt;(&quot;Id&quot;) equals c.Field&lt;int&gt;(&quot;StudentId&quot;)</span><br><span class="line">					where c.Field&lt;int&gt;(&quot;English&quot;) &gt; 80</span><br><span class="line">          select new</span><br><span class="line">          &#123;</span><br><span class="line">                Name = s.Field&lt;string&gt;(&quot;Name&quot;),</span><br><span class="line">                English = c.Field&lt;int&gt;(&quot;English&quot;),</span><br><span class="line">                Maths = c.Field&lt;int&gt;(&quot;Maths&quot;)</span><br><span class="line">          &#125;;</span><br><span class="line">foreach (var item in qry)</span><br><span class="line">&#123;</span><br><span class="line">		Console.WriteLine(item);</span><br><span class="line">&#125;</span><br><span class="line">/* Output:</span><br><span class="line">&#123; Name = zhangsan2, English = 90, Maths = 95 &#125;</span><br><span class="line">&#123; Name = zhangsan3, English = 86, Maths = 75 &#125;</span><br><span class="line">**//~</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+      <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center;">
+  <img id="wechat_subscriber_qcode" src="/images/qcode.jpg" alt="Rui wechat" style="width: 200px; max-width: 100%;"/>
+  <div>我们梦中见</div>
+</div>
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>哟，小老板</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById(&quot;QR&quot;); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Rui WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Rui Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NET/" rel="tag"># .NET</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/11/深入GC/" rel="next" title="Java - 深入垃圾回收">
+                <i class="fa fa-chevron-left"></i> Java - 深入垃圾回收
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/18/NET-Framework及EntityFramework/" rel="prev" title="C# - .NETFramework及EntityFramework">
+                C# - .NETFramework及EntityFramework <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/favicon.png"
+                alt="Rui"/>
+            
+              <p class="site-author-name" itemprop="name">Rui</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ruitan" title="GitHub &rarr; https://github.com/ruitan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:tanrui106@gmail.com" title="E-Mail &rarr; mailto:tanrui106@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装MySQL数据库"><span class="nav-number">2.</span> <span class="nav-text">安装MySQL数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建数据库"><span class="nav-number">2.1.</span> <span class="nav-text">创建数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用DataGrip连接数据库"><span class="nav-number">2.2.</span> <span class="nav-text">使用DataGrip连接数据库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Visual-Studio-Nuget包管理"><span class="nav-number">3.</span> <span class="nav-text">Visual Studio Nuget包管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ADONET基础编程"><span class="nav-number">4.</span> <span class="nav-text">ADONET基础编程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一个小示例"><span class="nav-number">4.1.</span> <span class="nav-text">一个小示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Connection"><span class="nav-number">4.2.</span> <span class="nav-text">Connection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Command"><span class="nav-number">4.3.</span> <span class="nav-text">Command</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#增删改操作"><span class="nav-number">4.3.1.</span> <span class="nav-text">增删改操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询操作"><span class="nav-number">4.3.2.</span> <span class="nav-text">查询操作</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DataReader"><span class="nav-number">4.4.</span> <span class="nav-text">DataReader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DataSet和DataAdapter"><span class="nav-number">4.5.</span> <span class="nav-text">DataSet和DataAdapter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DataTable"><span class="nav-number">4.6.</span> <span class="nav-text">DataTable</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rui</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.0.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://blog.guitoubing.top/2019/04/18/Framework/";
+    this.page.identifier = "2019/04/18/Framework/";
+    this.page.title = 'C# - ADO.NET配置说明';
+    };
+  function loadComments() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://guitoubing-top.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', '' + +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+  
+    $(function() {
+      var offsetTop = $('#comments').offset().top - $(window).height();
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        loadComments();
+      } else {
+        $(window).on('scroll.disqus_scroll', function() {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = $('#comments').offset().top - $(window).height();
+          var scrollTop = $(window).scrollTop();
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            $(window).off('.disqus_scroll');
+            loadComments();
+          }
+        });
+      }
+    });
+  
+</script>
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<style>
+  .copy-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #333;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+    
+    user-select: none;
+    outline: 0;
+  }
+
+  .highlight-wrap .copy-btn {
+    transition: opacity .3s ease-in-out;
+    opacity: 0;
+    padding: 2px 6px;
+    position: absolute;
+    
+      right: 4px;
+      top: 8px;
+    
+  }
+
+  .highlight-wrap:hover .copy-btn,
+  .highlight-wrap .copy-btn:focus {
+    opacity: 1;
+  }
+
+  .highlight-wrap {
+    position: relative;
+  }
+</style>
+<script>
+  $('.highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('Copy').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('Copy');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+</body>
+</html>

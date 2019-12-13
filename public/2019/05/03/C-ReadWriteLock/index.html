@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en,zh-cn,default">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/images/favicon.png?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="使用C#实现的可重入、非公平的读写锁，主要目的实现并发读写以及读写同步问题。为了减少读等待时间以及防止出现写饥饿现象，本锁使用了非同步锁的实现，允许读优先（提高效率）的同时使用一个阈值限定读者的最大数量（防止写饥饿）；重入机制允许某个线程可以获取锁多次（如多次函数调用导致的锁重入），每次获取都需要有对应的释放，否则会出错。 本锁的目的是实现对读写线程队列的调度，而不是对线程获取锁的顺序进行调度。要">
+<meta name="keywords" content=".NET,C#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# - 实现读写锁">
+<meta property="og:url" content="http://blog.guitoubing.top/2019/05/03/C-ReadWriteLock/index.html">
+<meta property="og:site_name" content="Archer">
+<meta property="og:description" content="使用C#实现的可重入、非公平的读写锁，主要目的实现并发读写以及读写同步问题。为了减少读等待时间以及防止出现写饥饿现象，本锁使用了非同步锁的实现，允许读优先（提高效率）的同时使用一个阈值限定读者的最大数量（防止写饥饿）；重入机制允许某个线程可以获取锁多次（如多次函数调用导致的锁重入），每次获取都需要有对应的释放，否则会出错。 本锁的目的是实现对读写线程队列的调度，而不是对线程获取锁的顺序进行调度。要">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://getme.guitoubing.top/队列示意图.png">
+<meta property="og:updated_time" content="2019-10-20T08:53:23.213Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C# - 实现读写锁">
+<meta name="twitter:description" content="使用C#实现的可重入、非公平的读写锁，主要目的实现并发读写以及读写同步问题。为了减少读等待时间以及防止出现写饥饿现象，本锁使用了非同步锁的实现，允许读优先（提高效率）的同时使用一个阈值限定读者的最大数量（防止写饥饿）；重入机制允许某个线程可以获取锁多次（如多次函数调用导致的锁重入），每次获取都需要有对应的释放，否则会出错。 本锁的目的是实现对读写线程队列的调度，而不是对线程获取锁的顺序进行调度。要">
+<meta name="twitter:image" content="http://getme.guitoubing.top/队列示意图.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Archer" type="application/atom+xml"/>
+
+
+
+
+  <link rel="canonical" href="http://blog.guitoubing.top/2019/05/03/C-ReadWriteLock/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>C# - 实现读写锁 | Archer</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-108090005-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-108090005-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Archer</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">我们梦中见</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br/>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br/>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+  
+  
+
+  
+
+  <a href="https://github.com/ruitan" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" style="fill: #222; color: #fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.guitoubing.top/2019/05/03/C-ReadWriteLock/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Rui"/>
+      <meta itemprop="description" content=""/>
+      <meta itemprop="image" content="/images/favicon.png"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Archer"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">C# - 实现读写锁
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-05-03 00:33:11" itemprop="dateCreated datePublished" datetime="2019-05-03T00:33:11+08:00">2019-05-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-10-20 16:53:23" itemprop="dateModified" datetime="2019-10-20T16:53:23+08:00">2019-10-20</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>使用C#实现的<code>可重入</code>、<code>非公平</code>的<code>读写锁</code>，主要目的实现<strong>并发读写</strong>以及<strong>读写同步</strong>问题。为了<strong>减少读等待时间</strong>以及<strong>防止出现写饥饿现象</strong>，本锁使用了<strong>非同步锁</strong>的实现，允许<strong>读优先（提高效率）</strong>的同时<strong>使用一个阈值限定读者的最大数量（防止写饥饿）</strong>；重入机制允许某个线程可以获取锁多次（如多次函数调用导致的锁重入），每次获取都需要有对应的释放，否则会出错。</p>
+<p>本锁的目的是实现对读写线程队列的调度，而不是对线程获取锁的顺序进行调度。要注意读写线程进入队列的顺序是系统调度的（意即创建多个线程并Start时，其进入线程的时机是系统决定的，可能最后创建的线程最先执行），这里实现的是<strong>对进入队列后的线程进行阻塞、唤醒等操作</strong>。</p>
+<p>本锁使用了<code>C#</code>中的<code>lock原语</code>，目的是为了实现一些<strong>队列操作的原子性</strong>。</p>
+<p>实现本锁时作者参考了<code>Java</code>中<code>AQS</code>和<code>ReentrantReadWriteLock</code>的一些实现细节，予以理解仿效，设计了这个简单的读写锁，实现逻辑上可能仍有很多缺陷或矛盾，望各位看官批评指正！</p>
+<h2 id="Node节点"><a href="#Node节点" class="headerlink" title="Node节点"></a>Node节点</h2><p>Node节点是实现本读写锁的关键所在，读写线程队列也是基于Node节点实现的。Node内部持有了一个线程，同时有很多指向其他Node的引用。Node类实现如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class Node</span><br><span class="line">    &#123;</span><br><span class="line">        // 读节点</span><br><span class="line">        public static readonly Node SHARED = new Node();</span><br><span class="line">        // 写节点</span><br><span class="line">        public static readonly Node EXCLUSIVE = null;</span><br><span class="line">        // 读链长度阈值</span><br><span class="line">        public static int Threshold = 3;</span><br><span class="line"></span><br><span class="line">        // 节点状态</span><br><span class="line">        public static readonly int CANCELLED = 1;</span><br><span class="line">        public static readonly int RUNNING = -1;</span><br><span class="line">        public static readonly int WAITING = -2;</span><br><span class="line">        public static readonly int SIGNAL = -3;</span><br><span class="line">    </span><br><span class="line">        public int waitStatus;</span><br><span class="line">        // 前驱节点</span><br><span class="line">        public Node prev;</span><br><span class="line">        // 后继节点</span><br><span class="line">        public Node next;</span><br><span class="line">        // 持有线程</span><br><span class="line">        public Thread thread;</span><br><span class="line"></span><br><span class="line">        //以下参数仅对读节点适用</span><br><span class="line">        // 读链头</span><br><span class="line">        public Node readerHead;</span><br><span class="line">        // 后继读节点</span><br><span class="line">        public Node nextReader;</span><br><span class="line">        // 读链长度</span><br><span class="line">        public int readerCount = 1;</span><br><span class="line"></span><br><span class="line">        // 节点类型</span><br><span class="line">        public Node mode;</span><br><span class="line">        // 是否是共享节点</span><br><span class="line">        public bool isShared()</span><br><span class="line">        &#123;</span><br><span class="line">            return mode == SHARED;</span><br><span class="line">        &#125;</span><br><span class="line">        public Node()</span><br><span class="line">        &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 创建共享或独占节点</span><br><span class="line">        public Node(Thread thread, Node mode)</span><br><span class="line">        &#123;</span><br><span class="line">            this.mode = mode;</span><br><span class="line">            this.thread = thread;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    	// 获取状态</span><br><span class="line">        public static string GetStatus(int status)</span><br><span class="line">        &#123;</span><br><span class="line">            switch (status)</span><br><span class="line">            &#123;</span><br><span class="line">                case 1:</span><br><span class="line">                    return &quot;CANCELLED&quot;;</span><br><span class="line">                case -1:</span><br><span class="line">                    return &quot;RUNNING&quot;;</span><br><span class="line">                case -2:</span><br><span class="line">                    return &quot;WAITING&quot;;</span><br><span class="line">                case -3:</span><br><span class="line">                    return &quot;SIGNAL&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">            return &quot;DEFAULT&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>各属性及方法的涵义如上述代码注释所示，而由Node组成的等待队列结构（双向链表）如下图所示（可能出现的一种情况）：</p>
+<p><img src="http://getme.guitoubing.top/队列示意图.png" alt="队列示意图.png"></p>
+<p>对于写节点来说，锁是独占的，一次仅能有一个写线程在执行；而对于读节点来说，锁是共享的，在同一读链上的所有节点都可同时进行读。</p>
+<h2 id="重要变量"><a href="#重要变量" class="headerlink" title="重要变量"></a>重要变量</h2><h3 id="头节点-head"><a href="#头节点-head" class="headerlink" title="头节点 head"></a>头节点 head</h3><p>头节点是个傀儡节点，<code>private volatile Node head</code>，其无实际涵义，只是为了作为队列头而存在；其使用了惰性初始化的方法，仅在第一个节点入队列时初始化。</p>
+<blockquote>
+<p><code>volatile</code>关键字在是为了实现变量的内存可见性，使用该关键字修饰的变量的修改会直接反映到内存中而不是缓存中。</p>
+</blockquote>
+<h3 id="尾节点-tail"><a href="#尾节点-tail" class="headerlink" title="尾节点 tail"></a>尾节点 tail</h3><p>尾节点是队列的最后一个节点，<code>private volatile Node tail</code>，引入尾节点是为了防止在新节点入列时遍历队列，提高了效率。</p>
+<h3 id="重入量-reentrants"><a href="#重入量-reentrants" class="headerlink" title="重入量 reentrants"></a>重入量 reentrants</h3><p>对于写锁（独占锁）来说，当一个写线程获取锁时，<code>reentrants</code>为<code>1</code>，后续每当锁重入一次，<code>reentrants</code>增加<code>1</code>；释放锁时，每释放一次<code>reentrants</code>减少1，直到<code>reentrants</code>为<code>0</code>时该线程释放当前锁，唤醒后续线程；</p>
+<p>对于读锁（共享锁）来说，由于读链中可能会有不超过<code>Node.Threshold</code>个数的读节点，且每个读节点都可能会产生重入，这里会将<code>reentrants</code>初始化为读链长度，在<code>Node.RUNNING`</code>时读链每增加一个读节点会增加一个reentrants<code>，读链中的每个节点多一次重入也会导致</code>reentrants<code>增加</code>1`。</p>
+<h2 id="写锁"><a href="#写锁" class="headerlink" title="写锁"></a>写锁</h2><h3 id="获取-WriteLock"><a href="#获取-WriteLock" class="headerlink" title="获取 WriteLock()"></a>获取 WriteLock()</h3><p>先看获取写锁的流程：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 获取写锁</span><br><span class="line"> */</span><br><span class="line">public void WriteLock()</span><br><span class="line">&#123;</span><br><span class="line">    // 当前节点</span><br><span class="line">    Node currentNode = null;</span><br><span class="line">    // 这里使用了惰性初始化，如果头节点为空，则初始化头节点</span><br><span class="line">    lock (this)</span><br><span class="line">    &#123;</span><br><span class="line">        if (head == null)</span><br><span class="line">            head = new Node();</span><br><span class="line">    &#125;</span><br><span class="line">    // 如果尾节点为空，说明当前队列为空，此时线程直接入队列设置为RUNNING状态</span><br><span class="line">    lock (this)</span><br><span class="line">    &#123;</span><br><span class="line">        if (tail == null)</span><br><span class="line">        &#123;</span><br><span class="line">            EnqWhenTailNull(Node.EXCLUSIVE);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    lock (this)</span><br><span class="line">    &#123;</span><br><span class="line">        // 如果当前线程就是持有线程，说明锁在重入，reentrants加1</span><br><span class="line">        if (owner == Thread.CurrentThread)</span><br><span class="line">        &#123;</span><br><span class="line">            reentrants += 1;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        // 否则，当前线程需要进入等待队列进行等待</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            // 获取尾节点</span><br><span class="line">            Node t = tail;</span><br><span class="line">            // 由于可能出现其他线程的介入，需要再次检测为节点是否为空</span><br><span class="line">            if (t == null)</span><br><span class="line">            &#123;</span><br><span class="line">                EnqWhenTailNull(Node.EXCLUSIVE);</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">            // 否则直接入队列等待</span><br><span class="line">            else</span><br><span class="line">                currentNode = Enq(Node.EXCLUSIVE);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    // 检测当前节点是否可以被唤醒</span><br><span class="line">    while (currentNode.waitStatus != Node.SIGNAL) &#123; &#125;</span><br><span class="line">    // 此时线程已被唤醒，设置重入量及状态等</span><br><span class="line">    reentrants = 1;</span><br><span class="line">    currentNode.waitStatus = Node.RUNNING;</span><br><span class="line">    owner = Thread.CurrentThread;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>基本流程如下：</p>
+<ol>
+<li>先判断队列是否已初始化，若未初始化，先初始化head节点</li>
+<li>判断队列是否为空（即判断<code>tail==null</code>），若是直接进入队列，成功获取锁，返回；否则进入下一步</li>
+<li>判断当前线程是否为持有锁的线程，若是说明线程在重入当前锁，直接<code>reentrants</code>加<code>1</code>，成功获取锁，返回；否则进入下一步</li>
+<li>获取尾节点，由于第2步结束时可能有其他线程的介入，因此需再次判断<code>tail==null</code>，若是直接进入队列，成功获取锁，返回；否则以当前线程创建节点并入队列，同时阻塞</li>
+<li>循环检测当前节点是否可以被唤醒，若可则解除阻塞状态，设置节点状态等信息，并成功获取独占锁</li>
+</ol>
+<h3 id="释放-WriteUnlock"><a href="#释放-WriteUnlock" class="headerlink" title="释放 WriteUnlock()"></a>释放 WriteUnlock()</h3><p>释放写锁的逻辑很简单：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 释放写锁</span><br><span class="line"> */</span><br><span class="line">public void WriteUnlock()</span><br><span class="line">&#123;</span><br><span class="line">    // 加锁是为了同步修改队列信息</span><br><span class="line">    lock (this)</span><br><span class="line">    &#123;</span><br><span class="line">        // 当前锁持有者重入量直接-1</span><br><span class="line">        reentrants -= 1;</span><br><span class="line">        // 获取队列头（除了head之外的头）</span><br><span class="line">        Node node = GetHolderNode();</span><br><span class="line">        // 如果后续节点为空，则释放完成，队列已空；若后续节点不为空，则可能需要唤醒后续节点</span><br><span class="line">        if (node != null)</span><br><span class="line">        &#123;</span><br><span class="line">            // 若当前锁的重入量为0，说明锁已经完全释放，则需要唤醒后继有效节点（否则可能只是释放了一个锁内部的锁）</span><br><span class="line">            if (reentrants == 0)</span><br><span class="line">            &#123;</span><br><span class="line">                // 当前节点置为无效</span><br><span class="line">                node.waitStatus = Node.CANCELLED;</span><br><span class="line">                // 唤醒后继有效节点</span><br><span class="line">                AwakeNext();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>逻辑如下：</p>
+<ol>
+<li>锁<code>reentrants</code>减<code>1</code></li>
+<li>获取当前锁持有的节点</li>
+<li>判断上述获取的节点是否为空，若为空说明队列已空，已无等待节点，直接返回；否则检查<code>reentrants</code>是否已减至<code>0</code></li>
+<li>若是则当前节点线程已完成，置为<code>Node.CANCELLED</code>状态，并唤醒后继有效节点</li>
+</ol>
+<h2 id="读锁"><a href="#读锁" class="headerlink" title="读锁"></a>读锁</h2><h3 id="获取-ReadLock"><a href="#获取-ReadLock" class="headerlink" title="获取 ReadLock()"></a>获取 ReadLock()</h3><p>相比于写锁的获取，读锁的获取要复杂一点，因为涉及到读的共享以及阈值的控制：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 获取读锁</span><br><span class="line"> */</span><br><span class="line">public void ReadLock()</span><br><span class="line">&#123;</span><br><span class="line">    Node reader = null;</span><br><span class="line">    // 这里基本的初始化方式和读锁相似，不赘述</span><br><span class="line">    lock (this)</span><br><span class="line">    &#123;</span><br><span class="line">        if (head == null)</span><br><span class="line">            head = new Node();</span><br><span class="line">    &#125;</span><br><span class="line">    Thread current = Thread.CurrentThread;</span><br><span class="line">    lock (this)</span><br><span class="line">    &#123;</span><br><span class="line">        if (tail == null)</span><br><span class="line">        &#123;</span><br><span class="line">            EnqWhenTailNull(Node.SHARED);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    Node currentNode = null;</span><br><span class="line">    lock (this)</span><br><span class="line">    &#123;</span><br><span class="line">        // 读可重入</span><br><span class="line">        if (ReaderCanReentranted())</span><br><span class="line">        &#123;</span><br><span class="line">            reentrants += 1;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        // 获取当前持有锁节点</span><br><span class="line">        Node node = head.next;</span><br><span class="line">        if (node == null)</span><br><span class="line">        &#123;</span><br><span class="line">            EnqWhenTailNull(Node.SHARED);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            // 队列中有写者的情况</span><br><span class="line">            if (HasWriter())</span><br><span class="line">            &#123;</span><br><span class="line">                // 创建当前持有当前线程的读节点</span><br><span class="line">                reader = new Node(current, Node.SHARED);</span><br><span class="line">                // 获取第一个读节点（可能为null）</span><br><span class="line">                while (node != null &amp;&amp; (!node.isShared() || node.waitStatus == Node.CANCELLED))</span><br><span class="line">                &#123;</span><br><span class="line">                    if (node.isShared())</span><br><span class="line">                    &#123;</span><br><span class="line">                        if (!CheckReadChainCancelled(node))</span><br><span class="line">                            break;</span><br><span class="line">                        else</span><br><span class="line">                            node = node.next;</span><br><span class="line">                    &#125;</span><br><span class="line">                    else</span><br><span class="line">                        node = node.next;</span><br><span class="line">                &#125;</span><br><span class="line">                // 未找到读节点，说明队列中只有写节点，此时直接添加到队列尾</span><br><span class="line">                if (node == null)</span><br><span class="line">                &#123;</span><br><span class="line">                    currentNode = Enq(Node.SHARED);</span><br><span class="line">                &#125;</span><br><span class="line">                // 否则说明找到了有效的读节点，此时此读节点为队列中第一个读节点，只需要判断此读节点链长是否达到了阈值，</span><br><span class="line">                //  若未超过阈值，直接添加到读链中，并判断当前读链头是否正在读，则可以直接读，否则需要循环检测；</span><br><span class="line">                //  若超过了阈值：</span><br><span class="line">                //      若队尾为写节点，则添加到队列尾，并循环等待；</span><br><span class="line">                //      若队尾为读节点，判断是否到达阈值：</span><br><span class="line">                //          若是则添加到队列尾，并循环等待；</span><br><span class="line">                //          否则添加到读链中。</span><br><span class="line">                else</span><br><span class="line">                &#123;</span><br><span class="line">                    // 未超过阈值</span><br><span class="line">                    if (node.readerCount &lt; Node.Threshold)</span><br><span class="line">                    &#123;</span><br><span class="line">                        // 添加到读链中</span><br><span class="line">                        currentNode = AddReader(node, reader);</span><br><span class="line">                        // 链头正在读，此节点也直接读，且reentrants+1</span><br><span class="line">                        if (node.waitStatus == Node.RUNNING)</span><br><span class="line">                        &#123;</span><br><span class="line">                            reader.waitStatus = Node.RUNNING;</span><br><span class="line">                            reentrants += 1;</span><br><span class="line">                            return;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    // 超过了阈值</span><br><span class="line">                    else</span><br><span class="line">                    &#123;</span><br><span class="line">                        // 判断队尾节点类型</span><br><span class="line">                        Node t = tail;</span><br><span class="line">                        // 队尾为“写节点”或“达到阈值的读节点”</span><br><span class="line">                        if (!t.isShared() || (t.isShared() &amp;&amp; t.readerCount &gt;= Node.Threshold))</span><br><span class="line">                            currentNode = Enq(Node.SHARED);</span><br><span class="line">                        // 队尾为“未达到阈值的读节点”</span><br><span class="line">                        else</span><br><span class="line">                        &#123;</span><br><span class="line">                            // 添加到队尾节点所在的读链中</span><br><span class="line">                            currentNode = AddReader(t, reader);</span><br><span class="line">                            // 链头正在读，此节点也直接读，且reentrants+1</span><br><span class="line">                            if (t.waitStatus == Node.RUNNING)</span><br><span class="line">                            &#123;</span><br><span class="line">                                reader.waitStatus = Node.RUNNING;</span><br><span class="line">                                reentrants += 1;</span><br><span class="line">                                return;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            // 队列中无写者，说明队列中要么为空，要么全为读者，直接加到队尾或者队尾所在的读链</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                // 队列为空，直接入队</span><br><span class="line">                if (tail == null)</span><br><span class="line">                &#123;</span><br><span class="line">                    EnqWhenTailNull(Node.SHARED);</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line">                // 队尾节点读链长度未达到阈值</span><br><span class="line">                if (tail.readerCount &lt; Node.Threshold)</span><br><span class="line">                &#123;</span><br><span class="line">                    reader = new Node(current, Node.SHARED);</span><br><span class="line">                    // 添加到链尾</span><br><span class="line">                    currentNode = AddReader(tail, reader);</span><br><span class="line">                    // 是否需要循环等待</span><br><span class="line">                    if (tail.waitStatus == Node.RUNNING)</span><br><span class="line">                    &#123;</span><br><span class="line">                        reader.waitStatus = Node.RUNNING;</span><br><span class="line">                        reentrants += 1;</span><br><span class="line">                        return;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                // 队尾节点读链达到了阈值，直接加入队尾，并等待唤醒</span><br><span class="line">                else</span><br><span class="line">                &#123;</span><br><span class="line">                    currentNode = Enq(Node.SHARED);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    while (currentNode.waitStatus != Node.SIGNAL) &#123; &#125;</span><br><span class="line">    currentNode.waitStatus = Node.RUNNING;</span><br><span class="line">    reentrants = currentNode.readerHead.readerCount;</span><br><span class="line">    owner = currentNode.readerHead == null ? null : currentNode.readerHead.thread;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>逻辑如下：</p>
+<ol>
+<li>先判断队列是否已初始化，若未初始化，先初始化head节点</li>
+<li>判断队列是否为空（即判断<code>tail==null</code>），若是直接进入队列，成功获取锁，返回；否则进入下一步</li>
+<li>判断当前线程是否可重入锁（读线程的可重入判断与写不同，会在后面对<code>ReaderCanReentranted()</code>方法解释时介绍到），若是<code>reentrants</code>加<code>1</code>，返回；否则进入下一步</li>
+<li>获取当前持有锁节点，若为空说明队列为空，直接进入队列，成功获取锁，返回；否则进入下一步</li>
+<li>判断队列中是否有写者，若是跳至第6步，否则跳至第7步</li>
+<li>队列中有写者，为防止出现写饥饿的情况，此读节点可能在写者前或后：<ol>
+<li>若队列中无读节点，即只有写节点，直接添加至队列尾，并阻塞</li>
+<li>若找到了队列中的第一个有效读节点，判断其读链是否达到阈值</li>
+<li>若未超过阈值，则直接添加到读链中，是否阻塞由读链头的状态决定</li>
+<li>若超过了阈值，则有两种情况：<ul>
+<li>队尾为<strong>写节点</strong>或者队尾为<strong>读节点且读链长度达到阈值</strong>，此时节点添加至队列尾，并阻塞</li>
+<li>队尾为<strong>读节点且读链长度未达到阈值</strong>，将节点加入队尾的读链中，与队尾节点状态一致</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>队列中无写者，说明队列中要么为空，要么全为读者，则根据队尾节点读链长度来决定是直接加到队尾还是加到队尾所在的读链</li>
+<li>循环检测当前节点是否可以被唤醒，若可则解除阻塞状态，设置节点状态等信息，设置<code>reentrants</code>为读链长度，并成功获取共享锁</li>
+</ol>
+<h3 id="释放-ReadUnlock"><a href="#释放-ReadUnlock" class="headerlink" title="释放 ReadUnlock()"></a>释放 ReadUnlock()</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 释放读锁</span><br><span class="line"> */</span><br><span class="line">public void ReadUnlock()</span><br><span class="line">&#123;</span><br><span class="line">    lock (this)</span><br><span class="line">    &#123;</span><br><span class="line">        // 读重入量-1</span><br><span class="line">        reentrants -= 1;</span><br><span class="line">        // 获取到锁持有节点</span><br><span class="line">        Node node = head.next;</span><br><span class="line">        while (node != null)</span><br><span class="line">        &#123;</span><br><span class="line">            if (CheckReadChainCancelled(node))</span><br><span class="line">            &#123;</span><br><span class="line">                node = node.next;</span><br><span class="line">                head.next = node;</span><br><span class="line">                if (node != null)</span><br><span class="line">                    node.prev = head;</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        // 获取到有效读节点了</span><br><span class="line">        if (node != null)</span><br><span class="line">        &#123;</span><br><span class="line">            // 通过一个读节点（通常是链头）获取其读链中持有当前运行线程的节点</span><br><span class="line">            node = GetCurrentNodeByReader(node);</span><br><span class="line">            // 当前节点置为取消</span><br><span class="line">            node.waitStatus = Node.CANCELLED;</span><br><span class="line">            // 重入量为0，需要判断读链是否已全部读完成，若是则需要唤醒后续线程</span><br><span class="line">            if (reentrants == 0)</span><br><span class="line">                AwakeNext();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>释放读锁的逻辑与释放写锁逻辑基本类似，无需多提。</p>
+<h2 id="其余辅助方法"><a href="#其余辅助方法" class="headerlink" title="其余辅助方法"></a>其余辅助方法</h2><h3 id="Enq-Node-mode"><a href="#Enq-Node-mode" class="headerlink" title="Enq(Node mode)"></a>Enq(Node mode)</h3><p>以当前线程为基础，指定类型创建节点，并入队列并阻塞，同时返回此节点</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 读写节点入队列操作，入队列后需等待</span><br><span class="line"> */</span><br><span class="line">private Node Enq(Node mode)</span><br><span class="line">&#123;</span><br><span class="line">    Node t = tail;</span><br><span class="line">    // 以当前线程创建独占节点</span><br><span class="line">    Node node = new Node(Thread.CurrentThread, mode);</span><br><span class="line">    // 连接尾节点与当前节点</span><br><span class="line">    t.next = node;</span><br><span class="line">    node.prev = t;</span><br><span class="line">    // 重置尾节点为当前节点</span><br><span class="line">    tail = node;</span><br><span class="line">    // 设置节点等待状态为WAITING</span><br><span class="line">    node.waitStatus = Node.WAITING;</span><br><span class="line">    // 若为读节点，需要设置读链头</span><br><span class="line">    if (node.isShared())</span><br><span class="line">        node.readerHead = node;</span><br><span class="line">    return node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="EnqWhenTailNull-Node-mode"><a href="#EnqWhenTailNull-Node-mode" class="headerlink" title="EnqWhenTailNull(Node mode)"></a>EnqWhenTailNull(Node mode)</h3><p>以当前线程为基础，指定类型创建节点，在队列为空时，此节点直接入队列且当前线程继续执行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 读写节点入队列操作，此时队列尾为空，入队列之后继续运行，无需等待</span><br><span class="line"> */</span><br><span class="line">private void EnqWhenTailNull(Node mode)</span><br><span class="line">&#123;</span><br><span class="line">    // 以当前线程创建独占节点</span><br><span class="line">    Node node = new Node(Thread.CurrentThread, mode);</span><br><span class="line">    // 设置等待类型为RUNNING</span><br><span class="line">    node.waitStatus = Node.RUNNING;</span><br><span class="line">    // 当前节点加入队列，尾节点为当前节点</span><br><span class="line">    tail = node;</span><br><span class="line">    // 设置锁的持有者为当前线程</span><br><span class="line">    owner = Thread.CurrentThread;</span><br><span class="line">    // 重入量初始为1</span><br><span class="line">    reentrants = 1;</span><br><span class="line">    // 连接头节点与此节点</span><br><span class="line">    head.next = node;</span><br><span class="line">    node.prev = head;</span><br><span class="line">    // 若为读节点，需要设置读链头</span><br><span class="line">    if (node.isShared())</span><br><span class="line">        node.readerHead = node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AwakeNext"><a href="#AwakeNext" class="headerlink" title="AwakeNext()"></a>AwakeNext()</h3><p>当某个节点置为<code>Node.CANCELLED</code>状态时，会唤醒其后一个有效节点，主要是将节点状态修改为<code>Node.SIGNAL</code>状态，以被各自节点监测到。</p>
+<p>对于写节点来说，由于是独占的，只需要修改该节点；对于读节点来说，由于是共享的，需要遍历该节点所在的读链并修改每个节点的状态，才能达到唤醒整条读链的目的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 唤醒后一个节点</span><br><span class="line"> */</span><br><span class="line">private void AwakeNext()</span><br><span class="line">&#123;</span><br><span class="line">    // 获取持有当前锁的节点，此时锁刚好被上个节点释放，获取的节点应处于Node.WAITING状态</span><br><span class="line">    Node node = GetHolderNode();</span><br><span class="line">    // 当前节点为空，说明队列中无有效节点，直接返回即可</span><br><span class="line">    if (node == null)</span><br><span class="line">    &#123;</span><br><span class="line">        tail = null;</span><br><span class="line">        owner = null;</span><br><span class="line">        reentrants = 0;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    // 否则需要唤醒此有效节点</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        // 连接到头节点</span><br><span class="line">        node.prev = head;</span><br><span class="line">        // 对于写节点，readerCount为1，即为reentrants初始值1</span><br><span class="line">        // 对于读节点，readerCount即为reentrants的初始值</span><br><span class="line">        reentrants = node.readerCount;</span><br><span class="line">        // 对于读节点来说，需唤醒读链中的所有节点；对于写节点来说，无读链，只会唤醒当前节点</span><br><span class="line">        while (node != null)</span><br><span class="line">        &#123;</span><br><span class="line">            // 等待类型设置为SIGNAL，会被捕捉从而唤醒相关线程</span><br><span class="line">            node.waitStatus = Node.SIGNAL;</span><br><span class="line">            // 若为读节点，可获取下一个读者；否则获取了null</span><br><span class="line">            node = node.nextReader;</span><br><span class="line">            // 下一个读者不为空，则也将其前驱节点设置为头节点</span><br><span class="line">            if (node != null)</span><br><span class="line">                node.prev = head;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="GetHolderNode"><a href="#GetHolderNode" class="headerlink" title="GetHolderNode()"></a>GetHolderNode()</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/** </span><br><span class="line"> *   删除无效节点（可能由于主动中断或者其他因素导致的线程失效），获取第一个有效节点或空节点，</span><br><span class="line"> * 或者称作获取锁持有节点</span><br><span class="line"> */</span><br><span class="line">private Node GetHolderNode()</span><br><span class="line">&#123;</span><br><span class="line">    Node node = head.next;</span><br><span class="line">    // 此循环的判断条件可能出现歧义，因存在读链头为取消状态时，读链中仍然有读节点读未完成，但是此函数只在释放写锁(WriteUnlock)和唤醒后续节点(AwakeNext)中使用到，当AwakeNext被触发时，读链头的状态便可以代表整个读链的状态了。</span><br><span class="line">    while (node != null &amp;&amp; node.waitStatus == Node.CANCELLED)</span><br><span class="line">        node = node.next;</span><br><span class="line">    // 连接头节点和持有节点，无效节点全部交由垃圾收集器回收</span><br><span class="line">    head.next = node;</span><br><span class="line">    if (node != null)</span><br><span class="line">        node.prev = head;</span><br><span class="line">    return node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="HasWriter"><a href="#HasWriter" class="headerlink" title="HasWriter()"></a>HasWriter()</h3><p>在读节点获取锁时，有一步是需要判断队列中是否存在写者，即用到此函数</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 返回当前队列中是否存在写者，用在读者入队列时的决策</span><br><span class="line"> */</span><br><span class="line">private bool HasWriter()</span><br><span class="line">&#123;</span><br><span class="line">    bool exclusive = false;</span><br><span class="line">    Node excluNode = head.next;</span><br><span class="line">    while (excluNode != null)</span><br><span class="line">    &#123;</span><br><span class="line">        if (!excluNode.isShared())</span><br><span class="line">        &#123;</span><br><span class="line">            exclusive = true;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        excluNode = excluNode.next;</span><br><span class="line">    &#125;</span><br><span class="line">    return exclusive;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="GetCurrentNodeByReader-Node-node"><a href="#GetCurrentNodeByReader-Node-node" class="headerlink" title="GetCurrentNodeByReader(Node node)"></a>GetCurrentNodeByReader(Node node)</h3><p>在释放读锁时，我们无法直接获取到当前节点，只能通过线程名称来确定当前线程的持有者在<code>node</code>所在的读链中的位置，返回获取到的节点，以在释放锁时修改状态。</p>
+<p>而由于是通过线程名称来判断线程是否相等，可能会因线程重名导致异常，待改进。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 通过一个读节点（通常是链头）获取其读链中持有当前运行线程的节点</span><br><span class="line"> */</span><br><span class="line">private Node GetCurrentNodeByReader(Node node)</span><br><span class="line">&#123;</span><br><span class="line">    Node nextReader = node.readerHead;</span><br><span class="line">    // 以线程名称为依据，这里可能出现多个线程同名的情况，待改进</span><br><span class="line">    while (nextReader != null)</span><br><span class="line">    &#123;</span><br><span class="line">        if (nextReader.thread.Name.Equals(Thread.CurrentThread.Name))</span><br><span class="line">            return nextReader;</span><br><span class="line">        else</span><br><span class="line">            nextReader = nextReader.nextReader;</span><br><span class="line">    &#125;</span><br><span class="line">    return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="CheckReadChainCancelled-Node-node"><a href="#CheckReadChainCancelled-Node-node" class="headerlink" title="CheckReadChainCancelled(Node node)"></a>CheckReadChainCancelled(Node node)</h3><p>对于写节点来说，只要节点状态为<code>Node.CANCELLED</code>，说明写已经完成；而对于读节点，需要遍历读链中所有节点的状态才能确定读是否完成，此方法便是如此。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 通过一个读节点判断其所在读链是否已全部读完成</span><br><span class="line"> */</span><br><span class="line">private bool CheckReadChainCancelled(Node node)</span><br><span class="line">&#123;</span><br><span class="line">    Node nextReader = node.readerHead;</span><br><span class="line">    while (nextReader != null)</span><br><span class="line">    &#123;</span><br><span class="line">        if (nextReader.waitStatus != Node.CANCELLED)</span><br><span class="line">            return false;</span><br><span class="line">        else</span><br><span class="line">            nextReader = nextReader.nextReader;</span><br><span class="line">    &#125;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AddReader-Node-readerHead-Node-node"><a href="#AddReader-Node-readerHead-Node-node" class="headerlink" title="AddReader(Node readerHead, Node node)"></a>AddReader(Node readerHead, Node node)</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 添加读者到指定读链头所在的读链中</span><br><span class="line"> */</span><br><span class="line">private Node AddReader(Node readerHead, Node node)</span><br><span class="line">&#123;</span><br><span class="line">    // 获取到读链尾</span><br><span class="line">    Node reader = readerHead;</span><br><span class="line">    while (reader.nextReader != null)</span><br><span class="line">    &#123;</span><br><span class="line">        reader = reader.nextReader;</span><br><span class="line">    &#125;</span><br><span class="line">    // 读链头的前驱节点也是读链中任何节点的前驱节点</span><br><span class="line">    node.prev = reader.prev;</span><br><span class="line">    // 连接到读链尾</span><br><span class="line">    reader.nextReader = node;</span><br><span class="line">    node.readerHead = readerHead;</span><br><span class="line">    node.waitStatus = readerHead.waitStatus;</span><br><span class="line">    // 读链头记录的读链长度+1</span><br><span class="line">    readerHead.readerCount++;</span><br><span class="line">    return node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ReaderCanReentranted"><a href="#ReaderCanReentranted" class="headerlink" title="ReaderCanReentranted()"></a>ReaderCanReentranted()</h3><p>对于来说写者，只需判断当前线程是否为持有锁线程即可判断是否可以重入；而对于读者来说，只要当前线程与正在读的读链中的任意一个线程相等即可重入。</p>
+<p>同样线程同名的情况也不可避免。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 判断读者是否可以重入，判断依据为当前线程是否被正在执行读的读链中的某一个节点持有</span><br><span class="line"> */</span><br><span class="line">private bool ReaderCanReentranted()</span><br><span class="line">&#123;</span><br><span class="line">    Node node = head.next;</span><br><span class="line">    if (node == null || !node.isShared())</span><br><span class="line">        return false;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        Node reader = node;</span><br><span class="line">        while (reader != null)</span><br><span class="line">        &#123;</span><br><span class="line">            if (reader.thread == Thread.CurrentThread)</span><br><span class="line">            &#123;</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">            reader = reader.nextReader;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ToString"><a href="#ToString" class="headerlink" title="ToString()"></a>ToString()</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 覆盖ToString方法，格式化输出当前队列情况</span><br><span class="line"> */</span><br><span class="line">public override string ToString()</span><br><span class="line">&#123;</span><br><span class="line">    StringBuilder sb = new StringBuilder();</span><br><span class="line">    if (head != null)</span><br><span class="line">    &#123;</span><br><span class="line">        if (owner != null)</span><br><span class="line">            sb.Append(&quot;Head(持有线程：&quot; + owner.Name + &quot;，重入量：&quot; + reentrants + &quot;)\n&quot;);</span><br><span class="line">        else</span><br><span class="line">            sb.Append(&quot;Head(持有线程：未持有线程，重入量：&quot; + reentrants + &quot;)\n&quot;);</span><br><span class="line">        Node node = head.next;</span><br><span class="line">        while (node != null)</span><br><span class="line">        &#123;</span><br><span class="line">            Node reader = node;</span><br><span class="line">            if (node.isShared())</span><br><span class="line">            &#123;</span><br><span class="line">                while (reader != null)</span><br><span class="line">                &#123;</span><br><span class="line">                    sb.AppendFormat(&quot;-&gt;【线程名称：&#123;0&#125;，类型：读，状态：&#123;1&#125;】&quot;, reader.thread.Name, Node.GetStatus(reader.waitStatus));</span><br><span class="line">                    reader = reader.nextReader;</span><br><span class="line">                &#125;</span><br><span class="line">                sb.AppendLine();</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                sb.AppendFormat(&quot;-&gt;【线程名称：&#123;0&#125;，类型：写，状态：&#123;1&#125;】&quot;, node.thread.Name, Node.GetStatus(node.waitStatus));</span><br><span class="line">                sb.AppendLine();</span><br><span class="line">            &#125;</span><br><span class="line">            node = node.next;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return sb.ToString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>测试代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Threading;</span><br><span class="line"></span><br><span class="line">namespace ReadWriteLock</span><br><span class="line">&#123;</span><br><span class="line">    class MainClass</span><br><span class="line">    &#123;</span><br><span class="line">      	public static void Add(ReadWriteLock readWriteLock)</span><br><span class="line">        &#123;</span><br><span class="line">            for (int i = 0; i &lt; 100000000; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                readWriteLock.WriteLock();</span><br><span class="line">                N++;</span><br><span class="line">                readWriteLock.WriteUnlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        public static void TestReentrantWriter(ReadWriteLock readWriteLock)</span><br><span class="line">        &#123;</span><br><span class="line">            readWriteLock.WriteLock();</span><br><span class="line">            readWriteLock.WriteLock();</span><br><span class="line">            readWriteLock.WriteLock();</span><br><span class="line">            readWriteLock.WriteLock();</span><br><span class="line">            Thread.Sleep(1000);</span><br><span class="line">            readWriteLock.WriteUnlock();</span><br><span class="line">            readWriteLock.WriteUnlock();</span><br><span class="line">            readWriteLock.WriteUnlock();</span><br><span class="line">            readWriteLock.WriteUnlock();</span><br><span class="line">        &#125;</span><br><span class="line">        public static void TestWriter(ReadWriteLock readWriteLock)</span><br><span class="line">        &#123;</span><br><span class="line">            readWriteLock.WriteLock();</span><br><span class="line">            Thread.Sleep(500);</span><br><span class="line">            //Console.WriteLine(Thread.CurrentThread.Name + &quot;执行完毕&quot;);</span><br><span class="line">            readWriteLock.WriteUnlock();</span><br><span class="line">        &#125;</span><br><span class="line">        public static void TestReader(ReadWriteLock readWriteLock)</span><br><span class="line">        &#123;</span><br><span class="line">            readWriteLock.ReadLock();</span><br><span class="line">            Thread.Sleep(500);</span><br><span class="line">            //Console.WriteLine(Thread.CurrentThread.Name + &quot;执行完毕&quot;);</span><br><span class="line">            readWriteLock.ReadUnlock();</span><br><span class="line">        &#125;</span><br><span class="line">        public static void Main(string[] args)</span><br><span class="line">        &#123;</span><br><span class="line">            ReadWriteLock readWriteLock = new ReadWriteLock();</span><br><span class="line">            for (int i = 1; i &lt;= 10; i++)</span><br><span class="line">                CreateThread(false, i, readWriteLock);</span><br><span class="line">            for (int i = 1; i &lt;= 20; i++)</span><br><span class="line">                CreateThread(true, i, readWriteLock);</span><br><span class="line">            for (int i = 0; i &lt; 100; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                Thread.Sleep(500);</span><br><span class="line">                readWriteLock.PrintQueue();</span><br><span class="line">            &#125;</span><br><span class="line">            Console.ReadKey();</span><br><span class="line">        &#125;</span><br><span class="line">        static void CreateThread(bool share, int i, ReadWriteLock readWriteLock)</span><br><span class="line">        &#123;</span><br><span class="line">            Thread thread;</span><br><span class="line">            if (share) </span><br><span class="line">            &#123;</span><br><span class="line">                thread = new Thread(() =&gt; TestReader(readWriteLock));</span><br><span class="line">                thread.Name = &quot;Reader-&quot; + i;            </span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                thread = i == 5 ? new Thread(() =&gt; TestReentrantWriter(readWriteLock)) : new Thread(() =&gt; TestWriter(readWriteLock));</span><br><span class="line">                thread.Name = &quot;Writer-&quot; + i;</span><br><span class="line">            &#125;</span><br><span class="line">            thread.Start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先是两个线程同时增加1亿次的时间：约30s，比Monitor大概慢了5倍。</p>
+<p>其次，测试创建了10个写线程、20个读线程，假定每个线程持续时间为500毫秒，每隔500毫秒输出等待队列的情况如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Head(持有线程：Writer-2，重入量：1)</span><br><span class="line">-&gt;【线程名称：Writer-2，类型：写，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Writer-8，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-10，类型：读，状态：WAITING】-&gt;【线程名称：Reader-6，类型：读，状态：WAITING】-&gt;【线程名称：Reader-4，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-6，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-7，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-3，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-5，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-3，类型：读，状态：WAITING】-&gt;【线程名称：Reader-5，类型：读，状态：WAITING】-&gt;【线程名称：Reader-7，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-8，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-9，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Writer-8，重入量：1)</span><br><span class="line">-&gt;【线程名称：Writer-8，类型：写，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Reader-10，类型：读，状态：WAITING】-&gt;【线程名称：Reader-6，类型：读，状态：WAITING】-&gt;【线程名称：Reader-4，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-6，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-7，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-3，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-5，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-3，类型：读，状态：WAITING】-&gt;【线程名称：Reader-5，类型：读，状态：WAITING】-&gt;【线程名称：Reader-7，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-8，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-9，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Reader-10，重入量：3)</span><br><span class="line">-&gt;【线程名称：Reader-10，类型：读，状态：RUNNING】-&gt;【线程名称：Reader-6，类型：读，状态：RUNNING】-&gt;【线程名称：Reader-4，类型：读，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Writer-6，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-7，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-3，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-5，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-3，类型：读，状态：WAITING】-&gt;【线程名称：Reader-5，类型：读，状态：WAITING】-&gt;【线程名称：Reader-7，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-8，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-9，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Writer-6，重入量：1)</span><br><span class="line">-&gt;【线程名称：Writer-6，类型：写，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Writer-7，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-3，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-5，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-3，类型：读，状态：WAITING】-&gt;【线程名称：Reader-5，类型：读，状态：WAITING】-&gt;【线程名称：Reader-7，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-8，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-9，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Writer-7，重入量：1)</span><br><span class="line">-&gt;【线程名称：Writer-7，类型：写，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Writer-3，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-5，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-3，类型：读，状态：WAITING】-&gt;【线程名称：Reader-5，类型：读，状态：WAITING】-&gt;【线程名称：Reader-7，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-8，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-9，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Writer-3，重入量：1)</span><br><span class="line">-&gt;【线程名称：Writer-3，类型：写，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Writer-5，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-3，类型：读，状态：WAITING】-&gt;【线程名称：Reader-5，类型：读，状态：WAITING】-&gt;【线程名称：Reader-7，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-8，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-9，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Writer-5，重入量：4)</span><br><span class="line">-&gt;【线程名称：Writer-5，类型：写，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Reader-3，类型：读，状态：WAITING】-&gt;【线程名称：Reader-5，类型：读，状态：WAITING】-&gt;【线程名称：Reader-7，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-8，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-9，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Writer-5，重入量：4)</span><br><span class="line">-&gt;【线程名称：Writer-5，类型：写，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Reader-3，类型：读，状态：WAITING】-&gt;【线程名称：Reader-5，类型：读，状态：WAITING】-&gt;【线程名称：Reader-7，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-8，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-9，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Reader-3，重入量：3)</span><br><span class="line">-&gt;【线程名称：Reader-3，类型：读，状态：RUNNING】-&gt;【线程名称：Reader-5，类型：读，状态：RUNNING】-&gt;【线程名称：Reader-7，类型：读，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Reader-8，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-9，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Reader-8，重入量：1)</span><br><span class="line">-&gt;【线程名称：Reader-8，类型：读，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Writer-9，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Reader-8，重入量：1)</span><br><span class="line">-&gt;【线程名称：Writer-9，类型：写，状态：SIGNAL】</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Writer-9，重入量：1)</span><br><span class="line">-&gt;【线程名称：Writer-9，类型：写，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Reader-9，重入量：1)</span><br><span class="line">-&gt;【线程名称：Reader-9，类型：读，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Writer-4，重入量：1)</span><br><span class="line">-&gt;【线程名称：Writer-4，类型：写，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Writer-1，重入量：1)</span><br><span class="line">-&gt;【线程名称：Writer-1，类型：写，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：WAITING】-&gt;【线程名称：Reader-2，类型：读，状态：WAITING】-&gt;【线程名称：Reader-1，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Reader-11，重入量：3)</span><br><span class="line">-&gt;【线程名称：Reader-11，类型：读，状态：RUNNING】-&gt;【线程名称：Reader-2，类型：读，状态：RUNNING】-&gt;【线程名称：Reader-1，类型：读，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：WAITING】-&gt;【线程名称：Reader-13，类型：读，状态：WAITING】-&gt;【线程名称：Reader-14，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Reader-12，重入量：3)</span><br><span class="line">-&gt;【线程名称：Reader-12，类型：读，状态：RUNNING】-&gt;【线程名称：Reader-13，类型：读，状态：RUNNING】-&gt;【线程名称：Reader-14，类型：读，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：WAITING】-&gt;【线程名称：Reader-16，类型：读，状态：WAITING】-&gt;【线程名称：Reader-17，类型：读，状态：WAITING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Reader-15，重入量：3)</span><br><span class="line">-&gt;【线程名称：Reader-15，类型：读，状态：RUNNING】-&gt;【线程名称：Reader-16，类型：读，状态：RUNNING】-&gt;【线程名称：Reader-17，类型：读，状态：RUNNING】</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：WAITING】-&gt;【线程名称：Reader-19，类型：读，状态：WAITING】-&gt;【线程名称：Reader-20，类型：读，状态：WAITING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：Reader-18，重入量：3)</span><br><span class="line">-&gt;【线程名称：Reader-18，类型：读，状态：RUNNING】-&gt;【线程名称：Reader-19，类型：读，状态：RUNNING】-&gt;【线程名称：Reader-20，类型：读，状态：RUNNING】</span><br><span class="line"></span><br><span class="line">Head(持有线程：未持有线程，重入量：0)</span><br><span class="line"></span><br><span class="line">Head(持有线程：未持有线程，重入量：0)</span><br></pre></td></tr></table></figure>
+<p>如上述结果，每一行代表一个节点（读节点有不超过读链阈值的节点个数），Head开头说明打印了一次线程队列中的执行和等待情况。结果说明该读写锁可支持：</p>
+<ol>
+<li>多个线程的并发读访问</li>
+<li>多个线程的写访问</li>
+<li>避免了写饥饿</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+      <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center;">
+  <img id="wechat_subscriber_qcode" src="/images/qcode.jpg" alt="Rui wechat" style="width: 200px; max-width: 100%;"/>
+  <div>我们梦中见</div>
+</div>
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>哟，小老板</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById(&quot;QR&quot;); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Rui WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Rui Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NET/" rel="tag"># .NET</a>
+          
+            <a href="/tags/C/" rel="tag"># C#</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/18/NET-Framework及EntityFramework/" rel="next" title="C# - .NETFramework及EntityFramework">
+                <i class="fa fa-chevron-left"></i> C# - .NETFramework及EntityFramework
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/19/Spring学习笔记/" rel="prev" title="Java - Spring学习笔记">
+                Java - Spring学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/favicon.png"
+                alt="Rui"/>
+            
+              <p class="site-author-name" itemprop="name">Rui</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ruitan" title="GitHub &rarr; https://github.com/ruitan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:tanrui106@gmail.com" title="E-Mail &rarr; mailto:tanrui106@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Node节点"><span class="nav-number">1.</span> <span class="nav-text">Node节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重要变量"><span class="nav-number">2.</span> <span class="nav-text">重要变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#头节点-head"><span class="nav-number">2.1.</span> <span class="nav-text">头节点 head</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#尾节点-tail"><span class="nav-number">2.2.</span> <span class="nav-text">尾节点 tail</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重入量-reentrants"><span class="nav-number">2.3.</span> <span class="nav-text">重入量 reentrants</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写锁"><span class="nav-number">3.</span> <span class="nav-text">写锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获取-WriteLock"><span class="nav-number">3.1.</span> <span class="nav-text">获取 WriteLock()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#释放-WriteUnlock"><span class="nav-number">3.2.</span> <span class="nav-text">释放 WriteUnlock()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读锁"><span class="nav-number">4.</span> <span class="nav-text">读锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获取-ReadLock"><span class="nav-number">4.1.</span> <span class="nav-text">获取 ReadLock()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#释放-ReadUnlock"><span class="nav-number">4.2.</span> <span class="nav-text">释放 ReadUnlock()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其余辅助方法"><span class="nav-number">5.</span> <span class="nav-text">其余辅助方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Enq-Node-mode"><span class="nav-number">5.1.</span> <span class="nav-text">Enq(Node mode)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EnqWhenTailNull-Node-mode"><span class="nav-number">5.2.</span> <span class="nav-text">EnqWhenTailNull(Node mode)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AwakeNext"><span class="nav-number">5.3.</span> <span class="nav-text">AwakeNext()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GetHolderNode"><span class="nav-number">5.4.</span> <span class="nav-text">GetHolderNode()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HasWriter"><span class="nav-number">5.5.</span> <span class="nav-text">HasWriter()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GetCurrentNodeByReader-Node-node"><span class="nav-number">5.6.</span> <span class="nav-text">GetCurrentNodeByReader(Node node)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CheckReadChainCancelled-Node-node"><span class="nav-number">5.7.</span> <span class="nav-text">CheckReadChainCancelled(Node node)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AddReader-Node-readerHead-Node-node"><span class="nav-number">5.8.</span> <span class="nav-text">AddReader(Node readerHead, Node node)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReaderCanReentranted"><span class="nav-number">5.9.</span> <span class="nav-text">ReaderCanReentranted()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ToString"><span class="nav-number">5.10.</span> <span class="nav-text">ToString()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">6.</span> <span class="nav-text">测试</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rui</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.0.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://blog.guitoubing.top/2019/05/03/C-ReadWriteLock/";
+    this.page.identifier = "2019/05/03/C-ReadWriteLock/";
+    this.page.title = 'C# - 实现读写锁';
+    };
+  function loadComments() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://guitoubing-top.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', '' + +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+  
+    $(function() {
+      var offsetTop = $('#comments').offset().top - $(window).height();
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        loadComments();
+      } else {
+        $(window).on('scroll.disqus_scroll', function() {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = $('#comments').offset().top - $(window).height();
+          var scrollTop = $(window).scrollTop();
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            $(window).off('.disqus_scroll');
+            loadComments();
+          }
+        });
+      }
+    });
+  
+</script>
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<style>
+  .copy-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #333;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+    
+    user-select: none;
+    outline: 0;
+  }
+
+  .highlight-wrap .copy-btn {
+    transition: opacity .3s ease-in-out;
+    opacity: 0;
+    padding: 2px 6px;
+    position: absolute;
+    
+      right: 4px;
+      top: 8px;
+    
+  }
+
+  .highlight-wrap:hover .copy-btn,
+  .highlight-wrap .copy-btn:focus {
+    opacity: 1;
+  }
+
+  .highlight-wrap {
+    position: relative;
+  }
+</style>
+<script>
+  $('.highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('Copy').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('Copy');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+</body>
+</html>

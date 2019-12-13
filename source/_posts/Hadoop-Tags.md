@@ -3,9 +3,8 @@ title: Hadoop-Tags
 date: 2018-12-12 00:33:02
 tags:
     - Hadoop
-    - 云计算
 categories:
-    - archives
+    - Hadoop
 ---
 
 > 更新中……

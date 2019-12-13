@@ -101,15 +101,15 @@
   <meta name="description" content="可达性分析算法算法的基本思路是通过一系列称为GC Roots的对象作为起始点，从这些节点向下搜索，搜索所走过的路径称作引用链。  可作为GC Roots的对象包括下面几种：  虚拟机栈(栈帧中的本地变量表)中引用的对象 方法区中类静态属性引用的对象 方法去中常量引用的对象 本地方法栈中JNI引用的对象  引用强引用程序代码中普遍存在的，类似于Object obj = new Object();这类">
 <meta name="keywords" content="Java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="深入垃圾回收">
+<meta property="og:title" content="Java - 深入垃圾回收">
 <meta property="og:url" content="http://blog.guitoubing.top/2019/04/11/深入GC/index.html">
 <meta property="og:site_name" content="Archer">
 <meta property="og:description" content="可达性分析算法算法的基本思路是通过一系列称为GC Roots的对象作为起始点，从这些节点向下搜索，搜索所走过的路径称作引用链。  可作为GC Roots的对象包括下面几种：  虚拟机栈(栈帧中的本地变量表)中引用的对象 方法区中类静态属性引用的对象 方法去中常量引用的对象 本地方法栈中JNI引用的对象  引用强引用程序代码中普遍存在的，类似于Object obj = new Object();这类">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://blog.guitoubing.top/images/可达性分析算法.png">
-<meta property="og:updated_time" content="2019-04-11T02:39:47.809Z">
+<meta property="og:updated_time" content="2019-10-20T08:55:53.695Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="深入垃圾回收">
+<meta name="twitter:title" content="Java - 深入垃圾回收">
 <meta name="twitter:description" content="可达性分析算法算法的基本思路是通过一系列称为GC Roots的对象作为起始点，从这些节点向下搜索，搜索所走过的路径称作引用链。  可作为GC Roots的对象包括下面几种：  虚拟机栈(栈帧中的本地变量表)中引用的对象 方法区中类静态属性引用的对象 方法去中常量引用的对象 本地方法栈中JNI引用的对象  引用强引用程序代码中普遍存在的，类似于Object obj = new Object();这类">
 <meta name="twitter:image" content="http://blog.guitoubing.top/images/可达性分析算法.png">
 
@@ -130,7 +130,7 @@
   };
 </script>
 
-  <title>深入垃圾回收 | Archer</title>
+  <title>Java - 深入垃圾回收 | Archer</title>
   
 
 
@@ -404,7 +404,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">深入垃圾回收
+          <h1 class="post-title" itemprop="name headline">Java - 深入垃圾回收
 
               
             
@@ -430,12 +430,24 @@
                 
               
 
-              <time title="Created: 2019-04-11 10:36:03 / Modified: 10:39:47" itemprop="dateCreated datePublished" datetime="2019-04-11T10:36:03+08:00">2019-04-11</time>
+              <time title="Created: 2019-04-11 10:36:03" itemprop="dateCreated datePublished" datetime="2019-04-11T10:36:03+08:00">2019-04-11</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-10-20 16:55:53" itemprop="dateModified" datetime="2019-10-20T16:55:53+08:00">2019-10-20</time>
               
             
           </span>
@@ -452,7 +464,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/archives/" itemprop="url" rel="index"><span itemprop="name">archives</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
 
                 
                 
@@ -648,8 +660,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/03/27/Java类与类加载器/" rel="next" title="Java类与类加载器">
-                <i class="fa fa-chevron-left"></i> Java类与类加载器
+              <a href="/2019/03/27/Java类与类加载器/" rel="next" title="Java - Java类与类加载器">
+                <i class="fa fa-chevron-left"></i> Java - Java类与类加载器
               </a>
             
           </div>
@@ -657,6 +669,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/18/Framework/" rel="prev" title="C# - ADO.NET配置说明">
+                C# - ADO.NET配置说明 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -736,7 +752,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-count">18</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -757,7 +773,15 @@
                     
                       
                     
-                    <span class="site-state-item-count">2</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">categories</span>
                   </a>
                 </div>
@@ -1043,7 +1067,7 @@
   var disqus_config = function() {
     this.page.url = "http://blog.guitoubing.top/2019/04/11/深入GC/";
     this.page.identifier = "2019/04/11/深入GC/";
-    this.page.title = '深入垃圾回收';
+    this.page.title = 'Java - 深入垃圾回收';
     };
   function loadComments() {
     var d = document, s = d.createElement('script');

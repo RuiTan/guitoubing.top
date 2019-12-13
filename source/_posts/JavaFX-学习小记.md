@@ -1,13 +1,12 @@
 ---
-title: JavaFX 学习小记
+title: Java - JavaFX学习小记
 date: 2018-10-28 00:08:25
 tags:
     - JavaFX
-    - Java源码学习之旅
     - Java
 
 categories:
-    - archives
+    - Java
 ---
 # JavaFX小记
 

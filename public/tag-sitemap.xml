@@ -3,41 +3,6 @@
 
 
     <url>
-        <loc>http://blog.guitoubing.top/tags/JavaFX/</loc>
-        <lastmod>2018-11-13T10:52:26.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/Java%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E4%B9%8B%E6%97%85/</loc>
-        <lastmod>2018-11-13T10:52:26.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/Docker/</loc>
-        <lastmod>2018-11-25T14:17:59.444Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/Dotnet/</loc>
-        <lastmod>2018-12-11T16:33:44.757Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-        <lastmod>2018-12-11T16:33:44.757Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://blog.guitoubing.top/tags/Hexo/</loc>
         <lastmod>2019-02-26T05:47:30.844Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -45,106 +10,141 @@
     </url>
 
     <url>
+        <loc>http://blog.guitoubing.top/tags/C/</loc>
+        <lastmod>2019-10-20T08:53:23.213Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Net/</loc>
+        <lastmod>2019-10-20T08:53:34.815Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+        <lastmod>2019-10-20T08:53:34.815Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/JavaFX/</loc>
+        <lastmod>2019-10-20T08:53:56.301Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://blog.guitoubing.top/tags/TimesTen/</loc>
-        <lastmod>2019-02-26T05:48:13.649Z</lastmod>
+        <lastmod>2019-10-20T08:54:57.823Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://blog.guitoubing.top/tags/%E5%86%85%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-        <lastmod>2019-02-26T05:48:13.649Z</lastmod>
+        <lastmod>2019-10-20T08:54:57.823Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://blog.guitoubing.top/tags/Win10/</loc>
-        <lastmod>2019-02-26T05:48:31.567Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/Linux/</loc>
-        <lastmod>2019-02-26T05:48:31.567Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E5%8F%8C%E7%B3%BB%E7%BB%9F/</loc>
-        <lastmod>2019-02-26T05:48:31.567Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E5%BC%95%E5%AF%BC%E4%BF%AE%E5%A4%8D/</loc>
-        <lastmod>2019-02-26T05:48:31.567Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/</loc>
-        <lastmod>2019-02-26T05:48:36.467Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/Oracle/</loc>
-        <lastmod>2019-03-05T12:38:38.160Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/Timesten/</loc>
-        <lastmod>2019-03-05T12:38:38.160Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</loc>
-        <lastmod>2019-03-06T13:08:43.357Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/Hadoop/</loc>
-        <lastmod>2019-03-11T04:43:12.437Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/</loc>
-        <lastmod>2019-03-11T04:43:12.437Z</lastmod>
+        <loc>http://blog.guitoubing.top/tags/Docker/</loc>
+        <lastmod>2019-10-20T08:55:13.091Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://blog.guitoubing.top/tags/%E5%A4%A7%E4%B8%89%E4%B8%8A%E7%AC%94%E8%AE%B0/</loc>
-        <lastmod>2019-03-11T04:56:31.454Z</lastmod>
+        <lastmod>2019-10-20T08:55:17.995Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://blog.guitoubing.top/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/</loc>
-        <lastmod>2019-03-11T04:56:31.454Z</lastmod>
+        <lastmod>2019-10-20T08:55:17.995Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Hadoop/</loc>
+        <lastmod>2019-10-20T08:55:28.509Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/</loc>
+        <lastmod>2019-10-20T08:55:28.509Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Oracle/</loc>
+        <lastmod>2019-10-20T08:55:42.765Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Timesten/</loc>
+        <lastmod>2019-10-20T08:55:42.765Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Win10/</loc>
+        <lastmod>2019-10-20T08:56:28.612Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Linux/</loc>
+        <lastmod>2019-10-20T08:56:28.612Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E5%8F%8C%E7%B3%BB%E7%BB%9F/</loc>
+        <lastmod>2019-10-20T08:56:28.612Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/%E5%BC%95%E5%AF%BC%E4%BF%AE%E5%A4%8D/</loc>
+        <lastmod>2019-10-20T08:56:28.612Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/NET/</loc>
+        <lastmod>2019-10-20T09:08:41.777Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://blog.guitoubing.top/tags/Java/</loc>
-        <lastmod>2019-04-11T02:39:47.809Z</lastmod>
+        <lastmod>2019-10-20T09:12:25.574Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/tags/Spring/</loc>
+        <lastmod>2019-10-20T09:12:25.574Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

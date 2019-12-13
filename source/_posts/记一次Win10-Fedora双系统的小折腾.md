@@ -8,7 +8,7 @@ tags:
     - 引导修复
 
 categories:
-    archives
+    - Win10
 ---
 
 ### 问题描述

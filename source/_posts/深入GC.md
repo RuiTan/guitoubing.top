@@ -1,10 +1,10 @@
 ---
-title: 深入垃圾回收
+title: Java - 深入垃圾回收
 date: 2019-04-11 10:36:03
 tags:
     - Java
 categories:
-    - archives
+    - Java
 ---
 
 ## 可达性分析算法

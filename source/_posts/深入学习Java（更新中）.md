@@ -1,10 +1,10 @@
 ---
-title: 深入学习Java（更新中）
+title: Java - 深入学习Java
 date: 2019-03-06 21:01:30
 tags:
     - Java
 categories:
-    - archives
+    - Java
 ---
 
 ## 垃圾回收器—GC
