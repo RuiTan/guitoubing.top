@@ -10,3 +10,5 @@ categories:
 
 > 理解DIP、IOC、DI及IOC容器
 
+<!-- more -->
+

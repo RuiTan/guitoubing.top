@@ -8,43 +8,43 @@
     </url>
 
     <url>
+        <loc>http://blog.guitoubing.top/categories/Win10/</loc>
+        <lastmod>2019-12-13T06:08:19.870Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://blog.guitoubing.top/categories/life/</loc>
-        <lastmod>2019-02-26T05:47:30.844Z</lastmod>
+        <lastmod>2019-12-13T06:08:19.890Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://blog.guitoubing.top/categories/Hadoop/</loc>
-        <lastmod>2019-10-20T08:55:28.509Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-        <lastmod>2019-10-20T08:55:42.765Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://blog.guitoubing.top/categories/Win10/</loc>
-        <lastmod>2019-10-20T08:56:28.612Z</lastmod>
+        <lastmod>2019-12-14T03:06:13.929Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://blog.guitoubing.top/categories/C/</loc>
-        <lastmod>2019-10-20T09:08:41.777Z</lastmod>
+        <lastmod>2019-12-14T03:06:28.525Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://blog.guitoubing.top/categories/Java/</loc>
-        <lastmod>2019-10-20T09:12:25.574Z</lastmod>
+        <lastmod>2019-12-14T03:06:37.089Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+        <lastmod>2019-12-14T03:06:39.295Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

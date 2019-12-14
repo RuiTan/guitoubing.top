@@ -7,13 +7,12 @@ categories:
     - Hadoop
 ---
 
-> 更新中……
-
-<!-- more -->
 
 # Hadoop Tags
 
 ## HDFS
+
+<!-- more -->
 
 1. NameNode内存要求较高，存储文件系统元结构（文件目录结构、分块情况、每块位置、权限等）
 

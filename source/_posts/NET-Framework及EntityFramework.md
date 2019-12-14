@@ -11,6 +11,8 @@ categories:
 
 `EntityFramework`是一种对象关系映射器`ORM`，它使`.NET`开发人员能够使用`.NET`对象处理数据库。它消除了开发人员通常需要编写的大多数数据访问代码的需要。
 
+<!-- more -->
+
 ## 环境配置
 
 本次实验我使用最新的`Microsoft Visual Studio Community 2019 `版本进行实验，环境配置过程中也是历经坎坷，在此记录如下。
