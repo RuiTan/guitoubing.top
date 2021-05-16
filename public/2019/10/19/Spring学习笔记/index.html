@@ -51,13 +51,17 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java - Spring学习笔记">
 <meta property="og:url" content="http://blog.guitoubing.top/2019/10/19/Spring学习笔记/index.html">
-<meta property="og:site_name" content="Archer">
+<meta property="og:site_name" content="鬼头兵">
 <meta property="og:description" content="理解DIP、IOC、DI及IOC容器">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-12-14T03:06:37.089Z">
+<meta property="og:image" content="http://blog.guitoubing.top/2019/10/19/Spring学习笔记/assets/依赖无倒置2.png">
+<meta property="og:image" content="http://blog.guitoubing.top/2019/10/19/Spring学习笔记/assets/依赖无倒置.png">
+<meta property="og:image" content="http://blog.guitoubing.top/2019/10/19/Spring学习笔记/assets/依赖倒置.png">
+<meta property="og:updated_time" content="2020-02-10T14:34:39.414Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java - Spring学习笔记">
 <meta name="twitter:description" content="理解DIP、IOC、DI及IOC容器">
+<meta name="twitter:image" content="http://blog.guitoubing.top/2019/10/19/Spring学习笔记/assets/依赖无倒置2.png">
 
 <link rel="canonical" href="http://blog.guitoubing.top/2019/10/19/Spring学习笔记/">
 
@@ -71,7 +75,7 @@
   };
 </script>
 
-  <title>Java - Spring学习笔记 | Archer</title>
+  <title>Java - Spring学习笔记 | 鬼头兵</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108090005-1"></script>
     <script>
@@ -124,11 +128,11 @@
     <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Archer</span>
+        <span class="site-title">鬼头兵</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-        <p class="site-subtitle">我们梦中见</p>
+        <p class="site-subtitle">人生苦短，几十岁了还不行乐？</p>
   </div>
 
   <div class="site-nav-toggle">
@@ -209,11 +213,11 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
       <meta itemprop="name" content="Rui">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="我们梦中见！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Archer">
+      <meta itemprop="name" content="鬼头兵">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -234,7 +238,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-14 11:06:37" itemprop="dateModified" datetime="2019-12-14T11:06:37+08:00">2019-12-14</time>
+                <time title="Modified: 2020-02-10 22:34:39" itemprop="dateModified" datetime="2020-02-10T22:34:39+08:00">2020-02-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -263,6 +267,18 @@
 <p>理解DIP、IOC、DI及IOC容器</p>
 </blockquote>
 <a id="more"></a>
+<h2 id="DIP"><a href="#DIP" class="headerlink" title="DIP"></a>DIP</h2><p>DIP(Dependence Inversion Principle)即依赖倒置原则，是一种抽象的软件架构设计的原则，其有两个特点：</p>
+<ul>
+<li>高层模块不应依赖于低层模块，两者应该依赖于抽象</li>
+<li>抽象不应该依赖于实现，实现应该依赖于抽象</li>
+</ul>
+<p>举例子对比一下依赖倒置与依赖无倒置，代码使用SpringBoot风格：</p>
+<h3 id="依赖无倒置"><a href="#依赖无倒置" class="headerlink" title="依赖无倒置"></a>依赖无倒置</h3><p><img src="assets/依赖无倒置2.png" alt="依赖无倒置"></p>
+<p>这种明显高层模块已经依赖于低层模块，不满足<code>高层模块不应依赖于低层模块，两者应该依赖于抽象</code>的特点。</p>
+<p>示例代码如下：</p>
+<p>controller层使用</p>
+<p><img src="assets/依赖无倒置.png" alt="依赖无倒置"></p>
+<h3 id="依赖倒置"><a href="#依赖倒置" class="headerlink" title="依赖倒置"></a>依赖倒置</h3><p><img src="assets/依赖倒置.png" alt="依赖倒置"></p>
 
     </div>
 
@@ -285,7 +301,10 @@
     <a href="/2019/05/03/C-ReadWriteLock/" rel="prev" title="C# - 实现读写锁">
       <i class="fa fa-chevron-left"></i> C# - 实现读写锁
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/02/Tensorflow-multi-GPU/" rel="next" title="Tensorflow多GPU并行计算">
+      Tensorflow多GPU并行计算 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -352,6 +371,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DIP"><span class="nav-number">1.</span> <span class="nav-text">DIP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#依赖无倒置"><span class="nav-number">1.1.</span> <span class="nav-text">依赖无倒置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#依赖倒置"><span class="nav-number">1.2.</span> <span class="nav-text">依赖倒置</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -360,27 +380,27 @@
     <img class="site-author-image" itemprop="image" alt="Rui"
       src="/images/favicon.png">
   <p class="site-author-name" itemprop="name">Rui</p>
-  <div class="site-description" itemprop="description"></div>
+  <div class="site-description" itemprop="description">我们梦中见！</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">23</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -424,7 +444,7 @@
 <div class="copyright">
   
   &copy; 2017 – 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

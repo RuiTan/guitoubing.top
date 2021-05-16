@@ -46,13 +46,16 @@
   };
 </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Archer">
+  <meta name="description" content="我们梦中见！">
+<meta property="og:type" content="website">
+<meta property="og:title" content="鬼头兵">
 <meta property="og:url" content="http://blog.guitoubing.top/index.html">
-<meta property="og:site_name" content="Archer">
+<meta property="og:site_name" content="鬼头兵">
+<meta property="og:description" content="我们梦中见！">
 <meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Archer">
+<meta name="twitter:title" content="鬼头兵">
+<meta name="twitter:description" content="我们梦中见！">
 
 <link rel="canonical" href="http://blog.guitoubing.top/">
 
@@ -66,7 +69,7 @@
   };
 </script>
 
-  <title>Archer</title>
+  <title>鬼头兵</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108090005-1"></script>
     <script>
@@ -119,11 +122,11 @@
     <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Archer</span>
+        <span class="site-title">鬼头兵</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-        <p class="site-subtitle">我们梦中见</p>
+        <p class="site-subtitle">人生苦短，几十岁了还不行乐？</p>
   </div>
 
   <div class="site-nav-toggle">
@@ -199,16 +202,101 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://blog.guitoubing.top/2020/10/02/Tensorflow-multi-GPU/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="Rui">
+      <meta itemprop="description" content="我们梦中见！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鬼头兵">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/02/Tensorflow-multi-GPU/" class="post-title-link" itemprop="url">Tensorflow多GPU并行计算</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-02 23:33:40" itemprop="dateCreated datePublished" datetime="2020-10-02T23:33:40+08:00">2020-10-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-03 10:28:36" itemprop="dateModified" datetime="2020-10-03T10:28:36+08:00">2020-10-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>笔者本科毕设做的是遥感图像分割相关的研究，当时采用的Potsdam数据集由于所有图像GSD(对地观测距离)固定且适中，因此将训练时的batch_size设置为了16，基本能满足每个批次中都包含所有地表要素的需求。然而<a href="https://naic.pcl.ac.cn/" target="_blank" rel="noopener">NAIC2020</a>数据集中包含的数据的GSD从0.1m-4m不等，0.1m的GSD意味着一张256x256的影像切片中甚至能够看到一根树干的轮廓，然而这也使得该切片包含的要素种类很少！以致于一个batch中的16张切片可能也无法包含所有的要素。<br>一旦batch训练数据无法包含所有要素，就使得当次训练结果对于未被包含的要素基本不具备识别能力，表现为第n次训练和第n+1次训练结果梯度变化很大，有点像拆了东墙补西墙；而限制了batch_size的最根本原因是GPU限制，本模型完全跑起来需要约9G显存(输入大小为[16,256,256,3]，即16张256x256大小的RGB图像)，服务器上的GPU仅有11G，虽然显存不大，但是GPU多呀，4块2080Ti现在只用了一块。<br>因此笔者考虑使用多GPU来增大batch_size，以此来使得每个batch训练的参数结果对所有要素都较为适配。</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/10/02/Tensorflow-multi-GPU/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://blog.guitoubing.top/2019/10/19/Spring学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
       <meta itemprop="name" content="Rui">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="我们梦中见！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Archer">
+      <meta itemprop="name" content="鬼头兵">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -230,7 +318,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-14 11:06:37" itemprop="dateModified" datetime="2019-12-14T11:06:37+08:00">2019-12-14</time>
+                <time title="Modified: 2020-02-10 22:34:39" itemprop="dateModified" datetime="2020-02-10T22:34:39+08:00">2020-02-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -289,11 +377,11 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
       <meta itemprop="name" content="Rui">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="我们梦中见！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Archer">
+      <meta itemprop="name" content="鬼头兵">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -372,11 +460,11 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
       <meta itemprop="name" content="Rui">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="我们梦中见！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Archer">
+      <meta itemprop="name" content="鬼头兵">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -455,11 +543,11 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
       <meta itemprop="name" content="Rui">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="我们梦中见！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Archer">
+      <meta itemprop="name" content="鬼头兵">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -538,11 +626,11 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
       <meta itemprop="name" content="Rui">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="我们梦中见！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Archer">
+      <meta itemprop="name" content="鬼头兵">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -621,11 +709,11 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
       <meta itemprop="name" content="Rui">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="我们梦中见！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Archer">
+      <meta itemprop="name" content="鬼头兵">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -704,11 +792,11 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
       <meta itemprop="name" content="Rui">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="我们梦中见！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Archer">
+      <meta itemprop="name" content="鬼头兵">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -787,11 +875,11 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
       <meta itemprop="name" content="Rui">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="我们梦中见！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Archer">
+      <meta itemprop="name" content="鬼头兵">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -870,11 +958,11 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
       <meta itemprop="name" content="Rui">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="我们梦中见！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Archer">
+      <meta itemprop="name" content="鬼头兵">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -925,89 +1013,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2018/12/31/数据仓库期末项目文档/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://blog.guitoubing.top/2018/12/31/云计算期末项目文档/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="Rui">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Archer">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/12/31/云计算期末项目文档/" class="post-title-link" itemprop="url">Hadoop - 云计算期末项目</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-12-31 17:31:32" itemprop="dateCreated datePublished" datetime="2018-12-31T17:31:32+08:00">2018-12-31</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-14 11:05:45" itemprop="dateModified" datetime="2019-12-14T11:05:45+08:00">2019-12-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hadoop/" itemprop="url" rel="index">
-                    <span itemprop="name">Hadoop</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="云计算期末项目文档"><a href="#云计算期末项目文档" class="headerlink" title="云计算期末项目文档"></a>云计算期末项目文档</h1><h2 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h2><h3 id="集群架构图"><a href="#集群架构图" class="headerlink" title="集群架构图"></a>集群架构图</h3><p><img src="/images/image-20181228192856958-5996536.png" alt="image-20181228192856958"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/12/31/云计算期末项目文档/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1092,27 +1097,27 @@
     <img class="site-author-image" itemprop="image" alt="Rui"
       src="/images/favicon.png">
   <p class="site-author-name" itemprop="name">Rui</p>
-  <div class="site-description" itemprop="description"></div>
+  <div class="site-description" itemprop="description">我们梦中见！</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">23</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -1156,7 +1161,7 @@
 <div class="copyright">
   
   &copy; 2017 – 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

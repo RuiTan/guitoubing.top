@@ -8,8 +8,8 @@
     </url>
 
     <url>
-        <loc>http://blog.guitoubing.top/2018/09/02/TimesTen%E5%86%85%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/</loc>
-        <lastmod>2019-12-14T03:06:39.295Z</lastmod>
+        <loc>http://blog.guitoubing.top/2020/10/02/Tensorflow-multi-GPU/</loc>
+        <lastmod>2020-10-03T02:28:36.908Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -17,7 +17,15 @@
 
     <url>
         <loc>http://blog.guitoubing.top/2019/10/19/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
-        <lastmod>2019-12-14T03:06:37.089Z</lastmod>
+        <lastmod>2020-02-10T14:34:39.414Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/2018/09/02/TimesTen%E5%86%85%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/</loc>
+        <lastmod>2019-12-14T03:06:39.295Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -41,7 +49,7 @@
 
     <url>
         <loc>http://blog.guitoubing.top/2018/12/12/Hadoop-Tags/</loc>
-        <lastmod>2019-12-14T03:06:13.929Z</lastmod>
+        <lastmod>2019-12-14T03:06:13.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -120,14 +128,6 @@
     </url>
 
     <url>
-        <loc>http://blog.guitoubing.top/2018/11/24/Practice/</loc>
-        <lastmod>2019-12-13T06:08:19.880Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://blog.guitoubing.top/2018/11/06/%E8%AE%B0%E4%B8%80%E6%AC%A1Win10-Fedora%E5%8F%8C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%B0%8F%E6%8A%98%E8%85%BE/</loc>
         <lastmod>2019-12-13T06:08:19.870Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -146,6 +146,14 @@
     <url>
         <loc>http://blog.guitoubing.top/2018/10/28/JavaFX-%E5%AD%A6%E4%B9%A0%E5%B0%8F%E8%AE%B0/</loc>
         <lastmod>2019-12-13T06:08:19.850Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/2018/11/24/Practice/</loc>
+        <lastmod>2019-12-13T06:08:19.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

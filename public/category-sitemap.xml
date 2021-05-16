@@ -23,7 +23,7 @@
 
     <url>
         <loc>http://blog.guitoubing.top/categories/Hadoop/</loc>
-        <lastmod>2019-12-14T03:06:13.929Z</lastmod>
+        <lastmod>2019-12-14T03:06:13.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -36,15 +36,22 @@
     </url>
 
     <url>
-        <loc>http://blog.guitoubing.top/categories/Java/</loc>
-        <lastmod>2019-12-14T03:06:37.089Z</lastmod>
+        <loc>http://blog.guitoubing.top/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+        <lastmod>2019-12-14T03:06:39.295Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://blog.guitoubing.top/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-        <lastmod>2019-12-14T03:06:39.295Z</lastmod>
+        <loc>http://blog.guitoubing.top/categories/Java/</loc>
+        <lastmod>2020-02-10T14:34:39.414Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://blog.guitoubing.top/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</loc>
+        <lastmod>2020-10-03T02:28:36.908Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

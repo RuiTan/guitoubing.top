@@ -3,9 +3,9 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Archer
-subtitle: 我们梦中见
-description:
+title: 鬼头兵
+subtitle: 人生苦短，几十岁了还不行乐？
+description: 我们梦中见！
 keywords:
 author: Rui
 language:
@@ -92,7 +92,6 @@ deploy:
   repo: https://git.coding.net/RuiTan/Blog.git
   branch: master
   message: 
-
 
 baidusitemap:
   path: baidusitemap.xml
