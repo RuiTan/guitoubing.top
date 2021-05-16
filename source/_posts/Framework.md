@@ -3,6 +3,7 @@ title: C# - ADO.NET配置说明
 date: 2019-04-18 11:04:15
 tags:
     - .NET
+    - ADO.NET
 categories:
     - C#
 ---

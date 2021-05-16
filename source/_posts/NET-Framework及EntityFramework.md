@@ -2,7 +2,8 @@
 title: C# - .NETFramework及EntityFramework
 date: 2019-04-18 11:07:39
 tags:
-    - .NET
+    - .NET Framework
+    - EntityFramework
 categories:
     - C#
 ---

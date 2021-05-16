@@ -1,8 +1,10 @@
 ---
-title: Java - 深入学习Java
+title: Java - 基础知识
 date: 2019-03-06 21:01:30
 tags:
-    - Java
+    - 垃圾回收
+    - 泛型编程
+    - 容器
 categories:
     - Java
 ---

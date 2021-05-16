@@ -8,7 +8,7 @@ categories:
     - 数据库
 ---
 
-> Oracle专家的三次授课。
+> Oracle专家的三次授课笔记及Best Practice记录。
 
 <!--more-->
 

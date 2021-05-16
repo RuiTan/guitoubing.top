@@ -3,8 +3,6 @@ title: Java - JavaFX学习小记
 date: 2018-10-28 00:08:25
 tags:
     - JavaFX
-    - Java
-
 categories:
     - Java
 ---

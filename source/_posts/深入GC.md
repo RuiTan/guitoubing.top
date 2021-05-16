@@ -2,7 +2,9 @@
 title: Java - 深入垃圾回收
 date: 2019-04-11 10:36:03
 tags:
-    - Java
+    - 垃圾回收
+    - 可达性分析
+    - HotSpot
 categories:
     - Java
 ---

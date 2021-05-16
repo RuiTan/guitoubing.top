@@ -2,11 +2,11 @@
 title: C# - dotnet基本配置及EFCore连接Mysql
 date: 2018-06-26 16:57:08
 tags: 
-    - .Net
-    - 数据库
-
+  - .Net
+  - EFCore
+  - MySQL
 categories: 
-    - C#
+  - C#
 ---
 
 ## 前奏部分

@@ -47,7 +47,7 @@
 </script>
 
   <meta name="description" content="笔者本科毕设做的是遥感图像分割相关的研究，当时采用的Potsdam数据集由于所有图像GSD(对地观测距离)固定且适中，因此将训练时的batch_size设置为了16，基本能满足每个批次中都包含所有地表要素的需求。然而NAIC2020数据集中包含的数据的GSD从0.1m-4m不等，0.1m的GSD意味着一张256x256的影像切片中甚至能够看到一根树干的轮廓，然而这也使得该切片包含的要素种类很少！">
-<meta name="keywords" content="TensorFlow,图像分割">
+<meta name="keywords" content="TensorFlow,图像分割,遥感影像">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Tensorflow多GPU并行计算">
 <meta property="og:url" content="http://blog.guitoubing.top/2020/10/02/Tensorflow-multi-GPU/index.html">
@@ -56,7 +56,7 @@
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://imgbed.guitoubing.top/20201003001646.png">
 <meta property="og:image" content="http://imgbed.guitoubing.top/20201003001716.png">
-<meta property="og:updated_time" content="2020-10-03T02:28:36.908Z">
+<meta property="og:updated_time" content="2021-05-16T10:56:52.708Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tensorflow多GPU并行计算">
 <meta name="twitter:description" content="笔者本科毕设做的是遥感图像分割相关的研究，当时采用的Potsdam数据集由于所有图像GSD(对地观测距离)固定且适中，因此将训练时的batch_size设置为了16，基本能满足每个批次中都包含所有地表要素的需求。然而NAIC2020数据集中包含的数据的GSD从0.1m-4m不等，0.1m的GSD意味着一张256x256的影像切片中甚至能够看到一根树干的轮廓，然而这也使得该切片包含的要素种类很少！">
@@ -237,7 +237,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-03 10:28:36" itemprop="dateModified" datetime="2020-10-03T10:28:36+08:00">2020-10-03</time>
+                <time title="Modified: 2021-05-16 18:56:52" itemprop="dateModified" datetime="2021-05-16T18:56:52+08:00">2021-05-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -352,6 +352,7 @@
           <div class="post-tags">
               <a href="/tags/TensorFlow/" rel="tag"># TensorFlow</a>
               <a href="/tags/图像分割/" rel="tag"># 图像分割</a>
+              <a href="/tags/遥感影像/" rel="tag"># 遥感影像</a>
           </div>
 
         
@@ -363,7 +364,10 @@
     <a href="/2019/10/19/Spring学习笔记/" rel="prev" title="Java - Spring学习笔记">
       <i class="fa fa-chevron-left"></i> Java - Spring学习笔记
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/11/02/分布式计算期末项目文档/" rel="next" title="Hadoop与HDFS">
+      Hadoop与HDFS <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -446,20 +450,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">43</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -503,7 +507,7 @@
 <div class="copyright">
   
   &copy; 2017 – 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

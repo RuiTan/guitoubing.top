@@ -6,9 +6,8 @@ tags:
     - Linux
     - 双系统
     - 引导修复
-
 categories:
-    - Win10
+    - 小折腾
 ---
 
 ### 问题描述

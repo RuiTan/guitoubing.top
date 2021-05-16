@@ -47,7 +47,7 @@
 </script>
 
   <meta name="description" content="可达性分析算法算法的基本思路是通过一系列称为GC Roots的对象作为起始点，从这些节点向下搜索，搜索所走过的路径称作引用链。">
-<meta name="keywords" content="Java">
+<meta name="keywords" content="垃圾回收,可达性分析,HotSpot">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java - 深入垃圾回收">
 <meta property="og:url" content="http://blog.guitoubing.top/2019/04/11/深入GC/index.html">
@@ -55,7 +55,7 @@
 <meta property="og:description" content="可达性分析算法算法的基本思路是通过一系列称为GC Roots的对象作为起始点，从这些节点向下搜索，搜索所走过的路径称作引用链。">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://blog.guitoubing.top/images/可达性分析算法.png">
-<meta property="og:updated_time" content="2019-12-14T03:05:20.354Z">
+<meta property="og:updated_time" content="2021-05-16T10:42:46.893Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java - 深入垃圾回收">
 <meta name="twitter:description" content="可达性分析算法算法的基本思路是通过一系列称为GC Roots的对象作为起始点，从这些节点向下搜索，搜索所走过的路径称作引用链。">
@@ -236,7 +236,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-14 11:05:20" itemprop="dateModified" datetime="2019-12-14T11:05:20+08:00">2019-12-14</time>
+                <time title="Modified: 2021-05-16 18:42:46" itemprop="dateModified" datetime="2021-05-16T18:42:46+08:00">2021-05-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -361,7 +361,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/垃圾回收/" rel="tag"># 垃圾回收</a>
+              <a href="/tags/可达性分析/" rel="tag"># 可达性分析</a>
+              <a href="/tags/HotSpot/" rel="tag"># HotSpot</a>
           </div>
 
         
@@ -459,20 +461,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">43</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -516,7 +518,7 @@
 <div class="copyright">
   
   &copy; 2017 – 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

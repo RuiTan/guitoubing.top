@@ -2,9 +2,9 @@
 title: Hadoop-Tags
 date: 2018-12-12 00:33:02
 tags:
-    - Hadoop
+    - Hadoop配置记录
 categories:
-    - Hadoop
+    - 分布式与云计算
 ---
 
 
