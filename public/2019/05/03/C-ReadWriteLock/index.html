@@ -19,7 +19,7 @@
 <script id="hexo-configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    hostname: new URL('http://blog.guitoubing.top').hostname,
+    hostname: new URL('http://trgg.vip').hostname,
     root: '/',
     scheme: 'Muse',
     version: '7.6.0',
@@ -50,7 +50,7 @@
 <meta name="keywords" content="C#">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C# - 实现读写锁">
-<meta property="og:url" content="http://blog.guitoubing.top/2019/05/03/C-ReadWriteLock/index.html">
+<meta property="og:url" content="http://trgg.vip/2019/05/03/C-ReadWriteLock/index.html">
 <meta property="og:site_name" content="鬼头兵">
 <meta property="og:description" content="使用C#实现的可重入、非公平的读写锁，主要目的实现并发读写以及读写同步问题。为了减少读等待时间以及防止出现写饥饿现象，本锁使用了非同步锁的实现，允许读优先（提高效率）的同时使用一个阈值限定读者的最大数量（防止写饥饿）；重入机制允许某个线程可以获取锁多次（如多次函数调用导致的锁重入），每次获取都需要有对应的释放，否则会出错。">
 <meta property="og:locale" content="en">
@@ -61,7 +61,7 @@
 <meta name="twitter:description" content="使用C#实现的可重入、非公平的读写锁，主要目的实现并发读写以及读写同步问题。为了减少读等待时间以及防止出现写饥饿现象，本锁使用了非同步锁的实现，允许读优先（提高效率）的同时使用一个阈值限定读者的最大数量（防止写饥饿）；重入机制允许某个线程可以获取锁多次（如多次函数调用导致的锁重入），每次获取都需要有对应的释放，否则会出错。">
 <meta name="twitter:image" content="http://getme.guitoubing.top/队列示意图.png">
 
-<link rel="canonical" href="http://blog.guitoubing.top/2019/05/03/C-ReadWriteLock/">
+<link rel="canonical" href="http://trgg.vip/2019/05/03/C-ReadWriteLock/">
 
 
 <script id="page-configurations">
@@ -206,7 +206,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="http://blog.guitoubing.top/2019/05/03/C-ReadWriteLock/">
+    <link itemprop="mainEntityOfPage" href="http://trgg.vip/2019/05/03/C-ReadWriteLock/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -467,13 +467,13 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -580,7 +580,7 @@
       DISQUS.reset({
         reload: true,
         config: {page: {
-            url: "http://blog.guitoubing.top/2019/05/03/C-ReadWriteLock/",
+            url: "http://trgg.vip/2019/05/03/C-ReadWriteLock/",
             identifier: "2019/05/03/C-ReadWriteLock/",
             title: "C# - 实现读写锁"
           }

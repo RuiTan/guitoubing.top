@@ -19,7 +19,7 @@
 <script id="hexo-configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    hostname: new URL('http://blog.guitoubing.top').hostname,
+    hostname: new URL('http://trgg.vip').hostname,
     root: '/',
     scheme: 'Muse',
     version: '7.6.0',
@@ -47,33 +47,33 @@
 </script>
 
   <meta name="description" content="简介本项目我们基于Stanford University中的Amazon Movie Comment数据，利用爬虫技术爬取了数十万的电影信息数据以及数百万计的电影评论数据，并通过搭建Neo4j图数据库、MySQL关系型数据库、Influx时序数据库及Hive分布式数据库对数据进行存储、分析及实现功能，同时对于部分功能需求针对这4种数据库进行效率对比分析。">
-<meta name="keywords" content="Neo4j,MySQL,Influx,Hive">
+<meta name="keywords" content="MySQL,Neo4j,Influx,Hive">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据仓库期末项目文档">
-<meta property="og:url" content="http://blog.guitoubing.top/2018/12/31/数据仓库期末项目文档/index.html">
+<meta property="og:url" content="http://trgg.vip/2018/12/31/数据仓库期末项目文档/index.html">
 <meta property="og:site_name" content="鬼头兵">
 <meta property="og:description" content="简介本项目我们基于Stanford University中的Amazon Movie Comment数据，利用爬虫技术爬取了数十万的电影信息数据以及数百万计的电影评论数据，并通过搭建Neo4j图数据库、MySQL关系型数据库、Influx时序数据库及Hive分布式数据库对数据进行存储、分析及实现功能，同时对于部分功能需求针对这4种数据库进行效率对比分析。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://blog.guitoubing.top/images/ERFinal.png">
-<meta property="og:image" content="http://blog.guitoubing.top/images/527DE0D27244EE625AD2D099AACDF4BA-6182656.png">
-<meta property="og:image" content="http://blog.guitoubing.top/images/hive_arg.png">
-<meta property="og:image" content="http://blog.guitoubing.top/images/表1.png">
-<meta property="og:image" content="http://blog.guitoubing.top/images/hive_textfile1.png">
-<meta property="og:image" content="http://blog.guitoubing.top/images/hive_textfile2.png">
-<meta property="og:image" content="http://blog.guitoubing.top/images/hive_orc1.png">
-<meta property="og:image" content="http://blog.guitoubing.top/images/表2.png">
-<meta property="og:image" content="http://blog.guitoubing.top/images/表3.png">
-<meta property="og:image" content="http://blog.guitoubing.top/images/image-20181231003424471.png">
-<meta property="og:image" content="http://blog.guitoubing.top/images/image-20181231003442918-6187682.png">
-<meta property="og:image" content="http://blog.guitoubing.top/images/image-20181231003457997-6187698.png">
-<meta property="og:image" content="http://blog.guitoubing.top/images/image-20181231003513281-6187713.png">
+<meta property="og:image" content="http://trgg.vip/images/ERFinal.png">
+<meta property="og:image" content="http://trgg.vip/images/527DE0D27244EE625AD2D099AACDF4BA-6182656.png">
+<meta property="og:image" content="http://trgg.vip/images/hive_arg.png">
+<meta property="og:image" content="http://trgg.vip/images/表1.png">
+<meta property="og:image" content="http://trgg.vip/images/hive_textfile1.png">
+<meta property="og:image" content="http://trgg.vip/images/hive_textfile2.png">
+<meta property="og:image" content="http://trgg.vip/images/hive_orc1.png">
+<meta property="og:image" content="http://trgg.vip/images/表2.png">
+<meta property="og:image" content="http://trgg.vip/images/表3.png">
+<meta property="og:image" content="http://trgg.vip/images/image-20181231003424471.png">
+<meta property="og:image" content="http://trgg.vip/images/image-20181231003442918-6187682.png">
+<meta property="og:image" content="http://trgg.vip/images/image-20181231003457997-6187698.png">
+<meta property="og:image" content="http://trgg.vip/images/image-20181231003513281-6187713.png">
 <meta property="og:updated_time" content="2021-05-16T11:00:38.152Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据仓库期末项目文档">
 <meta name="twitter:description" content="简介本项目我们基于Stanford University中的Amazon Movie Comment数据，利用爬虫技术爬取了数十万的电影信息数据以及数百万计的电影评论数据，并通过搭建Neo4j图数据库、MySQL关系型数据库、Influx时序数据库及Hive分布式数据库对数据进行存储、分析及实现功能，同时对于部分功能需求针对这4种数据库进行效率对比分析。">
-<meta name="twitter:image" content="http://blog.guitoubing.top/images/ERFinal.png">
+<meta name="twitter:image" content="http://trgg.vip/images/ERFinal.png">
 
-<link rel="canonical" href="http://blog.guitoubing.top/2018/12/31/数据仓库期末项目文档/">
+<link rel="canonical" href="http://trgg.vip/2018/12/31/数据仓库期末项目文档/">
 
 
 <script id="page-configurations">
@@ -218,7 +218,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="http://blog.guitoubing.top/2018/12/31/数据仓库期末项目文档/">
+    <link itemprop="mainEntityOfPage" href="http://trgg.vip/2018/12/31/数据仓库期末项目文档/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -394,8 +394,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Neo4j/" rel="tag"># Neo4j</a>
               <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+              <a href="/tags/Neo4j/" rel="tag"># Neo4j</a>
               <a href="/tags/Influx/" rel="tag"># Influx</a>
               <a href="/tags/Hive/" rel="tag"># Hive</a>
           </div>
@@ -502,13 +502,13 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -615,7 +615,7 @@
       DISQUS.reset({
         reload: true,
         config: {page: {
-            url: "http://blog.guitoubing.top/2018/12/31/数据仓库期末项目文档/",
+            url: "http://trgg.vip/2018/12/31/数据仓库期末项目文档/",
             identifier: "2018/12/31/数据仓库期末项目文档/",
             title: "数据仓库期末项目文档"
           }

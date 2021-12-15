@@ -20,7 +20,7 @@ search:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://blog.guitoubing.top/
+url: http://trgg.vip/
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -91,7 +91,7 @@ deploy:
   type: git
   repo: https://git.coding.net/RuiTan/Blog.git
   branch: master
-  message: 
+  message: update
 
 baidusitemap:
   path: baidusitemap.xml

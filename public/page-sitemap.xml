@@ -2,34 +2,34 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
-        <loc>http://blog.guitoubing.top</loc>
+        <loc>http://trgg.vip</loc>
         <changefreq>daily</changefreq>
         <priority>1</priority>
     </url>
     
     <url>
-        <loc>http://blog.guitoubing.top//404.html</loc>
+        <loc>http://trgg.vip//404.html</loc>
         <lastmod>2019-12-13T06:08:19.960Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     
     <url>
-        <loc>http://blog.guitoubing.top/categories/</loc>
+        <loc>http://trgg.vip/categories/</loc>
         <lastmod>2019-12-13T06:08:19.960Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     
     <url>
-        <loc>http://blog.guitoubing.top/about/</loc>
+        <loc>http://trgg.vip/about/</loc>
         <lastmod>2019-12-13T06:08:19.950Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     
     <url>
-        <loc>http://blog.guitoubing.top/tags/</loc>
+        <loc>http://trgg.vip/tags/</loc>
         <lastmod>2019-12-13T06:08:19.950Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
